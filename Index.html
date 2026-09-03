@@ -1,0 +1,1755 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
+  <title>Calculadora de Recarga VE</title>
+  
+  <!-- PWA & Mobile Web App Meta Tags -->
+  <meta name="theme-color" content="#181C14" id="meta-theme-color">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="Recarga VE">
+  <meta name="description" content="Calculadora inteligente de tempo, energia e custo de recarga de veículos elétricos e híbridos.">
+  
+  <!-- iOS Safari Web App -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Recarga VE">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23181C14'/%3E%3Cpath d='M46 15 L25 54 L48 54 L44 85 L75 42 L52 42 Z' fill='%23578FCA' stroke='%23ECDFCC' stroke-width='2'/%3E%3C/svg%3E">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%233674B5'/%3E%3Cpath d='M46 15 L25 54 L48 54 L44 85 L75 42 L52 42 Z' fill='%23ECDFCC'/%3E%3C/svg%3E">
+  
+  <style>
+    /* ============================================================
+       Paleta de Cores Color Hunt: #3674B5 | #578FCA | #A1E3F9 | #D1F8EF
+       ============================================================ */
+    :root {
+      /* ============================================================
+         Modo Escuro (Color Hunt: #181C14 | #3C3D37 | #697565 | #ECDFCC)
+         ============================================================ */
+      --color-dark-bg: #181C14;
+      --color-dark-card: #3C3D37;
+      --color-dark-accent: #697565;
+      --color-dark-light: #ECDFCC;
+
+      --bg-primary: #181C14;
+      --bg-card: #22261E;
+      --bg-card-hover: #2C3127;
+      --bg-input: #1A1E16;
+      --border-color: #3C3D37;
+      --border-focus: #697565;
+      --accent-blue: #697565;
+      --accent-cyan: #ECDFCC;
+      --accent-mint: #ECDFCC;
+      --text-primary: #ECDFCC;
+      --text-secondary: #B4BEAF;
+      --text-muted: #7D8779;
+      --table-header-bg: #1E2319;
+      --table-selected-bg: rgba(105, 117, 101, 0.32);
+      --table-border-subtle: rgba(236, 223, 204, 0.07);
+      --badge-battery-bg: linear-gradient(135deg, #3C3D37, #697565);
+      --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      --slider-track: #2D3227;
+      --thumb-border: #ECDFCC;
+      --logo-bg: linear-gradient(135deg, #697565, #3C3D37);
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-full: 9999px;
+    }
+
+    [data-theme="light"] {
+      /* ============================================================
+         Modo Claro (Color Hunt: #3674B5 | #578FCA | #A1E3F9 | #D1F8EF)
+         ============================================================ */
+      --bg-primary: #F2F7FA;
+      --bg-card: #FFFFFF;
+      --bg-card-hover: #EBF4F9;
+      --bg-input: #F6FAFC;
+      --border-color: #D3E2EE;
+      --border-focus: #3674B5;
+      --accent-blue: #3674B5;
+      --accent-cyan: #0284c7;
+      --accent-mint: #0d9488;
+      --text-primary: #0D1C2E;
+      --text-secondary: #3D5267;
+      --text-muted: #64748B;
+      --table-header-bg: #EBF2F7;
+      --table-selected-bg: rgba(54, 116, 181, 0.12);
+      --table-border-subtle: #E2ECF3;
+      --badge-battery-bg: linear-gradient(135deg, #3674B5, #578FCA);
+      --card-shadow: 0 2px 8px rgba(54, 116, 181, 0.08);
+      --slider-track: #DCE7F0;
+      --thumb-border: #3674B5;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      padding: 10px 12px calc(14px + env(safe-area-inset-bottom, 10px)) 12px;
+      max-width: 460px;
+      margin: 0 auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Cabeçalho */
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2px 2px;
+    }
+    .app-title-box {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .app-logo {
+      width: 26px;
+      height: 26px;
+      background: var(--badge-battery-bg);
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      box-shadow: 0 2px 8px rgba(54, 116, 181, 0.35);
+    }
+    .app-title {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: var(--text-primary);
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .app-badge {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--accent-blue);
+      background: rgba(87, 143, 202, 0.14);
+      border: 1px solid rgba(87, 143, 202, 0.28);
+      padding: 2px 6px;
+      border-radius: var(--radius-full);
+    }
+    .theme-toggle-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      cursor: pointer;
+      box-shadow: var(--card-shadow);
+    }
+    .theme-toggle-btn:hover {
+      border-color: var(--accent-blue);
+      color: var(--text-primary);
+    }
+
+    /* Topo: Veículo + Tarifa */
+    .top-controls-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .vehicle-selector-btn {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      padding: 8px 12px;
+      text-align: left;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: var(--card-shadow);
+    }
+    .vehicle-selector-btn:hover, .vehicle-selector-btn:active {
+      border-color: var(--accent-blue);
+      background: var(--bg-card-hover);
+    }
+    .vehicle-btn-content {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      overflow: hidden;
+    }
+    .vehicle-btn-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .vehicle-btn-title {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .vehicle-btn-icon-box {
+      width: 24px;
+      height: 24px;
+      background: rgba(87, 143, 202, 0.1);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      font-size: 10px;
+      flex-shrink: 0;
+      margin-left: 8px;
+    }
+
+    /* Tarifa Superior */
+    .tariff-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 6px 12px;
+      box-shadow: var(--card-shadow);
+    }
+    .tariff-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tariff-title {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .tariff-input-box {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .tariff-currency {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .tariff-input {
+      background-color: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      width: 68px;
+      padding: 4px 6px;
+      text-align: right;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      outline: none;
+    }
+    .tariff-input:focus {
+      border-color: var(--border-focus);
+    }
+
+    /* Cards de Resumo (KPIs) */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+    .summary-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 6px 4px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 2px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+    }
+    .summary-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2.5px;
+    }
+    .summary-card.card-energy::before {
+      background: linear-gradient(90deg, #3674B5, #578FCA);
+    }
+    .summary-card.card-time::before {
+      background: linear-gradient(90deg, #f59e0b, #ef4444);
+    }
+    .summary-card.card-cost::before {
+      background: linear-gradient(90deg, #0d9488, #10b981);
+    }
+    .summary-header-label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 9.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: var(--text-secondary);
+    }
+    .summary-value {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.2px;
+    }
+
+    /* Tabela de Estimativas */
+    .table-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+    }
+    .table-header-title {
+      padding: 6px 10px 4px 10px;
+      font-size: 10.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--table-border-subtle);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    th {
+      color: var(--text-muted);
+      font-weight: 600;
+      padding: 5px 8px;
+      text-align: right;
+      font-size: 10.5px;
+      letter-spacing: 0.2px;
+      border-bottom: 1px solid var(--border-color);
+      background: var(--table-header-bg);
+    }
+    th:first-child {
+      text-align: left;
+      padding-left: 10px;
+    }
+    th:last-child {
+      padding-right: 10px;
+    }
+    td {
+      padding: 5px 8px;
+      color: var(--text-primary);
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      border-bottom: 1px solid var(--table-border-subtle);
+    }
+    td:first-child {
+      text-align: left;
+      font-weight: 600;
+      padding-left: 10px;
+    }
+    td:last-child {
+      padding-right: 10px;
+      font-weight: 600;
+      color: var(--accent-mint);
+    }
+    [data-theme="light"] td:last-child {
+      color: #0d9488;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    tr.selected {
+      background: var(--table-selected-bg);
+      position: relative;
+    }
+    tr.selected td {
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+    tr.selected td:first-child {
+      color: var(--accent-blue);
+    }
+    .badge-target {
+      font-size: 9px;
+      background: var(--accent-blue);
+      color: #ffffff;
+      padding: 1px 4px;
+      border-radius: 3px;
+      margin-left: 3px;
+      font-weight: 600;
+    }
+
+    /* Painel de Controles */
+    .controls-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 10px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      box-shadow: var(--card-shadow);
+    }
+
+    .control-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .control-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .control-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .control-title span.emoji {
+      font-size: 13px;
+    }
+    .vehicle-limit-hint {
+      font-size: 10.5px;
+      color: var(--accent-blue);
+      font-weight: 500;
+    }
+    .vehicle-limit-warning {
+      font-size: 10.5px;
+      color: #f59e0b;
+      font-weight: 600;
+    }
+    .pill-input {
+      background-color: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      width: 66px;
+      padding: 3px 6px;
+      text-align: right;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+      outline: none;
+      font-variant-numeric: tabular-nums;
+    }
+    .pill-input:focus {
+      border-color: var(--border-focus);
+    }
+
+    /* Presets Rápidos */
+    .presets-row {
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 1px 0;
+    }
+    .presets-row::-webkit-scrollbar {
+      display: none;
+    }
+    .preset-chip {
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: 5px;
+      color: var(--text-secondary);
+      font-size: 10px;
+      font-weight: 500;
+      padding: 2px 6px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .preset-chip:hover, .preset-chip:active {
+      background: rgba(87, 143, 202, 0.18);
+      border-color: var(--accent-blue);
+      color: var(--text-primary);
+    }
+    .preset-chip.active {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    /* Sliders */
+    .slider-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      height: 18px;
+    }
+    input[type=range] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 5px;
+      background: var(--slider-track);
+      border-radius: 3px;
+      outline: none;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2.5px solid var(--thumb-border);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+    }
+    input[type=range]:active::-webkit-slider-thumb {
+      transform: scale(1.15);
+      box-shadow: 0 0 0 4px rgba(87, 143, 202, 0.25);
+    }
+    input[type=range]::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2.5px solid var(--thumb-border);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+    }
+
+    /* Modal / Bottom Sheet */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 100%;
+      height: 100dvh;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      overflow: hidden;
+    }
+    .modal-overlay.active {
+      display: flex;
+      opacity: 1;
+    }
+    .modal-sheet {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-bottom: none;
+      border-radius: 20px 20px 0 0;
+      width: 100%;
+      max-width: 480px;
+      height: 86%;
+      height: 86dvh;
+      max-height: 88vh;
+      max-height: 88dvh;
+      display: flex;
+      flex-direction: column;
+      transform: translateY(100%);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), height 0.15s ease, max-height 0.15s ease;
+      box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+    }
+    .modal-overlay.active .modal-sheet {
+      transform: translateY(0);
+    }
+
+    /* Otimizações quando o teclado está aberto ou na busca ativa em mobile */
+    .modal-overlay.keyboard-open {
+      align-items: flex-start;
+    }
+    .modal-overlay.keyboard-open .modal-sheet {
+      height: 100% !important;
+      max-height: 100% !important;
+      border-radius: 0;
+      border-top: none;
+    }
+    .modal-overlay.keyboard-open .modal-handle-bar,
+    .modal-overlay.search-active .modal-handle-bar {
+      display: none;
+    }
+    .modal-overlay.keyboard-open .modal-header,
+    .modal-overlay.search-active .modal-header {
+      padding: 6px 14px 6px 14px;
+    }
+    .modal-overlay.keyboard-open .search-box-wrap,
+    .modal-overlay.search-active .search-box-wrap {
+      padding: 6px 14px 6px 14px;
+    }
+    /* No mobile, ao buscar ou com teclado aberto, recolhe as pílulas para priorizar a lista */
+    .modal-overlay.keyboard-open .filter-pills-row,
+    .modal-overlay.keyboard-open .brand-pills-container,
+    .modal-overlay.search-active .filter-pills-row,
+    .modal-overlay.search-active .brand-pills-container {
+      display: none;
+    }
+
+    @media (min-width: 520px) {
+      .modal-overlay {
+        align-items: center;
+        padding: 16px;
+      }
+      .modal-sheet {
+        border-radius: var(--radius-lg);
+        border-bottom: 1px solid var(--border-color);
+        max-height: 80vh;
+        height: auto;
+        transform: scale(0.96);
+      }
+      .modal-overlay.active .modal-sheet {
+        transform: scale(1);
+      }
+      .modal-overlay.keyboard-open {
+        align-items: center;
+      }
+      .modal-overlay.keyboard-open .modal-sheet {
+        border-radius: var(--radius-lg);
+        border-top: 1px solid var(--border-color);
+        max-height: 80vh;
+        height: auto !important;
+      }
+      .modal-overlay.search-active .filter-pills-row,
+      .modal-overlay.search-active .brand-pills-container {
+        display: flex;
+      }
+      .modal-overlay.search-active .modal-handle-bar {
+        display: block;
+      }
+    }
+
+    .modal-handle-bar {
+      width: 36px;
+      height: 4px;
+      background: var(--border-color);
+      border-radius: var(--radius-full);
+      margin: 8px auto 2px auto;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 14px 10px 14px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .modal-title-box h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .modal-title-box p {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .modal-close-btn {
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .search-box-wrap {
+      padding: 10px 14px 6px 14px;
+    }
+    .search-box {
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      padding: 6px 10px;
+      gap: 6px;
+    }
+    .search-box:focus-within {
+      border-color: var(--accent-blue);
+    }
+    .search-icon {
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+    .search-input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text-primary);
+      font-size: 13px;
+      width: 100%;
+    }
+    .search-clear-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 13px;
+      cursor: pointer;
+      display: none;
+    }
+
+    .filter-pills-row {
+      display: flex;
+      gap: 5px;
+      padding: 0 14px 8px 14px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .filter-pills-row::-webkit-scrollbar {
+      display: none;
+    }
+    .filter-type-pill {
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-full);
+      padding: 4px 10px;
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .filter-type-pill.active {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .brand-pills-container {
+      display: flex;
+      gap: 5px;
+      padding: 0 14px 10px 14px;
+      overflow-x: auto;
+      border-bottom: 1px solid var(--border-color);
+      scrollbar-width: none;
+    }
+    .brand-pills-container::-webkit-scrollbar {
+      display: none;
+    }
+    .brand-pill {
+      background-color: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-full);
+      padding: 4px 10px;
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .brand-pill.active {
+      background-color: #578FCA;
+      border-color: #578FCA;
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .models-list {
+      padding: 10px 14px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1 1 auto;
+      min-height: 0;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+    }
+    .model-card-item {
+      background-color: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 9px 12px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--card-shadow);
+    }
+    .model-card-item:hover, .model-card-item:active {
+      background-color: var(--bg-card-hover);
+      border-color: var(--accent-blue);
+    }
+    .model-info-left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .model-brand-name {
+      font-size: 10.5px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .model-card-name {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .type-badge {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+    .type-badge.bev {
+      background: rgba(87, 143, 202, 0.18);
+      color: var(--accent-blue);
+      border: 1px solid rgba(87, 143, 202, 0.3);
+    }
+    .type-badge.phev {
+      background: rgba(139, 92, 246, 0.15);
+      color: #a78bfa;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+    .model-card-specs {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+    .model-badge-battery {
+      background: var(--badge-battery-bg);
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+    .empty-models-msg {
+      text-align: center;
+      color: var(--text-muted);
+      padding: 24px 10px;
+      font-size: 13px;
+    }
+    /* Rodapé / Copyright */
+    .app-footer {
+      margin-top: 6px;
+      padding: 10px 6px 2px 6px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .app-footer strong {
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .footer-link {
+      color: var(--accent-blue);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .footer-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cabeçalho -->
+  <header class="app-header">
+    <div class="app-title-box">
+      <div class="app-logo">⚡</div>
+      <h1 class="app-title">Recarga VE</h1>
+    </div>
+    <div class="header-actions">
+      <span class="app-badge">v2.0.1</span>
+      <button type="button" id="theme-toggle-btn" class="theme-toggle-btn" title="Alternar Tema (Claro / Escuro)">🌙</button>
+    </div>
+  </header>
+
+  <!-- Topo: Seletor de Veículo + Tarifa de Energia -->
+  <div class="top-controls-grid">
+    
+    <!-- Seletor de Veículo -->
+    <button type="button" id="open-vehicle-modal" class="vehicle-selector-btn">
+      <div class="vehicle-btn-content">
+        <span class="vehicle-btn-label">Veículo</span>
+        <span class="vehicle-btn-title" id="selected-vehicle-display">🚗 Toque para escolher o modelo...</span>
+      </div>
+      <div class="vehicle-btn-icon-box">▼</div>
+    </button>
+
+    <!-- Tarifa de Energia no Topo -->
+    <div class="tariff-top-bar">
+      <div class="tariff-title-wrap">
+        <span class="tariff-title">💰 Tarifa de Energia</span>
+      </div>
+      <div class="tariff-input-box">
+        <span class="tariff-currency">R$</span>
+        <input type="text" id="input-tariff" class="tariff-input" value="1,79" placeholder="1,79">
+        <span class="tariff-currency">/kWh</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Cards de Resumo Compactos (KPIs) -->
+  <div class="summary-grid">
+    <div class="summary-card card-energy">
+      <div class="summary-header-label"><span>⚡</span> Energia</div>
+      <span class="summary-value" id="res-energy">--</span>
+    </div>
+    <div class="summary-card card-time">
+      <div class="summary-header-label"><span>⏱️</span> Tempo Estimado</div>
+      <span class="summary-value" id="res-time">--</span>
+    </div>
+    <div class="summary-card card-cost">
+      <div class="summary-header-label"><span>💰</span> Custo</div>
+      <span class="summary-value" id="res-cost">--</span>
+    </div>
+  </div>
+
+  <!-- Tabela de Estimativas (Sem os 60%) -->
+  <div class="table-card">
+    <div class="table-header-title">Estimativas por Meta de Carga</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Meta</th>
+          <th>Energia</th>
+          <th>Tempo Estimado</th>
+          <th>Custo</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </div>
+
+  <!-- Painel de Controles Compacto -->
+  <div class="controls-panel">
+    
+    <!-- Potência do Carregador Adaptativo -->
+    <div class="control-item">
+      <div class="control-header-row">
+        <div class="control-title">
+          <span class="emoji">🔌</span> Carregador (kW)
+          <span id="vehicle-limit-info" class="vehicle-limit-hint"></span>
+        </div>
+        <input type="text" id="input-charger" class="pill-input" value="6.6">
+      </div>
+      <div class="presets-row" id="charger-presets"></div>
+      <div class="slider-container">
+        <input type="range" id="slider-charger" min="1.0" max="150.0" step="0.1" value="6.6">
+      </div>
+    </div>
+
+    <!-- Capacidade da Bateria -->
+    <div class="control-item">
+      <div class="control-header-row">
+        <div class="control-title"><span class="emoji">🔋</span> Bateria (kWh)</div>
+        <input type="text" id="input-battery" class="pill-input" value="60,5">
+      </div>
+      <div class="slider-container">
+        <input type="range" id="slider-battery" min="5.0" max="150.0" step="0.01" value="60.5">
+      </div>
+    </div>
+
+    <!-- Carga Inicial -->
+    <div class="control-item">
+      <div class="control-header-row">
+        <div class="control-title"><span class="emoji">📉</span> Carga Inicial (%)</div>
+        <input type="text" id="input-start" class="pill-input" value="20">
+      </div>
+      <div class="presets-row" id="start-presets">
+        <button type="button" class="preset-chip" data-val="10">10%</button>
+        <button type="button" class="preset-chip active" data-val="20">20%</button>
+        <button type="button" class="preset-chip" data-val="30">30%</button>
+        <button type="button" class="preset-chip" data-val="50">50%</button>
+      </div>
+      <div class="slider-container">
+        <input type="range" id="slider-start" min="0" max="100" step="1" value="20">
+      </div>
+    </div>
+
+    <!-- Carga Alvo -->
+    <div class="control-item">
+      <div class="control-header-row">
+        <div class="control-title"><span class="emoji">🎯</span> Carga Alvo (%)</div>
+        <input type="text" id="input-target" class="pill-input" value="80">
+      </div>
+      <div class="presets-row" id="target-presets">
+        <button type="button" class="preset-chip" data-val="50">50%</button>
+        <button type="button" class="preset-chip" data-val="75">75%</button>
+        <button type="button" class="preset-chip active" data-val="80">80% (Diário)</button>
+        <button type="button" class="preset-chip" data-val="100">100% (Viagem)</button>
+      </div>
+      <div class="slider-container">
+        <input type="range" id="slider-target" min="0" max="100" step="1" value="80">
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Rodapé / Copyright -->
+  <footer class="app-footer">
+    <p>Desenvolvido por <strong>GasparDevs</strong></p>
+    <p>Contato: <a href="mailto:carlesandrogaspar@gmail.com" class="footer-link">carlesandrogaspar@gmail.com</a></p>
+  </footer>
+
+  <!-- Modal / Bottom Sheet de Seleção -->
+  <div class="modal-overlay" id="vehicle-modal">
+    <div class="modal-sheet">
+      <div class="modal-handle-bar"></div>
+      <div class="modal-header">
+        <div class="modal-title-box">
+          <h3>Selecionar Veículo</h3>
+          <p id="modal-vehicle-count">80 modelos disponíveis</p>
+        </div>
+        <button type="button" class="modal-close-btn" id="close-vehicle-modal" aria-label="Fechar">✕</button>
+      </div>
+
+      <!-- Campo de Busca -->
+      <div class="search-box-wrap">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="modal-search-input" class="search-input" placeholder="Buscar marca ou modelo..." autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" enterkeyhint="search">
+          <button type="button" id="modal-search-clear" class="search-clear-btn">✕</button>
+        </div>
+      </div>
+
+      <!-- Filtro por Tipo -->
+      <div class="filter-pills-row">
+        <button type="button" class="filter-type-pill active" data-type="ALL">Todos</button>
+        <button type="button" class="filter-type-pill" data-type="BEV">⚡ 100% Elétrico (BEV)</button>
+        <button type="button" class="filter-type-pill" data-type="PHEV">🔋 Plug-in (PHEV)</button>
+      </div>
+
+      <!-- Carrossel de Marcas -->
+      <div class="brand-pills-container" id="modal-brand-pills"></div>
+
+      <!-- Lista de Modelos -->
+      <div class="models-list" id="modal-models-list"></div>
+    </div>
+  </div>
+
+  <script>
+    let VEHICLE_DATA = [
+    // BMW
+    { id: "bmw_11", type: "BEV", brand: "BMW", model: "11", battery: 116.0, maxAc: 11.0, maxDc: 195.0, range: 603 },
+    { id: "bmw_ix3_50_xdrive", type: "BEV", brand: "BMW", model: "iX3 50 xDrive", battery: 108.7, maxAc: 11.0, maxDc: 150.0, range: 565 },
+
+    // BYD
+    { id: "byd_atto_2_dm_i_flex_gl_phev", type: "PHEV", brand: "BYD", model: "Atto 2 DM-i Flex GL", battery: 7.85, maxAc: 3.3, maxDc: 0.0, range: 55 },
+    { id: "byd_atto_2_dm_i_flex_gs_phev", type: "PHEV", brand: "BYD", model: "Atto 2 DM-i Flex GS", battery: 18.03, maxAc: 6.6, maxDc: 0.0, range: 105 },
+    { id: "byd_atto_8", type: "BEV", brand: "BYD", model: "ATTO 8", battery: 35.6, maxAc: 6.6, maxDc: 50.0, range: 185 },
+    { id: "byd_atto_8_phev", type: "PHEV", brand: "BYD", model: "ATTO 8 (PHEV)", battery: 35.6, maxAc: 6.6, maxDc: 40.0, range: 140 },
+    { id: "byd_dolphin_gs", type: "BEV", brand: "BYD", model: "Dolphin GS", battery: 44.9, maxAc: 6.6, maxDc: 60.0, range: 291 },
+    { id: "byd_dolphin_mini", type: "BEV", brand: "BYD", model: "Dolphin Mini", battery: 38.0, maxAc: 6.6, maxDc: 40.0, range: 280 },
+    { id: "byd_dolphin_plus_ev", type: "BEV", brand: "BYD", model: "Dolphin Plus EV", battery: 60.4, maxAc: 7.0, maxDc: 80.0, range: 330 },
+    { id: "byd_dolphin_se", type: "BEV", brand: "BYD", model: "Dolphin SE", battery: 45.12, maxAc: 6.6, maxDc: 60.0, range: 295 },
+    { id: "byd_han_ev", type: "BEV", brand: "BYD", model: "Han EV", battery: 85.4, maxAc: 6.6, maxDc: 120.0, range: 521 },
+    { id: "byd_king_gl_phev", type: "PHEV", brand: "BYD", model: "King GL (PHEV)", battery: 8.3, maxAc: 3.3, maxDc: 0.0, range: 55 },
+    { id: "byd_king_gs_phev", type: "PHEV", brand: "BYD", model: "King GS (PHEV)", battery: 18.3, maxAc: 6.6, maxDc: 0.0, range: 105 },
+    { id: "byd_seal_ev", type: "BEV", brand: "BYD", model: "Seal EV", battery: 82.5, maxAc: 7.4, maxDc: 150.0, range: 372 },
+    { id: "byd_sealion_7", type: "BEV", brand: "BYD", model: "Sealion 7", battery: 82.56, maxAc: 11.0, maxDc: 150.0, range: 429 },
+    { id: "byd_shark_gs_phev", type: "PHEV", brand: "BYD", model: "Shark GS (PHEV)", battery: 29.6, maxAc: 6.6, maxDc: 40.0, range: 100 },
+    { id: "byd_song_plus_dm_i_phev", type: "PHEV", brand: "BYD", model: "Song Plus DM-i", battery: 18.3, maxAc: 6.6, maxDc: 18.0, range: 105 },
+    { id: "byd_song_plus_premium_dm_i_phev", type: "PHEV", brand: "BYD", model: "Song Plus Premium DM-i", battery: 26.6, maxAc: 6.6, maxDc: 18.0, range: 105 },
+    { id: "byd_song_pro_gl_phev", type: "PHEV", brand: "BYD", model: "Song Pro GL (PHEV)", battery: 13.1, maxAc: 3.3, maxDc: 0.0, range: 71 },
+    { id: "byd_song_pro_gs_phev", type: "PHEV", brand: "BYD", model: "Song Pro GS (PHEV)", battery: 18.3, maxAc: 6.6, maxDc: 0.0, range: 110 },
+    { id: "byd_tan_ev", type: "BEV", brand: "BYD", model: "Tan EV", battery: 108.8, maxAc: 11.0, maxDc: 170.0, range: 437 },
+    { id: "byd_yuan_plus", type: "BEV", brand: "BYD", model: "Yuan Plus", battery: 74.88, maxAc: 7.0, maxDc: 80.0, range: 294 },
+    { id: "byd_yuan_pro_ev", type: "BEV", brand: "BYD", model: "Yuan Pro EV", battery: 45.1, maxAc: 6.6, maxDc: 65.0, range: 250 },
+
+    // Caoa Chery
+    { id: "caoa_chery_icar", type: "BEV", brand: "Caoa Chery", model: "iCar", battery: 30.8, maxAc: 6.6, maxDc: 0.0, range: 160 },
+    { id: "caoa_chery_tiggo_5x_pro_phev", type: "PHEV", brand: "Caoa Chery", model: "Tiggo 5X Pro (PHEV)", battery: 19.3, maxAc: 6.6, maxDc: 0.0, range: 100 },
+    { id: "caoa_chery_tiggo_7_pro_phev", type: "PHEV", brand: "Caoa Chery", model: "Tiggo 7 Pro PHEV", battery: 18.4, maxAc: 6.6, maxDc: 50.0, range: 100 },
+    { id: "caoa_chery_tiggo_8_pro_phev", type: "PHEV", brand: "Caoa Chery", model: "Tiggo 8 Pro PHEV", battery: 18.4, maxAc: 6.6, maxDc: 50.0, range: 100 },
+
+    // Chevrolet
+    { id: "chevrolet_blazer_ev_rs", type: "BEV", brand: "Chevrolet", model: "Blazer EV RS", battery: 102.0, maxAc: 22.0, maxDc: 190.0, range: 530 },
+    { id: "chevrolet_bolt_euv", type: "BEV", brand: "Chevrolet", model: "Bolt EUV", battery: 66.0, maxAc: 11.0, maxDc: 55.0, range: 343 },
+    { id: "chevrolet_captiva_ev_premier_60_kwh", type: "BEV", brand: "Chevrolet", model: "Captiva EV Premier 60 kWh", battery: 60.0, maxAc: 6.6, maxDc: 80.0, range: 312 },
+
+    // Fiat
+    { id: "fiat_500e", type: "BEV", brand: "Fiat", model: "500e", battery: 42.0, maxAc: 11.0, maxDc: 85.0, range: 218 },
+
+    // GAC
+    { id: "gac_aion_es_plus", type: "BEV", brand: "GAC", model: "Aion ES Plus", battery: 55.2, maxAc: 6.6, maxDc: 60.0, range: 442 },
+    { id: "gac_aion_ut_elite", type: "BEV", brand: "GAC", model: "Aion UT Elite", battery: 60.0, maxAc: 6.6, maxDc: 80.0, range: 400 },
+    { id: "gac_aion_ut_premium", type: "BEV", brand: "GAC", model: "Aion UT Premium", battery: 44.12, maxAc: 6.6, maxDc: 50.0, range: 300 },
+    { id: "gac_aion_v_elite", type: "BEV", brand: "GAC", model: "Aion V Elite", battery: 75.3, maxAc: 11.0, maxDc: 120.0, range: 520 },
+
+    // Geely
+    { id: "geely_ex2", type: "BEV", brand: "Geely", model: "EX2", battery: 30.0, maxAc: 6.6, maxDc: 30.0, range: 156 },
+    { id: "geely_ex5_em_i_max_184_kwh_phev", type: "PHEV", brand: "Geely", model: "EX5 EM-i MAX 18.4 kWh (PHEV)", battery: 18.4, maxAc: 6.6, maxDc: 30.0, range: 430 },
+    { id: "geely_ex5_em_i_pro_184_kwh_phev", type: "PHEV", brand: "Geely", model: "EX5 EM-i PRO 18.4 kWh (PHEV)", battery: 18.4, maxAc: 6.6, maxDc: 30.0, range: 430 },
+    { id: "geely_ex5_em_i_ultra_298_kwh_phev", type: "PHEV", brand: "Geely", model: "EX5 EM-i ULTRA 29.8 kWh (PHEV)", battery: 29.8, maxAc: 6.6, maxDc: 30.0, range: 430 },
+    { id: "geely_ex5_max_6022_kwh", type: "BEV", brand: "Geely", model: "EX5 MAX 60.22 kWh", battery: 60.22, maxAc: 11.0, maxDc: 100.0, range: 430 },
+    { id: "geely_ex5_pro_6022_kwh", type: "BEV", brand: "Geely", model: "EX5 PRO 60.22 kWh", battery: 60.22, maxAc: 11.0, maxDc: 100.0, range: 430 },
+
+    // GWM
+    { id: "gwm_h6_gt_phev", type: "PHEV", brand: "GWM", model: "H6 GT PHEV", battery: 34.0, maxAc: 6.6, maxDc: 33.0, range: 113 },
+    { id: "gwm_h6_phev19_phev", type: "PHEV", brand: "GWM", model: "H6 PHEV19", battery: 19.0, maxAc: 6.6, maxDc: 33.0, range: 74 },
+    { id: "gwm_h6_phev35_phev", type: "PHEV", brand: "GWM", model: "H6 PHEV35", battery: 34.0, maxAc: 6.6, maxDc: 33.0, range: 140 },
+    { id: "gwm_ora_03_bev58", type: "BEV", brand: "GWM", model: "Ora 03 BEV58", battery: 58.0, maxAc: 11.0, maxDc: 67.0, range: 302 },
+    { id: "gwm_ora_5", type: "BEV", brand: "GWM", model: "Ora 5", battery: 58.3, maxAc: 11.0, maxDc: 80.0, range: 303 },
+    { id: "gwm_tank_300_phev", type: "PHEV", brand: "GWM", model: "Tank 300 (PHEV)", battery: 37.1, maxAc: 6.6, maxDc: 50.0, range: 140 },
+    { id: "gwm_wey_07_phev", type: "PHEV", brand: "GWM", model: "Wey 07 (PHEV)", battery: 42.5, maxAc: 6.6, maxDc: 50.0, range: 140 },
+
+    // Hyundai
+    { id: "hyundai_ioniq_5", type: "BEV", brand: "Hyundai", model: "IONIQ 5", battery: 84.0, maxAc: 11.0, maxDc: 230.0, range: 437 },
+
+    // JAC
+    { id: "jac_e_js1", type: "BEV", brand: "JAC", model: "E-JS1", battery: 30.2, maxAc: 6.6, maxDc: 30.0, range: 157 },
+    { id: "jac_e_js4", type: "BEV", brand: "JAC", model: "E-JS4", battery: 55.1, maxAc: 6.6, maxDc: 50.0, range: 287 },
+
+    // Jaecoo
+    { id: "jaecoo_7_elite_2026", type: "PHEV", brand: "Jaecoo", model: "7 Elite 2026", battery: 18.3, maxAc: 6.6, maxDc: 40.0, range: 79 },
+    { id: "jaecoo_7_shs_luxury_2026", type: "PHEV", brand: "Jaecoo", model: "7 SHS Luxury 2026", battery: 18.3, maxAc: 6.6, maxDc: 40.0, range: 79 },
+    { id: "jaecoo_7_shs_prestige_2026", type: "PHEV", brand: "Jaecoo", model: "7 SHS Prestige 2026", battery: 18.3, maxAc: 6.6, maxDc: 40.0, range: 79 },
+
+    // Jeep
+    { id: "jeep_compass_4xe_phev", type: "PHEV", brand: "Jeep", model: "Compass 4xe", battery: 11.4, maxAc: 7.4, maxDc: 0.0, range: 75 },
+
+    // Jetour
+    { id: "jetour_t1_phev", type: "PHEV", brand: "Jetour", model: "T1 PHEV", battery: 26.7, maxAc: 6.6, maxDc: 30.0, range: 115 },
+    { id: "jetour_t2_phev", type: "PHEV", brand: "Jetour", model: "T2 PHEV", battery: 26.7, maxAc: 6.6, maxDc: 30.0, range: 115 },
+
+    // Kia
+    { id: "kia_ev5_land", type: "BEV", brand: "Kia", model: "EV5 Land", battery: 88.16, maxAc: 11.0, maxDc: 102.0, range: 458 },
+    { id: "kia_ev9_gtl", type: "BEV", brand: "Kia", model: "EV9 GTL", battery: 99.0, maxAc: 11.0, maxDc: 210.0, range: 515 },
+
+    // Leapmotor
+    { id: "leapmotor_b10_bev", type: "BEV", brand: "Leapmotor", model: "B10 BEV", battery: 56.2, maxAc: 11.0, maxDc: 70.0, range: 292 },
+    { id: "leapmotor_c10_eletrico_bev_699_kwh", type: "BEV", brand: "Leapmotor", model: "C10 Elétrico - BEV 69.9 kWh", battery: 69.9, maxAc: 11.0, maxDc: 84.0, range: 420 },
+    { id: "leapmotor_c10_ultra_hibrido_reev_15_plug_in_phev", type: "PHEV", brand: "Leapmotor", model: "C10 Ultra Híbrido - REEV 1.5 Plug-in", battery: 28.4, maxAc: 6.6, maxDc: 30.0, range: 420 },
+
+    // Lexus
+    { id: "lexus_rz_500e", type: "BEV", brand: "Lexus", model: "RZ 500e", battery: 77.0, maxAc: 11.0, maxDc: 150.0, range: 400 },
+
+    // MG
+    { id: "mg_mg4_luxury", type: "BEV", brand: "MG", model: "MG4 Luxury", battery: 64.0, maxAc: 11.0, maxDc: 135.0, range: 333 },
+    { id: "mg_mg4_urban_comfort", type: "BEV", brand: "MG", model: "MG4 Urban Comfort", battery: 43.0, maxAc: 6.6, maxDc: 88.0, range: 224 },
+    { id: "mg_mg4_urban_luxury_43_kwh", type: "BEV", brand: "MG", model: "MG4 Urban Luxury 43 kWh", battery: 43.0, maxAc: 6.6, maxDc: 88.0, range: 224 },
+    { id: "mg_mg4_urban_luxury_54_kwh", type: "BEV", brand: "MG", model: "MG4 Urban Luxury 54 kWh", battery: 54.0, maxAc: 6.6, maxDc: 88.0, range: 281 },
+
+    // Mitsubishi
+    { id: "mitsubishi_outlander_phev", type: "PHEV", brand: "Mitsubishi", model: "Outlander PHEV", battery: 20.0, maxAc: 3.7, maxDc: 22.0, range: 115 },
+
+    // Omoda
+    { id: "omoda_7_phev", type: "PHEV", brand: "Omoda", model: "Omoda 7 PHEV", battery: 18.4, maxAc: 6.6, maxDc: 50.0, range: 100 },
+    { id: "omoda_e5_bev", type: "BEV", brand: "Omoda", model: "Omoda E5", battery: 61.1, maxAc: 11.0, maxDc: 80.0, range: 318 },
+
+    // Peugeot
+    { id: "peugeot_e_2008", type: "BEV", brand: "Peugeot", model: "e-2008", battery: 54.0, maxAc: 11.0, maxDc: 100.0, range: 281 },
+
+    // Renault
+    { id: "renault_kwid_e_tech", type: "BEV", brand: "Renault", model: "Kwid E-Tech", battery: 26.8, maxAc: 6.6, maxDc: 30.0, range: 139 },
+    { id: "renault_megane_e_tech", type: "BEV", brand: "Renault", model: "Megane E-Tech", battery: 60.0, maxAc: 22.0, maxDc: 130.0, range: 312 },
+
+    // Suzuki
+    { id: "suzuki_e_vitara", type: "BEV", brand: "Suzuki", model: "e-Vitara", battery: 61.0, maxAc: 11.0, maxDc: 150.0, range: 317 },
+
+    // Toyota
+    { id: "toyota_bz4x_awd", type: "BEV", brand: "Toyota", model: "bZ4X AWD", battery: 73.1, maxAc: 11.0, maxDc: 150.0, range: 380 },
+
+    // Volvo
+    { id: "volvo_ex30_cross_country", type: "BEV", brand: "Volvo", model: "EX30 Cross Country", battery: 69.0, maxAc: 7.4, maxDc: 153.0, range: 338 },
+    { id: "volvo_ex30_plus", type: "BEV", brand: "Volvo", model: "EX30 Plus", battery: 51.0, maxAc: 7.4, maxDc: 150.0, range: 338 },
+    { id: "volvo_ex30_ultra_twin_motor", type: "BEV", brand: "Volvo", model: "EX30 Ultra Twin Motor", battery: 69.0, maxAc: 11.0, maxDc: 153.0, range: 338 },
+    { id: "volvo_xc60_recharge_phev", type: "PHEV", brand: "Volvo", model: "XC60 Recharge (PHEV)", battery: 18.8, maxAc: 6.4, maxDc: 0.0, range: 100 },
+
+    // Zeekr
+    { id: "zeekr_7x", type: "BEV", brand: "Zeekr", model: "7X", battery: 75.0, maxAc: 22.0, maxDc: 250.0, range: 390 },
+    { id: "zeekr_x", type: "BEV", brand: "Zeekr", model: "X", battery: 66.0, maxAc: 22.0, maxDc: 150.0, range: 343 },
+    { id: "zeekr_x_flagship", type: "BEV", brand: "Zeekr", model: "X Flagship", battery: 66.0, maxAc: 22.0, maxDc: 150.0, range: 343 },
+  ];
+
+        let currentVehicle = null;
+
+    // Elementos DOM
+    const htmlElement = document.documentElement;
+    const themeToggleBtn = document.getElementById('theme-toggle-btn');
+    const modal = document.getElementById('vehicle-modal');
+    const openModalBtn = document.getElementById('open-vehicle-modal');
+    const closeModalBtn = document.getElementById('close-vehicle-modal');
+    const brandPillsContainer = document.getElementById('modal-brand-pills');
+    const modelsListContainer = document.getElementById('modal-models-list');
+    const selectedVehicleDisplay = document.getElementById('selected-vehicle-display');
+    const modalSearchInput = document.getElementById('modal-search-input');
+    const modalSearchClear = document.getElementById('modal-search-clear');
+    const modalVehicleCount = document.getElementById('modal-vehicle-count');
+    const vehicleLimitInfo = document.getElementById('vehicle-limit-info');
+    const chargerPresetsContainer = document.getElementById('charger-presets');
+
+    const sliderCharger = document.getElementById('slider-charger');
+    const sliderBattery = document.getElementById('slider-battery');
+    const sliderStart = document.getElementById('slider-start');
+    const sliderTarget = document.getElementById('slider-target');
+
+    const inputCharger = document.getElementById('input-charger');
+    const inputBattery = document.getElementById('input-battery');
+    const inputStart = document.getElementById('input-start');
+    const inputTarget = document.getElementById('input-target');
+    const inputTariff = document.getElementById('input-tariff');
+
+    const resEnergy = document.getElementById('res-energy');
+    const resTime = document.getElementById('res-time');
+    const resCost = document.getElementById('res-cost');
+    const tableBody = document.getElementById('table-body');
+
+    // Gerenciamento de Tema (Light / Dark)
+    function initTheme() {
+      const savedTheme = localStorage.getItem('ev_calc_theme');
+      if (savedTheme) {
+        setTheme(savedTheme);
+      } else {
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        setTheme(prefersDark ? 'dark' : 'light');
+      }
+    }
+
+    function setTheme(theme) {
+      htmlElement.setAttribute('data-theme', theme);
+      const metaThemeColor = document.getElementById('meta-theme-color');
+      if (metaThemeColor) {
+        metaThemeColor.setAttribute('content', theme === 'dark' ? '#181C14' : '#F2F7FA');
+      }
+      if (themeToggleBtn) {
+        themeToggleBtn.textContent = (theme === 'dark') ? '🌙' : '☀️';
+        themeToggleBtn.title = (theme === 'dark') ? 'Modo Escuro Ativo (Clique para Claro)' : 'Modo Claro Ativo (Clique para Escuro)';
+      }
+      try { localStorage.setItem('ev_calc_theme', theme); } catch (e) {}
+    }
+
+    if (themeToggleBtn) {
+      themeToggleBtn.addEventListener('click', () => {
+        const current = htmlElement.getAttribute('data-theme') || 'dark';
+        setTheme(current === 'dark' ? 'light' : 'dark');
+      });
+    }
+
+    // Estado do Modal
+    let selectedBrandFilter = 'ALL';
+    let selectedTypeFilter = 'ALL';
+    let currentSearchTerm = '';
+
+    function getFilteredVehicles() {
+      const list = VEHICLE_DATA.filter(v => {
+        const matchesType = (selectedTypeFilter === 'ALL') || (v.type === selectedTypeFilter);
+        const matchesBrand = (selectedBrandFilter === 'ALL') || (v.brand === selectedBrandFilter);
+        
+        let matchesSearch = true;
+        if (currentSearchTerm) {
+          const term = currentSearchTerm.toLowerCase();
+          matchesSearch = v.brand.toLowerCase().includes(term) || v.model.toLowerCase().includes(term);
+        }
+        return matchesType && matchesBrand && matchesSearch;
+      });
+
+      return list.sort((a, b) => {
+        const brandCmp = a.brand.localeCompare(b.brand, 'pt-BR', { sensitivity: 'base' });
+        if (brandCmp !== 0) return brandCmp;
+        return a.model.localeCompare(b.model, 'pt-BR', { sensitivity: 'base', numeric: true });
+      });
+    }
+
+    function initVehicleModal() {
+      modalVehicleCount.textContent = VEHICLE_DATA.length + ' modelos disponíveis';
+      renderBrandPills();
+      renderModelsList();
+      updateChargerPresets(currentVehicle);
+    }
+
+    function renderBrandPills() {
+      const availableVehicles = VEHICLE_DATA.filter(v => (selectedTypeFilter === 'ALL' || v.type === selectedTypeFilter));
+      const brands = ['ALL', ...new Set(availableVehicles.map(v => v.brand))].sort((a, b) => {
+        if (a === 'ALL') return -1;
+        if (b === 'ALL') return 1;
+        return a.localeCompare(b);
+      });
+
+      brandPillsContainer.innerHTML = '';
+
+      brands.forEach(brand => {
+        const pill = document.createElement('button');
+        pill.type = 'button';
+        pill.className = 'brand-pill' + (brand === selectedBrandFilter ? ' active' : '');
+        pill.textContent = (brand === 'ALL') ? 'Todas as Marcas' : brand;
+        
+        pill.addEventListener('click', function() {
+          selectedBrandFilter = brand;
+          document.querySelectorAll('.brand-pill').forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          renderModelsList();
+        });
+        brandPillsContainer.appendChild(pill);
+      });
+    }
+
+    function renderModelsList() {
+      modelsListContainer.innerHTML = '';
+      const filtered = getFilteredVehicles();
+
+      if (filtered.length === 0) {
+        modelsListContainer.innerHTML = '<div class="empty-models-msg">Nenhum veículo encontrado com os filtros atuais.</div>';
+        return;
+      }
+
+      filtered.forEach(v => {
+        const item = document.createElement('div');
+        item.className = 'model-card-item';
+        
+        const typeClass = (v.type === 'BEV') ? 'bev' : 'phev';
+        const typeLabel = (v.type === 'BEV') ? '100% ELÉTRICO' : 'HÍBRIDO PLUG-IN';
+
+        item.innerHTML = 
+          '<div class="model-info-left">' +
+            '<span class="model-brand-name">' + v.brand + '</span>' +
+            '<div class="model-card-name">' + 
+              v.model + 
+              '<span class="type-badge ' + typeClass + '">' + typeLabel + '</span>' +
+            '</div>' +
+            '<div class="model-card-specs">⚡ AC: ' + v.maxAc + ' kW' + (v.maxDc > 0 ? ' | 🚀 DC: ' + v.maxDc + ' kW' : '') + '</div>' +
+          '</div>' +
+          '<div class="model-card-right">' +
+            '<div class="model-badge-battery">' + v.battery + ' kWh</div>' +
+          '</div>';
+        
+        item.addEventListener('click', function() {
+          selectVehicle(v);
+        });
+        modelsListContainer.appendChild(item);
+      });
+    }
+
+    function updateChargerPresets(v) {
+      chargerPresetsContainer.innerHTML = '';
+      let presets = [];
+
+      if (v) {
+        const maxAc = v.maxAc || 6.6;
+        const maxDc = v.maxDc || 0;
+
+        presets.push({ label: '2.2 kW (Tomada)', val: 2.2 });
+        if (maxAc >= 6.6 && maxAc !== 3.3) {
+          presets.push({ label: '3.7 kW', val: 3.7 });
+        }
+        presets.push({ label: maxAc + ' kW (Máx AC)', val: maxAc });
+
+        if (maxDc > 0) {
+          if (maxDc <= 22) {
+            presets.push({ label: maxDc + ' kW (DC)', val: maxDc });
+          } else if (maxDc <= 40) {
+            presets.push({ label: '22 kW (DC)', val: 22 });
+            presets.push({ label: maxDc + ' kW (Máx DC)', val: maxDc });
+          } else if (maxDc <= 60) {
+            presets.push({ label: '30 kW (DC)', val: 30 });
+            presets.push({ label: maxDc + ' kW (Máx DC)', val: maxDc });
+          } else {
+            presets.push({ label: '50 kW (DC)', val: 50 });
+            if (maxDc > 50) {
+              presets.push({ label: Math.min(maxDc, 150) + ' kW (DC)', val: Math.min(maxDc, 150) });
+            }
+          }
+        }
+      } else {
+        presets = [
+          { label: '2.2 kW (Tomada)', val: 2.2 },
+          { label: '7.4 kW (Wallbox)', val: 7.4 },
+          { label: '11 kW', val: 11 },
+          { label: '22 kW', val: 22 },
+          { label: '50 kW (DC)', val: 50 }
+        ];
+      }
+
+      const currentChargerVal = parsePtNumber(inputCharger.value);
+
+      presets.forEach(p => {
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        const isActive = (Math.abs(currentChargerVal - p.val) < 0.15);
+        chip.className = 'preset-chip' + (isActive ? ' active' : '');
+        chip.setAttribute('data-val', p.val);
+        chip.textContent = p.label;
+        
+        chip.addEventListener('click', function() {
+          document.querySelectorAll('#charger-presets .preset-chip').forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          const val = parseFloat(p.val);
+          sliderCharger.value = val;
+          inputCharger.value = formatPt(val, 1);
+          recalculate();
+        });
+        chargerPresetsContainer.appendChild(chip);
+      });
+    }
+
+    function selectVehicle(v) {
+      currentVehicle = v;
+      selectedVehicleDisplay.textContent = '🚗 ' + v.brand + ' ' + v.model + ' (' + formatPt(v.battery, 2) + ' kWh)';
+      
+      sliderBattery.value = v.battery;
+      inputBattery.value = formatPt(v.battery, 2);
+
+      const defaultChargerPower = v.maxAc;
+      sliderCharger.value = defaultChargerPower;
+      inputCharger.value = formatPt(defaultChargerPower, 1);
+
+      updateChargerPresets(v);
+
+      closeVehicleModal();
+      recalculate();
+    }
+
+    // Gerenciamento e Eventos do Modal
+    function openVehicleModal() {
+      modal.classList.add('active');
+      updateViewportMetrics();
+      if (window.innerWidth > 600) {
+        modalSearchInput.focus();
+      }
+    }
+
+    function closeVehicleModal() {
+      modal.classList.remove('active', 'keyboard-open', 'search-active');
+      modalSearchInput.blur();
+      modal.style.top = '';
+      modal.style.height = '';
+    }
+
+    function updateSearchState() {
+      const hasText = currentSearchTerm.length > 0;
+      const isFocused = document.activeElement === modalSearchInput;
+      if (hasText || isFocused) {
+        modal.classList.add('search-active');
+      } else {
+        modal.classList.remove('search-active');
+      }
+    }
+
+    function updateViewportMetrics() {
+      if (!window.visualViewport) return;
+      const vh = window.visualViewport.height;
+      const offsetTop = window.visualViewport.offsetTop || 0;
+      document.documentElement.style.setProperty('--vvh', `${vh}px`);
+      
+      const isKeyboard = vh < (window.innerHeight - 100);
+      modal.classList.toggle('keyboard-open', isKeyboard);
+      
+      if (isKeyboard && modal.classList.contains('active')) {
+        modal.style.top = `${offsetTop}px`;
+        modal.style.height = `${vh}px`;
+      } else {
+        modal.style.top = '';
+        modal.style.height = '';
+      }
+    }
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', updateViewportMetrics);
+      window.visualViewport.addEventListener('scroll', updateViewportMetrics);
+    }
+
+    openModalBtn.addEventListener('click', openVehicleModal);
+    closeModalBtn.addEventListener('click', closeVehicleModal);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeVehicleModal();
+    });
+
+    modalSearchInput.addEventListener('focus', function() {
+      updateSearchState();
+      setTimeout(updateViewportMetrics, 100);
+    });
+
+    modalSearchInput.addEventListener('blur', function() {
+      updateSearchState();
+      setTimeout(updateViewportMetrics, 100);
+    });
+
+    modalSearchInput.addEventListener('input', function() {
+      currentSearchTerm = this.value.trim();
+      modalSearchClear.style.display = currentSearchTerm ? 'block' : 'none';
+      updateSearchState();
+      renderModelsList();
+    });
+
+    modalSearchClear.addEventListener('click', function() {
+      modalSearchInput.value = '';
+      currentSearchTerm = '';
+      this.style.display = 'none';
+      updateSearchState();
+      renderModelsList();
+      modalSearchInput.focus();
+    });
+
+    modalSearchInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        this.blur();
+      }
+    });
+
+    modelsListContainer.addEventListener('touchmove', function() {
+      if (document.activeElement === modalSearchInput) {
+        modalSearchInput.blur();
+      }
+    }, { passive: true });
+
+    document.querySelectorAll('.filter-type-pill').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.filter-type-pill').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        selectedTypeFilter = this.dataset.type;
+        selectedBrandFilter = 'ALL';
+        renderBrandPills();
+        renderModelsList();
+      });
+    });
+
+    document.querySelectorAll('#start-presets .preset-chip').forEach(chip => {
+      chip.addEventListener('click', function() {
+        document.querySelectorAll('#start-presets .preset-chip').forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+        const val = parseInt(this.dataset.val, 10);
+        sliderStart.value = val;
+        inputStart.value = val;
+        onSliderChange();
+      });
+    });
+
+    document.querySelectorAll('#target-presets .preset-chip').forEach(chip => {
+      chip.addEventListener('click', function() {
+        document.querySelectorAll('#target-presets .preset-chip').forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+        const val = parseInt(this.dataset.val, 10);
+        sliderTarget.value = val;
+        inputTarget.value = val;
+        onSliderChange();
+      });
+    });
+
+    function parsePtNumber(valStr) {
+      if (typeof valStr === 'number') return valStr;
+      const sanitized = valStr.toString().replace(',', '.').replace(/[^0-9.]/g, '');
+      const parsed = parseFloat(sanitized);
+      return isNaN(parsed) ? 0 : parsed;
+    }
+
+    function formatPt(num, maxDecimals = 2) {
+      return num.toLocaleString('pt-BR', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: maxDecimals
+      });
+    }
+
+    function formatDuration(hoursDecimal) {
+      if (hoursDecimal <= 0) return '0m';
+      const totalMinutes = Math.round(hoursDecimal * 60);
+      const h = Math.floor(totalMinutes / 60);
+      const m = totalMinutes % 60;
+      if (h === 0) return m + 'm';
+      return h + 'h ' + m.toString().padStart(2, '0') + 'm';
+    }
+
+    function calcularTempoCurva(chargerPower, batteryCapacity, startSoc, targetSoc, vehicle) {
+      if (startSoc >= targetSoc || chargerPower <= 0 || batteryCapacity <= 0) return 0;
+      let tempoTotalHoras = 0;
+
+      let effectiveBasePower = chargerPower;
+      let isEffectiveDC = false;
+
+      if (vehicle) {
+        if (vehicle.maxDc === 0) {
+          // Veículo puramente AC: travado no carregador de bordo AC (ex: 3.3 kW no King GL ou 6.6 kW no Atto 2)
+          effectiveBasePower = Math.min(chargerPower, vehicle.maxAc);
+          isEffectiveDC = false;
+        } else {
+          // Veículo com suporte DC: aceita potências até seu teto DC (ex: até 40 kW no Jaecoo 7)
+          effectiveBasePower = Math.min(chargerPower, vehicle.maxDc);
+          isEffectiveDC = (chargerPower > vehicle.maxAc);
+        }
+      }
+
+      for (let soc = startSoc; soc < targetSoc; soc++) {
+        const kwhPorPorcento = batteryCapacity / 100;
+        let potenciaEfetiva = effectiveBasePower;
+
+        if (isEffectiveDC) {
+          if (soc < 60) {
+            potenciaEfetiva = effectiveBasePower * 0.90;
+          } else if (soc < 80) {
+            potenciaEfetiva = effectiveBasePower * 0.76;
+          } else {
+            potenciaEfetiva = Math.min(effectiveBasePower * 0.35, 20.0);
+          }
+        } else {
+          if (soc < 90) {
+            potenciaEfetiva = effectiveBasePower * 0.90;
+          } else {
+            potenciaEfetiva = effectiveBasePower * 0.70;
+          }
+        }
+        tempoTotalHoras += kwhPorPorcento / potenciaEfetiva;
+      }
+      return tempoTotalHoras;
+    }
+
+    function recalculate() {
+      const charger = parsePtNumber(inputCharger.value);
+      const battery = parsePtNumber(inputBattery.value);
+      const startSoc = parsePtNumber(inputStart.value);
+      const targetSoc = parsePtNumber(inputTarget.value);
+      const tariff = parsePtNumber(inputTariff.value);
+
+      if (currentVehicle) {
+        if (currentVehicle.maxDc === 0) {
+          // Veículo sem DC: limitado se carregador for maior que o AC aceito
+          if (charger > currentVehicle.maxAc) {
+            vehicleLimitInfo.innerHTML = '<span class="vehicle-limit-warning">(Limitado pelo carro a ' + formatPt(currentVehicle.maxAc, 1) + ' kW AC)</span>';
+          } else {
+            vehicleLimitInfo.textContent = '(Máx: ' + formatPt(currentVehicle.maxAc, 1) + ' kW AC)';
+          }
+        } else {
+          // Veículo com suporte DC: aceita qualquer potência até o teto DC (ex: 22 kW no Jaecoo de 40 kW DC)
+          if (charger > currentVehicle.maxDc) {
+            vehicleLimitInfo.innerHTML = '<span class="vehicle-limit-warning">(Limitado pelo carro a ' + formatPt(currentVehicle.maxDc, 1) + ' kW DC)</span>';
+          } else {
+            vehicleLimitInfo.textContent = '(Máx: ' + formatPt(currentVehicle.maxAc, 1) + ' kW AC / ' + formatPt(currentVehicle.maxDc, 1) + ' kW DC)';
+          }
+        }
+      } else {
+        vehicleLimitInfo.textContent = '';
+      }
+
+      const deltaPercent = Math.max(0, targetSoc - startSoc);
+      const energyNeeded = (deltaPercent / 100) * battery;
+      const hours = calcularTempoCurva(charger, battery, startSoc, targetSoc, currentVehicle);
+      const cost = energyNeeded * tariff;
+
+      resEnergy.textContent = energyNeeded.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' kWh';
+      resTime.textContent = formatDuration(hours);
+      resCost.textContent = 'R$ ' + cost.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      const steps = [25, 50, 75, 80, 100];
+      let rowsHtml = '';
+
+      steps.forEach(step => {
+        let stepEnergy = 0;
+        let stepHours = 0;
+        let stepCost = 0;
+
+        if (step > startSoc) {
+          const stepDelta = (step - startSoc) / 100;
+          stepEnergy = stepDelta * battery;
+          stepHours = calcularTempoCurva(charger, battery, startSoc, step, currentVehicle);
+          stepCost = stepEnergy * tariff;
+        }
+
+        const isHighlighted = (step === Math.round(targetSoc));
+
+        rowsHtml += 
+          '<tr class="' + (isHighlighted ? 'selected' : '') + '">' +
+            '<td>' + step + '%' + (isHighlighted ? ' <span class="badge-target">Alvo</span>' : '') + '</td>' +
+            '<td>' + stepEnergy.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' kWh</td>' +
+            '<td>' + formatDuration(stepHours) + '</td>' +
+            '<td>R$ ' + stepCost.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>' +
+          '</tr>';
+      });
+
+      tableBody.innerHTML = rowsHtml;
+    }
+
+    function onSliderChange() {
+      let charger = parseFloat(sliderCharger.value);
+      let battery = parseFloat(sliderBattery.value);
+      let startSoc = parseInt(sliderStart.value, 10);
+      let targetSoc = parseInt(sliderTarget.value, 10);
+
+      if (startSoc > targetSoc) {
+        startSoc = targetSoc;
+        sliderStart.value = startSoc;
+      }
+
+      inputCharger.value = formatPt(charger, 1);
+      inputBattery.value = formatPt(battery, 2);
+      inputStart.value = startSoc;
+      inputTarget.value = targetSoc;
+
+      recalculate();
+    }
+
+    function onInputChange() {
+      let charger = parsePtNumber(inputCharger.value);
+      let battery = parsePtNumber(inputBattery.value);
+      let startSoc = parsePtNumber(inputStart.value);
+      let targetSoc = parsePtNumber(inputTarget.value);
+
+      if (startSoc > targetSoc) {
+        startSoc = targetSoc;
+        inputStart.value = startSoc;
+      }
+
+      sliderCharger.value = Math.min(Math.max(charger, 1.0), 150.0);
+      sliderBattery.value = Math.min(Math.max(battery, 5.0), 150.0);
+      sliderStart.value = Math.min(Math.max(startSoc, 0), 100);
+      sliderTarget.value = Math.min(Math.max(targetSoc, 0), 100);
+
+      recalculate();
+    }
+
+    [sliderCharger, sliderBattery, sliderStart, sliderTarget].forEach(s => s.addEventListener('input', onSliderChange));
+    [inputCharger, inputBattery, inputStart, inputTarget, inputTariff].forEach(i => i.addEventListener('input', onInputChange));
+
+    initTheme();
+    initVehicleModal();
+    onSliderChange();
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run.withSuccessHandler(function(serverData) {
+        if (serverData && serverData.length > 0) {
+          VEHICLE_DATA = serverData;
+          initVehicleModal();
+        }
+      }).obterListaVeiculos();
+    }
+  </script>
+</body>
+</html>
