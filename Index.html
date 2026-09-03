@@ -138,6 +138,26 @@
       align-items: center;
       gap: 6px;
     }
+    .reset-all-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+      box-shadow: var(--card-shadow);
+      transition: all 0.15s ease;
+    }
+    .reset-all-btn:hover, .reset-all-btn:active {
+      border-color: #e06c75;
+      color: #e06c75;
+      background: rgba(224, 108, 117, 0.1);
+    }
     .app-badge {
       font-size: 10px;
       font-weight: 600;
@@ -221,9 +241,33 @@
       align-items: center;
       justify-content: center;
       color: var(--text-secondary);
-      font-size: 10px;
+      margin-left: 4px;
+    }
+    .vehicle-btn-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       flex-shrink: 0;
       margin-left: 8px;
+    }
+    .clear-vehicle-btn {
+      background: rgba(224, 108, 117, 0.15);
+      border: 1px solid rgba(224, 108, 117, 0.35);
+      color: #e06c75;
+      border-radius: var(--radius-full);
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      gap: 2px;
+      transition: all 0.15s ease;
+    }
+    .clear-vehicle-btn:hover, .clear-vehicle-btn:active {
+      background: rgba(224, 108, 117, 0.3);
+      border-color: #e06c75;
+      color: #ffffff;
     }
 
     /* Tarifa Superior */
@@ -667,6 +711,29 @@
       font-size: 11px;
       color: var(--text-muted);
     }
+    .modal-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .modal-reset-filters-btn {
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      gap: 3px;
+      transition: all 0.15s ease;
+    }
+    .modal-reset-filters-btn:hover, .modal-reset-filters-btn:active {
+      border-color: var(--accent-blue);
+      color: var(--text-primary);
+    }
     .modal-close-btn {
       background: var(--bg-input);
       border: 1px solid var(--border-color);
@@ -801,6 +868,35 @@
       background-color: var(--bg-card-hover);
       border-color: var(--accent-blue);
     }
+    .model-card-item.model-card-custom {
+      border: 1px dashed rgba(87, 143, 202, 0.4);
+      background-color: rgba(87, 143, 202, 0.05);
+      margin-bottom: 2px;
+    }
+    .model-card-item.model-card-custom:hover, .model-card-item.model-card-custom:active {
+      background-color: rgba(87, 143, 202, 0.12);
+      border-color: var(--accent-blue);
+    }
+    .model-card-item.model-card-custom.active-custom {
+      border-color: var(--accent-blue);
+      background-color: rgba(87, 143, 202, 0.14);
+    }
+    .custom-badge-pill {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .custom-badge-pill.is-active {
+      background: var(--accent-blue);
+      color: #ffffff;
+      border-color: var(--accent-blue);
+    }
     .model-info-left {
       display: flex;
       flex-direction: column;
@@ -890,7 +986,8 @@
       <h1 class="app-title">Recarga VE</h1>
     </div>
     <div class="header-actions">
-      <span class="app-badge">v2.0.1</span>
+      <button type="button" id="btn-reset-all" class="reset-all-btn" title="Restaurar valores padrões da calculadora">🔄 Zerar</button>
+      <span class="app-badge">v2.0.4</span>
       <button type="button" id="theme-toggle-btn" class="theme-toggle-btn" title="Alternar Tema (Claro / Escuro)">🌙</button>
     </div>
   </header>
@@ -904,7 +1001,10 @@
         <span class="vehicle-btn-label">Veículo</span>
         <span class="vehicle-btn-title" id="selected-vehicle-display">🚗 Toque para escolher o modelo...</span>
       </div>
-      <div class="vehicle-btn-icon-box">▼</div>
+      <div class="vehicle-btn-actions">
+        <span id="clear-vehicle-btn" class="clear-vehicle-btn" title="Zerar seleção de veículo">✕ Zerar</span>
+        <div class="vehicle-btn-icon-box">▼</div>
+      </div>
     </button>
 
     <!-- Tarifa de Energia no Topo -->
@@ -1033,7 +1133,10 @@
           <h3>Selecionar Veículo</h3>
           <p id="modal-vehicle-count">80 modelos disponíveis</p>
         </div>
-        <button type="button" class="modal-close-btn" id="close-vehicle-modal" aria-label="Fechar">✕</button>
+        <div class="modal-header-actions">
+          <button type="button" class="modal-reset-filters-btn" id="modal-reset-filters" title="Zerar filtros de pesquisa">Zerar filtros</button>
+          <button type="button" class="modal-close-btn" id="close-vehicle-modal" aria-label="Fechar">✕</button>
+        </div>
       </div>
 
       <!-- Campo de Busca -->
@@ -1206,6 +1309,9 @@
     const brandPillsContainer = document.getElementById('modal-brand-pills');
     const modelsListContainer = document.getElementById('modal-models-list');
     const selectedVehicleDisplay = document.getElementById('selected-vehicle-display');
+    const clearVehicleBtn = document.getElementById('clear-vehicle-btn');
+    const btnResetAll = document.getElementById('btn-reset-all');
+    const modalResetFiltersBtn = document.getElementById('modal-reset-filters');
     const modalSearchInput = document.getElementById('modal-search-input');
     const modalSearchClear = document.getElementById('modal-search-clear');
     const modalVehicleCount = document.getElementById('modal-vehicle-count');
@@ -1321,8 +1427,33 @@
       modelsListContainer.innerHTML = '';
       const filtered = getFilteredVehicles();
 
+      // Card para Modo Personalizado (Zerar seleção de veículo)
+      if (!currentSearchTerm) {
+        const customItem = document.createElement('div');
+        const isCustomActive = (currentVehicle === null);
+        customItem.className = 'model-card-item model-card-custom' + (isCustomActive ? ' active-custom' : '');
+        customItem.innerHTML = 
+          '<div class="model-info-left">' +
+            '<span class="model-brand-name">Personalizado</span>' +
+            '<div class="model-card-name">🔧 Definir Valores Manualmente / Sem Veículo</div>' +
+            '<div class="model-card-specs">Libera todos os presets universais e remove limites</div>' +
+          '</div>' +
+          '<div class="model-card-right">' +
+            '<span class="custom-badge-pill' + (isCustomActive ? ' is-active' : '') + '">' + (isCustomActive ? 'Ativo' : 'Zerar') + '</span>' +
+          '</div>';
+        
+        customItem.addEventListener('click', function() {
+          clearVehicleSelection();
+          closeVehicleModal();
+        });
+        modelsListContainer.appendChild(customItem);
+      }
+
       if (filtered.length === 0) {
-        modelsListContainer.innerHTML = '<div class="empty-models-msg">Nenhum veículo encontrado com os filtros atuais.</div>';
+        const emptyMsg = document.createElement('div');
+        emptyMsg.className = 'empty-models-msg';
+        emptyMsg.textContent = 'Nenhum veículo encontrado com os filtros atuais.';
+        modelsListContainer.appendChild(emptyMsg);
         return;
       }
 
@@ -1418,6 +1549,7 @@
     function selectVehicle(v) {
       currentVehicle = v;
       selectedVehicleDisplay.textContent = '🚗 ' + v.brand + ' ' + v.model + ' (' + formatPt(v.battery, 2) + ' kWh)';
+      if (clearVehicleBtn) clearVehicleBtn.style.display = 'inline-flex';
       
       sliderBattery.value = v.battery;
       inputBattery.value = formatPt(v.battery, 2);
@@ -1427,8 +1559,62 @@
       inputCharger.value = formatPt(defaultChargerPower, 1);
 
       updateChargerPresets(v);
+      renderModelsList();
 
       closeVehicleModal();
+      recalculate();
+    }
+
+    function clearVehicleSelection() {
+      currentVehicle = null;
+      selectedVehicleDisplay.textContent = '🚗 Toque para escolher o modelo...';
+      if (clearVehicleBtn) clearVehicleBtn.style.display = 'none';
+      if (vehicleLimitInfo) vehicleLimitInfo.textContent = '';
+      updateChargerPresets(null);
+      renderModelsList();
+      recalculate();
+    }
+
+    function resetModalFilters() {
+      selectedTypeFilter = 'ALL';
+      selectedBrandFilter = 'ALL';
+      currentSearchTerm = '';
+      modalSearchInput.value = '';
+      modalSearchClear.style.display = 'none';
+      document.querySelectorAll('.filter-type-pill').forEach(b => {
+        b.classList.toggle('active', b.dataset.type === 'ALL');
+      });
+      renderBrandPills();
+      renderModelsList();
+      updateSearchState();
+      updateResetFiltersBtnVisibility();
+    }
+
+    function updateResetFiltersBtnVisibility() {
+      if (!modalResetFiltersBtn) return;
+      const isFiltered = (selectedTypeFilter !== 'ALL') || (selectedBrandFilter !== 'ALL') || (currentSearchTerm.length > 0);
+      modalResetFiltersBtn.style.display = isFiltered ? 'inline-flex' : 'none';
+    }
+
+    function resetAllSettings() {
+      clearVehicleSelection();
+      sliderCharger.value = 7.4;
+      inputCharger.value = '7,4';
+      sliderBattery.value = 60.5;
+      inputBattery.value = '60,5';
+      sliderStart.value = 20;
+      inputStart.value = '20';
+      sliderTarget.value = 80;
+      inputTarget.value = '80';
+      inputTariff.value = '1,79';
+
+      document.querySelectorAll('#start-presets .preset-chip').forEach(c => {
+        c.classList.toggle('active', c.dataset.val === '20');
+      });
+      document.querySelectorAll('#target-presets .preset-chip').forEach(c => {
+        c.classList.toggle('active', c.dataset.val === '80');
+      });
+
       recalculate();
     }
 
@@ -1436,6 +1622,7 @@
     function openVehicleModal() {
       modal.classList.add('active');
       updateViewportMetrics();
+      updateResetFiltersBtnVisibility();
       if (window.innerWidth > 600) {
         modalSearchInput.focus();
       }
@@ -1455,6 +1642,7 @@
       } else {
         modal.classList.remove('has-search');
       }
+      updateResetFiltersBtnVisibility();
     }
 
     function updateViewportMetrics() {
@@ -1485,6 +1673,23 @@
     modal.addEventListener('click', (e) => {
       if (e.target === modal) closeVehicleModal();
     });
+
+    if (clearVehicleBtn) {
+      clearVehicleBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        clearVehicleSelection();
+      });
+    }
+
+    if (btnResetAll) {
+      btnResetAll.addEventListener('click', function() {
+        resetAllSettings();
+      });
+    }
+
+    if (modalResetFiltersBtn) {
+      modalResetFiltersBtn.addEventListener('click', resetModalFilters);
+    }
 
     modalSearchInput.addEventListener('focus', function() {
       updateSearchState();
@@ -1532,6 +1737,7 @@
         selectedBrandFilter = 'ALL';
         renderBrandPills();
         renderModelsList();
+        updateResetFiltersBtnVisibility();
       });
     });
 
