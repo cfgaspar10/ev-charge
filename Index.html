@@ -592,36 +592,7 @@
       transform: translateY(0);
     }
 
-    /* Otimizações quando o teclado está aberto ou na busca ativa em mobile */
-    .modal-overlay.keyboard-open {
-      align-items: flex-start;
-    }
-    .modal-overlay.keyboard-open .modal-sheet {
-      height: 100% !important;
-      max-height: 100% !important;
-      border-radius: 0;
-      border-top: none;
-    }
-    .modal-overlay.keyboard-open .modal-handle-bar,
-    .modal-overlay.search-active .modal-handle-bar {
-      display: none;
-    }
-    .modal-overlay.keyboard-open .modal-header,
-    .modal-overlay.search-active .modal-header {
-      padding: 6px 14px 6px 14px;
-    }
-    .modal-overlay.keyboard-open .search-box-wrap,
-    .modal-overlay.search-active .search-box-wrap {
-      padding: 6px 14px 6px 14px;
-    }
-    /* No mobile, ao buscar ou com teclado aberto, recolhe as pílulas para priorizar a lista */
-    .modal-overlay.keyboard-open .filter-pills-row,
-    .modal-overlay.keyboard-open .brand-pills-container,
-    .modal-overlay.search-active .filter-pills-row,
-    .modal-overlay.search-active .brand-pills-container {
-      display: none;
-    }
-
+    /* Regras para Desktop e Telas Médias/Grandes */
     @media (min-width: 520px) {
       .modal-overlay {
         align-items: center;
@@ -637,21 +608,37 @@
       .modal-overlay.active .modal-sheet {
         transform: scale(1);
       }
+    }
+
+    /* Regras exclusivas para Mobile (< 520px) */
+    @media (max-width: 519px) {
       .modal-overlay.keyboard-open {
-        align-items: center;
+        align-items: flex-start;
       }
       .modal-overlay.keyboard-open .modal-sheet {
-        border-radius: var(--radius-lg);
-        border-top: 1px solid var(--border-color);
-        max-height: 80vh;
-        height: auto !important;
+        height: 100% !important;
+        max-height: 100% !important;
+        border-radius: 0;
+        border-top: none;
       }
-      .modal-overlay.search-active .filter-pills-row,
-      .modal-overlay.search-active .brand-pills-container {
-        display: flex;
+      .modal-overlay.keyboard-open .modal-handle-bar,
+      .modal-overlay.has-search .modal-handle-bar {
+        display: none !important;
       }
-      .modal-overlay.search-active .modal-handle-bar {
-        display: block;
+      .modal-overlay.keyboard-open .modal-header,
+      .modal-overlay.has-search .modal-header {
+        padding: 6px 14px 6px 14px;
+      }
+      .modal-overlay.keyboard-open .search-box-wrap,
+      .modal-overlay.has-search .search-box-wrap {
+        padding: 6px 14px 6px 14px;
+      }
+      /* No mobile, somente ao buscar ou com teclado aberto recolhe as pílulas para liberar a lista */
+      .modal-overlay.keyboard-open .filter-pills-row,
+      .modal-overlay.keyboard-open .brand-pills-container,
+      .modal-overlay.has-search .filter-pills-row,
+      .modal-overlay.has-search .brand-pills-container {
+        display: none !important;
       }
     }
 
@@ -661,6 +648,7 @@
       background: var(--border-color);
       border-radius: var(--radius-full);
       margin: 8px auto 2px auto;
+      flex-shrink: 0;
     }
     .modal-header {
       display: flex;
@@ -668,6 +656,7 @@
       align-items: center;
       padding: 8px 14px 10px 14px;
       border-bottom: 1px solid var(--border-color);
+      flex-shrink: 0;
     }
     .modal-title-box h3 {
       font-size: 15px;
@@ -694,6 +683,7 @@
 
     .search-box-wrap {
       padding: 10px 14px 6px 14px;
+      flex-shrink: 0;
     }
     .search-box {
       background: var(--bg-input);
@@ -734,6 +724,7 @@
       padding: 0 14px 8px 14px;
       overflow-x: auto;
       scrollbar-width: none;
+      flex-shrink: 0;
     }
     .filter-pills-row::-webkit-scrollbar {
       display: none;
@@ -762,6 +753,7 @@
       overflow-x: auto;
       border-bottom: 1px solid var(--border-color);
       scrollbar-width: none;
+      flex-shrink: 0;
     }
     .brand-pills-container::-webkit-scrollbar {
       display: none;
@@ -1450,7 +1442,7 @@
     }
 
     function closeVehicleModal() {
-      modal.classList.remove('active', 'keyboard-open', 'search-active');
+      modal.classList.remove('active', 'keyboard-open', 'has-search');
       modalSearchInput.blur();
       modal.style.top = '';
       modal.style.height = '';
@@ -1458,11 +1450,10 @@
 
     function updateSearchState() {
       const hasText = currentSearchTerm.length > 0;
-      const isFocused = document.activeElement === modalSearchInput;
-      if (hasText || isFocused) {
-        modal.classList.add('search-active');
+      if (hasText) {
+        modal.classList.add('has-search');
       } else {
-        modal.classList.remove('search-active');
+        modal.classList.remove('has-search');
       }
     }
 
