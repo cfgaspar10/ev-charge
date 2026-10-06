@@ -975,6 +975,289 @@
     .footer-link:hover {
       text-decoration: underline;
     }
+
+    /* ============================================================
+       Navegação por Abas (Segmented Control)
+       ============================================================ */
+    .tab-navigation {
+      display: flex;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 3px;
+      gap: 4px;
+      box-shadow: var(--card-shadow);
+    }
+    .tab-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 10px;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .tab-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-card-hover);
+    }
+    .tab-btn.active {
+      background: var(--accent-blue);
+      color: #ffffff;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+    }
+    [data-theme="dark"] .tab-btn.active {
+      background: var(--accent-blue);
+      color: #ECDFCC;
+    }
+    .tab-content {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .tab-content.hidden {
+      display: none !important;
+    }
+    .sub-mode-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .sub-mode-panel.hidden {
+      display: none !important;
+    }
+
+    /* Cards de Resumo da Viagem / Consumo (Grid 2x2) */
+    .consumption-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+    }
+    .consumption-summary-grid .summary-card {
+      padding: 8px 6px;
+      gap: 3px;
+    }
+    .summary-card.card-consumption::before {
+      background: linear-gradient(90deg, #3674B5, #578FCA);
+    }
+    .summary-card.card-remaining::before {
+      background: linear-gradient(90deg, #10b981, #0d9488);
+    }
+    .summary-card.card-total-range::before {
+      background: linear-gradient(90deg, #8b5cf6, #a78bfa);
+    }
+    .summary-card.card-trip-cost::before {
+      background: linear-gradient(90deg, #f59e0b, #ef4444);
+    }
+    .summary-sub-label {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-top: -1px;
+    }
+    .badge-efficiency {
+      font-size: 9.5px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: var(--radius-full);
+      display: inline-block;
+      margin-top: 1px;
+    }
+    .badge-efficiency.positive {
+      background: rgba(16, 185, 129, 0.18);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .badge-efficiency.negative {
+      background: rgba(239, 68, 68, 0.18);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    .badge-efficiency.neutral {
+      background: rgba(87, 143, 202, 0.18);
+      color: var(--accent-blue);
+      border: 1px solid rgba(87, 143, 202, 0.3);
+    }
+
+    /* Card informativo de status na aba de consumo */
+    .info-card-consumption {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      box-shadow: var(--card-shadow);
+    }
+    .info-card-consumption strong {
+      color: var(--text-primary);
+    }
+
+    /* ============================================================
+       Viagem Longa com Paradas de Recarga
+       ============================================================ */
+    .sub-mode-pill-row {
+      display: flex;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-full);
+      padding: 3px;
+      gap: 4px;
+      box-shadow: var(--card-shadow);
+    }
+    .sub-mode-pill {
+      flex: 1;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: all 0.2s ease;
+    }
+    .sub-mode-pill:hover {
+      color: var(--text-primary);
+    }
+    .sub-mode-pill.active {
+      background: var(--bg-input);
+      color: var(--text-primary);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border-focus);
+    }
+
+    .stops-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+    }
+    .stops-section-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .stops-list-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .stop-item-card {
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      box-shadow: var(--card-shadow);
+    }
+    .stop-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .stop-badge-num {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--accent-blue);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .stop-btn-remove {
+      background: transparent;
+      border: none;
+      color: #e06c75;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 2px 4px;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    .stop-btn-remove:hover {
+      background: rgba(224, 108, 117, 0.15);
+    }
+    .stop-inputs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.2fr;
+      gap: 6px;
+      align-items: center;
+    }
+    .stop-input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .stop-input-group label {
+      font-size: 9.5px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .stop-mini-input {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 4px 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-align: right;
+      outline: none;
+      width: 100%;
+    }
+    .stop-mini-input:focus {
+      border-color: var(--border-focus);
+    }
+    .stop-item-summary {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10.5px;
+      color: var(--text-secondary);
+      padding-top: 4px;
+      border-top: 1px dashed var(--table-border-subtle);
+    }
+    .stop-item-summary strong {
+      color: var(--accent-mint);
+    }
+    .btn-add-stop {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px dashed var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--accent-blue);
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 8px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: all 0.2s ease;
+    }
+    .btn-add-stop:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent-blue);
+    }
   </style>
 </head>
 <body>
@@ -987,7 +1270,7 @@
     </div>
     <div class="header-actions">
       <button type="button" id="btn-reset-all" class="reset-all-btn" title="Restaurar valores padrões da calculadora">🔄 Zerar</button>
-      <span class="app-badge">v2.0.4</span>
+      <span class="app-badge">v2.2.0</span>
       <button type="button" id="theme-toggle-btn" class="theme-toggle-btn" title="Alternar Tema (Claro / Escuro)">🌙</button>
     </div>
   </header>
@@ -1021,99 +1304,368 @@
 
   </div>
 
-  <!-- Cards de Resumo Compactos (KPIs) -->
-  <div class="summary-grid">
-    <div class="summary-card card-energy">
-      <div class="summary-header-label"><span>⚡</span> Energia</div>
-      <span class="summary-value" id="res-energy">--</span>
-    </div>
-    <div class="summary-card card-time">
-      <div class="summary-header-label"><span>⏱️</span> Tempo Estimado</div>
-      <span class="summary-value" id="res-time">--</span>
-    </div>
-    <div class="summary-card card-cost">
-      <div class="summary-header-label"><span>💰</span> Custo</div>
-      <span class="summary-value" id="res-cost">--</span>
-    </div>
-  </div>
+  <!-- Navegação por Abas (Segmented Control) -->
+  <nav class="tab-navigation" role="tablist">
+    <button type="button" class="tab-btn active" id="tab-btn-charging" data-tab="tab-charging" role="tab" aria-selected="true">
+      <span>⚡</span> Recarga
+    </button>
+    <button type="button" class="tab-btn" id="tab-btn-consumption" data-tab="tab-consumption" role="tab" aria-selected="false">
+      <span>📊</span> Autonomia & Consumo
+    </button>
+  </nav>
 
-  <!-- Tabela de Estimativas (Sem os 60%) -->
-  <div class="table-card">
-    <div class="table-header-title">Estimativas por Meta de Carga</div>
-    <table>
-      <thead>
-        <tr>
-          <th>Meta</th>
-          <th>Energia</th>
-          <th>Tempo Estimado</th>
-          <th>Custo</th>
-        </tr>
-      </thead>
-      <tbody id="table-body"></tbody>
-    </table>
-  </div>
-
-  <!-- Painel de Controles Compacto -->
-  <div class="controls-panel">
+  <!-- ============================================================
+       ABA 1: RECARGA (Calculadora)
+       ============================================================ -->
+  <div id="tab-charging" class="tab-content">
     
-    <!-- Potência do Carregador Adaptativo -->
-    <div class="control-item">
-      <div class="control-header-row">
-        <div class="control-title">
-          <span class="emoji">🔌</span> Carregador (kW)
-          <span id="vehicle-limit-info" class="vehicle-limit-hint"></span>
+    <!-- Cards de Resumo Compactos (KPIs) -->
+    <div class="summary-grid">
+      <div class="summary-card card-energy">
+        <div class="summary-header-label"><span>⚡</span> Energia</div>
+        <span class="summary-value" id="res-energy">--</span>
+      </div>
+      <div class="summary-card card-time">
+        <div class="summary-header-label"><span>⏱️</span> Tempo Estimado</div>
+        <span class="summary-value" id="res-time">--</span>
+      </div>
+      <div class="summary-card card-cost">
+        <div class="summary-header-label"><span>💰</span> Custo</div>
+        <span class="summary-value" id="res-cost">--</span>
+      </div>
+    </div>
+
+    <!-- Tabela de Estimativas (Sem os 60%) -->
+    <div class="table-card">
+      <div class="table-header-title">Estimativas por Meta de Carga</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Meta</th>
+            <th>Energia</th>
+            <th>Tempo Estimado</th>
+            <th>Custo</th>
+          </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+
+    <!-- Painel de Controles Compacto -->
+    <div class="controls-panel">
+      
+      <!-- Potência do Carregador Adaptativo -->
+      <div class="control-item">
+        <div class="control-header-row">
+          <div class="control-title">
+            <span class="emoji">🔌</span> Carregador (kW)
+            <span id="vehicle-limit-info" class="vehicle-limit-hint"></span>
+          </div>
+          <input type="text" id="input-charger" class="pill-input" value="6.6">
         </div>
-        <input type="text" id="input-charger" class="pill-input" value="6.6">
+        <div class="presets-row" id="charger-presets"></div>
+        <div class="slider-container">
+          <input type="range" id="slider-charger" min="1.0" max="150.0" step="0.1" value="6.6">
+        </div>
       </div>
-      <div class="presets-row" id="charger-presets"></div>
-      <div class="slider-container">
-        <input type="range" id="slider-charger" min="1.0" max="150.0" step="0.1" value="6.6">
+
+      <!-- Capacidade da Bateria -->
+      <div class="control-item">
+        <div class="control-header-row">
+          <div class="control-title"><span class="emoji">🔋</span> Bateria (kWh)</div>
+          <input type="text" id="input-battery" class="pill-input" value="60,5">
+        </div>
+        <div class="slider-container">
+          <input type="range" id="slider-battery" min="5.0" max="150.0" step="0.01" value="60.5">
+        </div>
       </div>
+
+      <!-- Carga Inicial -->
+      <div class="control-item">
+        <div class="control-header-row">
+          <div class="control-title"><span class="emoji">📉</span> Carga Inicial (%)</div>
+          <input type="text" id="input-start" class="pill-input" value="20">
+        </div>
+        <div class="presets-row" id="start-presets">
+          <button type="button" class="preset-chip" data-val="10">10%</button>
+          <button type="button" class="preset-chip active" data-val="20">20%</button>
+          <button type="button" class="preset-chip" data-val="30">30%</button>
+          <button type="button" class="preset-chip" data-val="50">50%</button>
+        </div>
+        <div class="slider-container">
+          <input type="range" id="slider-start" min="0" max="100" step="1" value="20">
+        </div>
+      </div>
+
+      <!-- Carga Alvo -->
+      <div class="control-item">
+        <div class="control-header-row">
+          <div class="control-title"><span class="emoji">🎯</span> Carga Alvo (%)</div>
+          <input type="text" id="input-target" class="pill-input" value="80">
+        </div>
+        <div class="presets-row" id="target-presets">
+          <button type="button" class="preset-chip" data-val="50">50%</button>
+          <button type="button" class="preset-chip" data-val="75">75%</button>
+          <button type="button" class="preset-chip active" data-val="80">80% (Diário)</button>
+          <button type="button" class="preset-chip" data-val="100">100% (Viagem)</button>
+        </div>
+        <div class="slider-container">
+          <input type="range" id="slider-target" min="0" max="100" step="1" value="80">
+        </div>
+      </div>
+
     </div>
 
-    <!-- Capacidade da Bateria -->
-    <div class="control-item">
-      <div class="control-header-row">
-        <div class="control-title"><span class="emoji">🔋</span> Bateria (kWh)</div>
-        <input type="text" id="input-battery" class="pill-input" value="60,5">
-      </div>
-      <div class="slider-container">
-        <input type="range" id="slider-battery" min="5.0" max="150.0" step="0.01" value="60.5">
-      </div>
+  </div>
+
+  <!-- ============================================================
+       ABA 2: AUTONOMIA & CONSUMO
+       ============================================================ -->
+  <div id="tab-consumption" class="tab-content hidden">
+
+    <!-- Alternador de Sub-modo: Trecho Direto vs Viagem com Paradas -->
+    <div class="sub-mode-pill-row">
+      <button type="button" class="sub-mode-pill active" id="submode-btn-single" data-submode="single">
+        <span>📍</span> Trecho Direto
+      </button>
+      <button type="button" class="sub-mode-pill" id="submode-btn-multi" data-submode="multi">
+        <span>🛣️</span> Viagem com Paradas
+      </button>
     </div>
 
-    <!-- Carga Inicial -->
-    <div class="control-item">
-      <div class="control-header-row">
-        <div class="control-title"><span class="emoji">📉</span> Carga Inicial (%)</div>
-        <input type="text" id="input-start" class="pill-input" value="20">
+    <!-- SUB-MODO A: TRECHO DIRETO (Sem paradas) -->
+    <div id="container-single-trip" class="sub-mode-panel">
+
+      <!-- Cards de Resumo da Viagem / Consumo (Grid 2x2) -->
+      <div class="consumption-summary-grid">
+        
+        <!-- Consumo Médio -->
+        <div class="summary-card card-consumption">
+          <div class="summary-header-label"><span>⚡</span> Consumo Médio</div>
+          <div style="display: flex; align-items: baseline; gap: 3px;">
+            <span class="summary-value" id="res-trip-consumption">--</span>
+            <span style="font-size: 10px; font-weight: 600; color: var(--text-muted);">kWh/100km</span>
+          </div>
+          <span class="summary-sub-label" id="res-trip-kmpkwh">-- km/kWh</span>
+        </div>
+
+        <!-- Autonomia Restante -->
+        <div class="summary-card card-remaining">
+          <div class="summary-header-label"><span>🛣️</span> Autonomia Restante</div>
+          <span class="summary-value" id="res-trip-remaining-range">--</span>
+          <span class="summary-sub-label" id="res-trip-remaining-energy">--</span>
+        </div>
+
+        <!-- Autonomia Total Projetada -->
+        <div class="summary-card card-total-range">
+          <div class="summary-header-label"><span>🔋</span> Autonomia Total</div>
+          <span class="summary-value" id="res-trip-total-range">--</span>
+          <span class="badge-efficiency neutral" id="res-trip-range-badge">--</span>
+        </div>
+
+        <!-- Custo do Trajeto -->
+        <div class="summary-card card-trip-cost">
+          <div class="summary-header-label"><span>💰</span> Custo do Trajeto</div>
+          <span class="summary-value" id="res-trip-cost">--</span>
+          <span class="summary-sub-label" id="res-trip-cost-per-km">--</span>
+        </div>
+
       </div>
-      <div class="presets-row" id="start-presets">
-        <button type="button" class="preset-chip" data-val="10">10%</button>
-        <button type="button" class="preset-chip active" data-val="20">20%</button>
-        <button type="button" class="preset-chip" data-val="30">30%</button>
-        <button type="button" class="preset-chip" data-val="50">50%</button>
+
+      <!-- Status da Bateria: Exibido quando HOUVER veículo selecionado -->
+      <div class="info-card-consumption" id="trip-battery-info-card" style="display: none;">
+        <div>
+          <span>🔋 Bateria: </span>
+          <strong id="trip-battery-display">60,50 kWh</strong>
+        </div>
+        <span style="font-size: 10.5px; color: var(--text-muted);">(Sincronizada com o veículo)</span>
       </div>
-      <div class="slider-container">
-        <input type="range" id="slider-start" min="0" max="100" step="1" value="20">
+
+      <!-- Painel de Controles de Consumo -->
+      <div class="controls-panel">
+
+        <!-- Capacidade da Bateria: Exibido quando NÃO houver veículo selecionado (Permite usuário informar) -->
+        <div class="control-item" id="trip-battery-control-item">
+          <div class="control-header-row">
+            <div class="control-title">
+              <span class="emoji">🔋</span> Bateria (kWh)
+              <span class="vehicle-limit-hint">(Personalizada)</span>
+            </div>
+            <input type="text" id="input-trip-battery" class="pill-input" value="60,5">
+          </div>
+          <div class="slider-container">
+            <input type="range" id="slider-trip-battery" min="5.0" max="150.0" step="0.01" value="60.5">
+          </div>
+        </div>
+
+        <!-- Distância Percorrida -->
+        <div class="control-item">
+          <div class="control-header-row">
+            <div class="control-title"><span class="emoji">📍</span> Distância Percorrida (km)</div>
+            <input type="text" id="input-trip-distance" class="pill-input" value="183">
+          </div>
+          <div class="presets-row" id="trip-distance-presets">
+            <button type="button" class="preset-chip" data-add="10">+10 km</button>
+            <button type="button" class="preset-chip" data-add="50">+50 km</button>
+            <button type="button" class="preset-chip" data-val="50">50 km</button>
+            <button type="button" class="preset-chip" data-val="100">100 km</button>
+            <button type="button" class="preset-chip active" data-val="183">183 km</button>
+            <button type="button" class="preset-chip" data-val="250">250 km</button>
+          </div>
+          <div class="slider-container">
+            <input type="range" id="slider-trip-distance" min="1" max="800" step="1" value="183">
+          </div>
+        </div>
+
+        <!-- Carga Inicial da Viagem -->
+        <div class="control-item">
+          <div class="control-header-row">
+            <div class="control-title"><span class="emoji">🔋</span> Carga Inicial (%)</div>
+            <input type="text" id="input-trip-start" class="pill-input" value="100">
+          </div>
+          <div class="presets-row" id="trip-start-presets">
+            <button type="button" class="preset-chip" data-val="80">80%</button>
+            <button type="button" class="preset-chip" data-val="90">90%</button>
+            <button type="button" class="preset-chip active" data-val="100">100% (Cheia)</button>
+          </div>
+          <div class="slider-container">
+            <input type="range" id="slider-trip-start" min="10" max="100" step="1" value="100">
+          </div>
+        </div>
+
+        <!-- Carga Restante Atual -->
+        <div class="control-item">
+          <div class="control-header-row">
+            <div class="control-title"><span class="emoji">📉</span> Carga Restante Atual (%)</div>
+            <input type="text" id="input-trip-current" class="pill-input" value="47">
+          </div>
+          <div class="presets-row" id="trip-current-presets">
+            <button type="button" class="preset-chip" data-val="20">20%</button>
+            <button type="button" class="preset-chip" data-val="30">30%</button>
+            <button type="button" class="preset-chip active" data-val="47">47%</button>
+            <button type="button" class="preset-chip" data-val="60">60%</button>
+            <button type="button" class="preset-chip" data-val="80">80%</button>
+          </div>
+          <div class="slider-container">
+            <input type="range" id="slider-trip-current" min="0" max="100" step="1" value="47">
+          </div>
+        </div>
+
       </div>
+
     </div>
 
-    <!-- Carga Alvo -->
-    <div class="control-item">
-      <div class="control-header-row">
-        <div class="control-title"><span class="emoji">🎯</span> Carga Alvo (%)</div>
-        <input type="text" id="input-target" class="pill-input" value="80">
+    <!-- SUB-MODO B: VIAGEM COM PARADAS DE RECARGA -->
+    <div id="container-multi-trip" class="sub-mode-panel hidden">
+
+      <!-- Cards de Resumo Consolidado (Grid 2x2) -->
+      <div class="consumption-summary-grid">
+        
+        <!-- Média da Viagem -->
+        <div class="summary-card card-consumption">
+          <div class="summary-header-label"><span>⚡</span> Média da Viagem</div>
+          <div style="display: flex; align-items: baseline; gap: 3px;">
+            <span class="summary-value" id="res-multi-consumption">--</span>
+            <span style="font-size: 10px; font-weight: 600; color: var(--text-muted);">kWh/100km</span>
+          </div>
+          <span class="summary-sub-label" id="res-multi-kmpkwh">-- km/kWh</span>
+        </div>
+
+        <!-- Custo Total da Viagem -->
+        <div class="summary-card card-trip-cost">
+          <div class="summary-header-label"><span>💰</span> Custo Total</div>
+          <span class="summary-value" id="res-multi-total-cost">--</span>
+          <span class="summary-sub-label" id="res-multi-cost-per-km">-- / km</span>
+        </div>
+
+        <!-- Energia Consumida nos Motores -->
+        <div class="summary-card card-total-range">
+          <div class="summary-header-label"><span>🔌</span> Energia Consumida</div>
+          <span class="summary-value" id="res-multi-total-energy">--</span>
+          <span class="summary-sub-label" id="res-multi-stops-info">-- paradas</span>
+        </div>
+
+        <!-- Recarga Final no Destino -->
+        <div class="summary-card card-remaining">
+          <div class="summary-header-label"><span>🔋</span> Recarga no Destino</div>
+          <span class="summary-value" id="res-multi-final-cost">--</span>
+          <span class="summary-sub-label" id="res-multi-final-energy">para 100%</span>
+        </div>
+
       </div>
-      <div class="presets-row" id="target-presets">
-        <button type="button" class="preset-chip" data-val="50">50%</button>
-        <button type="button" class="preset-chip" data-val="75">75%</button>
-        <button type="button" class="preset-chip active" data-val="80">80% (Diário)</button>
-        <button type="button" class="preset-chip" data-val="100">100% (Viagem)</button>
+
+      <!-- Painel de Controles da Viagem Longa -->
+      <div class="controls-panel">
+
+        <!-- Distância Total da Viagem -->
+        <div class="control-item">
+          <div class="control-header-row">
+            <div class="control-title"><span class="emoji">📍</span> Distância Total da Viagem (km)</div>
+            <input type="text" id="input-multi-distance" class="pill-input" value="800">
+          </div>
+          <div class="presets-row" id="multi-distance-presets">
+            <button type="button" class="preset-chip" data-val="300">300 km</button>
+            <button type="button" class="preset-chip" data-val="500">500 km</button>
+            <button type="button" class="preset-chip active" data-val="800">800 km</button>
+            <button type="button" class="preset-chip" data-val="1000">1.000 km</button>
+            <button type="button" class="preset-chip" data-val="1200">1.200 km</button>
+          </div>
+          <div class="slider-container">
+            <input type="range" id="slider-multi-distance" min="50" max="2000" step="10" value="800">
+          </div>
+        </div>
+
+        <!-- Partida (Saída) -->
+        <div class="control-item">
+          <div class="control-header-row">
+            <div class="control-title"><span class="emoji">🏠</span> Carga e Tarifa de Saída</div>
+          </div>
+          <div class="stop-inputs-grid" style="grid-template-columns: 1fr 1.2fr;">
+            <div class="stop-input-group">
+              <label>Carga Inicial (%)</label>
+              <input type="number" id="input-multi-start-soc" class="stop-mini-input" value="100" min="10" max="100">
+            </div>
+            <div class="stop-input-group">
+              <label>Tarifa Saída (R$/kWh)</label>
+              <input type="text" id="input-multi-start-tariff" class="stop-mini-input" value="1,79">
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção de Paradas de Recarga na Rodovia -->
+        <div class="stops-section-header">
+          <div class="stops-section-title">
+            <span>⚡</span> Paradas de Recarga no Caminho
+          </div>
+        </div>
+
+        <!-- Lista Dinâmica de Paradas -->
+        <div class="stops-list-container" id="multi-stops-list"></div>
+
+        <!-- Botão Adicionar Parada -->
+        <button type="button" id="btn-add-trip-stop" class="btn-add-stop">
+          <span>➕</span> Adicionar Parada de Recarga
+        </button>
+
+        <!-- Chegada ao Destino Final -->
+        <div class="control-item" style="margin-top: 4px; border-top: 1px solid var(--border-color); padding-top: 8px;">
+          <div class="control-header-row">
+            <div class="control-title"><span class="emoji">🏁</span> Chegada ao Destino Final</div>
+          </div>
+          <div class="stop-inputs-grid" style="grid-template-columns: 1fr 1.2fr;">
+            <div class="stop-input-group">
+              <label>Carga Restante (%)</label>
+              <input type="number" id="input-multi-arrival-soc" class="stop-mini-input" value="34" min="0" max="100">
+            </div>
+            <div class="stop-input-group">
+              <label>Tarifa no Destino (R$/kWh)</label>
+              <input type="text" id="input-multi-final-tariff" class="stop-mini-input" value="1,79">
+            </div>
+          </div>
+        </div>
+
       </div>
-      <div class="slider-container">
-        <input type="range" id="slider-target" min="0" max="100" step="1" value="80">
-      </div>
+
     </div>
 
   </div>
@@ -1166,37 +1718,37 @@
   <script>
     let VEHICLE_DATA = [
     // BMW
-    { id: "bmw_11", type: "BEV", brand: "BMW", model: "11", battery: 116.0, maxAc: 11.0, maxDc: 195.0, range: 603 },
+    { id: "bmw_ix_50", type: "BEV", brand: "BMW", model: "iX xDrive50", battery: 111.5, maxAc: 11.0, maxDc: 195.0, range: 528 },
     { id: "bmw_ix3_50_xdrive", type: "BEV", brand: "BMW", model: "iX3 50 xDrive", battery: 108.7, maxAc: 11.0, maxDc: 150.0, range: 565 },
 
     // BYD
-    { id: "byd_atto_2_dm_i_flex_gl_phev", type: "PHEV", brand: "BYD", model: "Atto 2 DM-i Flex GL", battery: 7.85, maxAc: 3.3, maxDc: 0.0, range: 55 },
-    { id: "byd_atto_2_dm_i_flex_gs_phev", type: "PHEV", brand: "BYD", model: "Atto 2 DM-i Flex GS", battery: 18.03, maxAc: 6.6, maxDc: 0.0, range: 105 },
+    { id: "byd_atto_2_dm_i_flex_gl_phev", type: "PHEV", brand: "BYD", model: "Atto 2 DM-i Flex GL", battery: 7.85, maxAc: 3.3, maxDc: 0.0, range: 38 },
+    { id: "byd_atto_2_dm_i_flex_gs_phev", type: "PHEV", brand: "BYD", model: "Atto 2 DM-i Flex GS", battery: 18.03, maxAc: 6.6, maxDc: 0.0, range: 75 },
     { id: "byd_atto_8", type: "BEV", brand: "BYD", model: "ATTO 8", battery: 35.6, maxAc: 6.6, maxDc: 50.0, range: 185 },
-    { id: "byd_atto_8_phev", type: "PHEV", brand: "BYD", model: "ATTO 8 (PHEV)", battery: 35.6, maxAc: 6.6, maxDc: 40.0, range: 140 },
+    { id: "byd_atto_8_phev", type: "PHEV", brand: "BYD", model: "ATTO 8 (PHEV)", battery: 35.6, maxAc: 6.6, maxDc: 40.0, range: 110 },
     { id: "byd_dolphin_gs", type: "BEV", brand: "BYD", model: "Dolphin GS", battery: 44.9, maxAc: 6.6, maxDc: 60.0, range: 291 },
     { id: "byd_dolphin_mini", type: "BEV", brand: "BYD", model: "Dolphin Mini", battery: 38.0, maxAc: 6.6, maxDc: 40.0, range: 280 },
-    { id: "byd_dolphin_plus_ev", type: "BEV", brand: "BYD", model: "Dolphin Plus EV", battery: 60.4, maxAc: 7.0, maxDc: 80.0, range: 330 },
+    { id: "byd_dolphin_plus_ev", type: "BEV", brand: "BYD", model: "Dolphin Plus EV", battery: 60.48, maxAc: 7.0, maxDc: 80.0, range: 330 },
     { id: "byd_dolphin_se", type: "BEV", brand: "BYD", model: "Dolphin SE", battery: 45.12, maxAc: 6.6, maxDc: 60.0, range: 295 },
-    { id: "byd_han_ev", type: "BEV", brand: "BYD", model: "Han EV", battery: 85.4, maxAc: 6.6, maxDc: 120.0, range: 521 },
-    { id: "byd_king_gl_phev", type: "PHEV", brand: "BYD", model: "King GL (PHEV)", battery: 8.3, maxAc: 3.3, maxDc: 0.0, range: 55 },
-    { id: "byd_king_gs_phev", type: "PHEV", brand: "BYD", model: "King GS (PHEV)", battery: 18.3, maxAc: 6.6, maxDc: 0.0, range: 105 },
+    { id: "byd_han_ev", type: "BEV", brand: "BYD", model: "Han EV", battery: 85.4, maxAc: 6.6, maxDc: 120.0, range: 349 },
+    { id: "byd_king_gl_phev", type: "PHEV", brand: "BYD", model: "King GL (PHEV)", battery: 8.3, maxAc: 3.3, maxDc: 0.0, range: 36 },
+    { id: "byd_king_gs_phev", type: "PHEV", brand: "BYD", model: "King GS (PHEV)", battery: 18.3, maxAc: 6.6, maxDc: 0.0, range: 80 },
     { id: "byd_seal_ev", type: "BEV", brand: "BYD", model: "Seal EV", battery: 82.5, maxAc: 7.4, maxDc: 150.0, range: 372 },
     { id: "byd_sealion_7", type: "BEV", brand: "BYD", model: "Sealion 7", battery: 82.56, maxAc: 11.0, maxDc: 150.0, range: 429 },
     { id: "byd_shark_gs_phev", type: "PHEV", brand: "BYD", model: "Shark GS (PHEV)", battery: 29.6, maxAc: 6.6, maxDc: 40.0, range: 100 },
-    { id: "byd_song_plus_dm_i_phev", type: "PHEV", brand: "BYD", model: "Song Plus DM-i", battery: 18.3, maxAc: 6.6, maxDc: 18.0, range: 105 },
+    { id: "byd_song_plus_dm_i_phev", type: "PHEV", brand: "BYD", model: "Song Plus DM-i", battery: 18.3, maxAc: 6.6, maxDc: 18.0, range: 68 },
     { id: "byd_song_plus_premium_dm_i_phev", type: "PHEV", brand: "BYD", model: "Song Plus Premium DM-i", battery: 26.6, maxAc: 6.6, maxDc: 18.0, range: 105 },
-    { id: "byd_song_pro_gl_phev", type: "PHEV", brand: "BYD", model: "Song Pro GL (PHEV)", battery: 13.1, maxAc: 3.3, maxDc: 0.0, range: 71 },
-    { id: "byd_song_pro_gs_phev", type: "PHEV", brand: "BYD", model: "Song Pro GS (PHEV)", battery: 18.3, maxAc: 6.6, maxDc: 0.0, range: 110 },
+    { id: "byd_song_pro_gl_phev", type: "PHEV", brand: "BYD", model: "Song Pro GL (PHEV)", battery: 13.1, maxAc: 3.3, maxDc: 0.0, range: 49 },
+    { id: "byd_song_pro_gs_phev", type: "PHEV", brand: "BYD", model: "Song Pro GS (PHEV)", battery: 18.3, maxAc: 6.6, maxDc: 0.0, range: 68 },
     { id: "byd_tan_ev", type: "BEV", brand: "BYD", model: "Tan EV", battery: 108.8, maxAc: 11.0, maxDc: 170.0, range: 437 },
-    { id: "byd_yuan_plus", type: "BEV", brand: "BYD", model: "Yuan Plus", battery: 74.88, maxAc: 7.0, maxDc: 80.0, range: 294 },
+    { id: "byd_yuan_plus", type: "BEV", brand: "BYD", model: "Yuan Plus", battery: 60.48, maxAc: 7.0, maxDc: 80.0, range: 294 },
     { id: "byd_yuan_pro_ev", type: "BEV", brand: "BYD", model: "Yuan Pro EV", battery: 45.1, maxAc: 6.6, maxDc: 65.0, range: 250 },
 
     // Caoa Chery
     { id: "caoa_chery_icar", type: "BEV", brand: "Caoa Chery", model: "iCar", battery: 30.8, maxAc: 6.6, maxDc: 0.0, range: 160 },
-    { id: "caoa_chery_tiggo_5x_pro_phev", type: "PHEV", brand: "Caoa Chery", model: "Tiggo 5X Pro (PHEV)", battery: 19.3, maxAc: 6.6, maxDc: 0.0, range: 100 },
-    { id: "caoa_chery_tiggo_7_pro_phev", type: "PHEV", brand: "Caoa Chery", model: "Tiggo 7 Pro PHEV", battery: 18.4, maxAc: 6.6, maxDc: 50.0, range: 100 },
-    { id: "caoa_chery_tiggo_8_pro_phev", type: "PHEV", brand: "Caoa Chery", model: "Tiggo 8 Pro PHEV", battery: 18.4, maxAc: 6.6, maxDc: 50.0, range: 100 },
+    { id: "caoa_chery_tiggo_5x_pro_phev", type: "PHEV", brand: "Caoa Chery", model: "Tiggo 5X Pro (PHEV)", battery: 19.3, maxAc: 6.6, maxDc: 0.0, range: 54 },
+    { id: "caoa_chery_tiggo_7_pro_phev", type: "PHEV", brand: "Caoa Chery", model: "Tiggo 7 Pro PHEV", battery: 18.4, maxAc: 6.6, maxDc: 50.0, range: 54 },
+    { id: "caoa_chery_tiggo_8_pro_phev", type: "PHEV", brand: "Caoa Chery", model: "Tiggo 8 Pro PHEV", battery: 18.4, maxAc: 6.6, maxDc: 50.0, range: 54 },
 
     // Chevrolet
     { id: "chevrolet_blazer_ev_rs", type: "BEV", brand: "Chevrolet", model: "Blazer EV RS", battery: 102.0, maxAc: 22.0, maxDc: 190.0, range: 530 },
@@ -1207,27 +1759,27 @@
     { id: "fiat_500e", type: "BEV", brand: "Fiat", model: "500e", battery: 42.0, maxAc: 11.0, maxDc: 85.0, range: 218 },
 
     // GAC
-    { id: "gac_aion_es_plus", type: "BEV", brand: "GAC", model: "Aion ES Plus", battery: 55.2, maxAc: 6.6, maxDc: 60.0, range: 442 },
-    { id: "gac_aion_ut_elite", type: "BEV", brand: "GAC", model: "Aion UT Elite", battery: 60.0, maxAc: 6.6, maxDc: 80.0, range: 400 },
-    { id: "gac_aion_ut_premium", type: "BEV", brand: "GAC", model: "Aion UT Premium", battery: 44.12, maxAc: 6.6, maxDc: 50.0, range: 300 },
-    { id: "gac_aion_v_elite", type: "BEV", brand: "GAC", model: "Aion V Elite", battery: 75.3, maxAc: 11.0, maxDc: 120.0, range: 520 },
+    { id: "gac_aion_es_plus", type: "BEV", brand: "GAC", model: "Aion ES Plus", battery: 55.2, maxAc: 6.6, maxDc: 60.0, range: 314 },
+    { id: "gac_aion_ut_elite", type: "BEV", brand: "GAC", model: "Aion UT Elite", battery: 60.0, maxAc: 6.6, maxDc: 87.0, range: 310 },
+    { id: "gac_aion_ut_premium", type: "BEV", brand: "GAC", model: "Aion UT Premium", battery: 44.12, maxAc: 6.6, maxDc: 64.0, range: 253 },
+    { id: "gac_aion_v_elite", type: "BEV", brand: "GAC", model: "Aion V Elite", battery: 75.3, maxAc: 11.0, maxDc: 180.0, range: 389 },
 
     // Geely
     { id: "geely_ex2", type: "BEV", brand: "Geely", model: "EX2", battery: 30.0, maxAc: 6.6, maxDc: 30.0, range: 156 },
-    { id: "geely_ex5_em_i_max_184_kwh_phev", type: "PHEV", brand: "Geely", model: "EX5 EM-i MAX 18.4 kWh (PHEV)", battery: 18.4, maxAc: 6.6, maxDc: 30.0, range: 430 },
-    { id: "geely_ex5_em_i_pro_184_kwh_phev", type: "PHEV", brand: "Geely", model: "EX5 EM-i PRO 18.4 kWh (PHEV)", battery: 18.4, maxAc: 6.6, maxDc: 30.0, range: 430 },
-    { id: "geely_ex5_em_i_ultra_298_kwh_phev", type: "PHEV", brand: "Geely", model: "EX5 EM-i ULTRA 29.8 kWh (PHEV)", battery: 29.8, maxAc: 6.6, maxDc: 30.0, range: 430 },
+    { id: "geely_ex5_em_i_max_184_kwh_phev", type: "PHEV", brand: "Geely", model: "EX5 EM-i MAX 18.4 kWh (PHEV)", battery: 18.4, maxAc: 6.6, maxDc: 30.0, range: 85 },
+    { id: "geely_ex5_em_i_pro_184_kwh_phev", type: "PHEV", brand: "Geely", model: "EX5 EM-i PRO 18.4 kWh (PHEV)", battery: 18.4, maxAc: 6.6, maxDc: 30.0, range: 85 },
+    { id: "geely_ex5_em_i_ultra_298_kwh_phev", type: "PHEV", brand: "Geely", model: "EX5 EM-i ULTRA 29.8 kWh (PHEV)", battery: 29.8, maxAc: 6.6, maxDc: 30.0, range: 130 },
     { id: "geely_ex5_max_6022_kwh", type: "BEV", brand: "Geely", model: "EX5 MAX 60.22 kWh", battery: 60.22, maxAc: 11.0, maxDc: 100.0, range: 430 },
     { id: "geely_ex5_pro_6022_kwh", type: "BEV", brand: "Geely", model: "EX5 PRO 60.22 kWh", battery: 60.22, maxAc: 11.0, maxDc: 100.0, range: 430 },
 
     // GWM
     { id: "gwm_h6_gt_phev", type: "PHEV", brand: "GWM", model: "H6 GT PHEV", battery: 34.0, maxAc: 6.6, maxDc: 33.0, range: 113 },
     { id: "gwm_h6_phev19_phev", type: "PHEV", brand: "GWM", model: "H6 PHEV19", battery: 19.0, maxAc: 6.6, maxDc: 33.0, range: 74 },
-    { id: "gwm_h6_phev35_phev", type: "PHEV", brand: "GWM", model: "H6 PHEV35", battery: 34.0, maxAc: 6.6, maxDc: 33.0, range: 140 },
-    { id: "gwm_ora_03_bev58", type: "BEV", brand: "GWM", model: "Ora 03 BEV58", battery: 58.0, maxAc: 11.0, maxDc: 67.0, range: 302 },
-    { id: "gwm_ora_5", type: "BEV", brand: "GWM", model: "Ora 5", battery: 58.3, maxAc: 11.0, maxDc: 80.0, range: 303 },
-    { id: "gwm_tank_300_phev", type: "PHEV", brand: "GWM", model: "Tank 300 (PHEV)", battery: 37.1, maxAc: 6.6, maxDc: 50.0, range: 140 },
-    { id: "gwm_wey_07_phev", type: "PHEV", brand: "GWM", model: "Wey 07 (PHEV)", battery: 42.5, maxAc: 6.6, maxDc: 50.0, range: 140 },
+    { id: "gwm_h6_phev35_phev", type: "PHEV", brand: "GWM", model: "H6 PHEV35", battery: 34.0, maxAc: 6.6, maxDc: 33.0, range: 113 },
+    { id: "gwm_ora_03_bev58", type: "BEV", brand: "GWM", model: "Ora 03 BEV58", battery: 58.0, maxAc: 11.0, maxDc: 67.0, range: 315 },
+    { id: "gwm_ora_5", type: "BEV", brand: "GWM", model: "Ora 5", battery: 58.3, maxAc: 11.0, maxDc: 120.0, range: 349 },
+    { id: "gwm_tank_300_phev", type: "PHEV", brand: "GWM", model: "Tank 300 (PHEV)", battery: 37.1, maxAc: 6.6, maxDc: 50.0, range: 110 },
+    { id: "gwm_wey_07_phev", type: "PHEV", brand: "GWM", model: "Wey 07 (PHEV)", battery: 42.5, maxAc: 6.6, maxDc: 50.0, range: 130 },
 
     // Hyundai
     { id: "hyundai_ioniq_5", type: "BEV", brand: "Hyundai", model: "IONIQ 5", battery: 84.0, maxAc: 11.0, maxDc: 230.0, range: 437 },
@@ -1242,23 +1794,23 @@
     { id: "jaecoo_7_shs_prestige_2026", type: "PHEV", brand: "Jaecoo", model: "7 SHS Prestige 2026", battery: 18.3, maxAc: 6.6, maxDc: 40.0, range: 79 },
 
     // Jeep
-    { id: "jeep_compass_4xe_phev", type: "PHEV", brand: "Jeep", model: "Compass 4xe", battery: 11.4, maxAc: 7.4, maxDc: 0.0, range: 75 },
+    { id: "jeep_compass_4xe_phev", type: "PHEV", brand: "Jeep", model: "Compass 4xe", battery: 11.4, maxAc: 7.4, maxDc: 0.0, range: 44 },
 
     // Jetour
-    { id: "jetour_t1_phev", type: "PHEV", brand: "Jetour", model: "T1 PHEV", battery: 26.7, maxAc: 6.6, maxDc: 30.0, range: 115 },
-    { id: "jetour_t2_phev", type: "PHEV", brand: "Jetour", model: "T2 PHEV", battery: 26.7, maxAc: 6.6, maxDc: 30.0, range: 115 },
+    { id: "jetour_t1_phev", type: "PHEV", brand: "Jetour", model: "T1 PHEV", battery: 26.7, maxAc: 6.6, maxDc: 30.0, range: 90 },
+    { id: "jetour_t2_phev", type: "PHEV", brand: "Jetour", model: "T2 PHEV", battery: 26.7, maxAc: 6.6, maxDc: 30.0, range: 90 },
 
     // Kia
-    { id: "kia_ev5_land", type: "BEV", brand: "Kia", model: "EV5 Land", battery: 88.16, maxAc: 11.0, maxDc: 102.0, range: 458 },
-    { id: "kia_ev9_gtl", type: "BEV", brand: "Kia", model: "EV9 GTL", battery: 99.0, maxAc: 11.0, maxDc: 210.0, range: 515 },
+    { id: "kia_ev5_land", type: "BEV", brand: "Kia", model: "EV5 Land", battery: 88.16, maxAc: 11.0, maxDc: 102.0, range: 402 },
+    { id: "kia_ev9_gtl", type: "BEV", brand: "Kia", model: "EV9 GTL", battery: 99.0, maxAc: 11.0, maxDc: 210.0, range: 440 },
 
     // Leapmotor
     { id: "leapmotor_b10_bev", type: "BEV", brand: "Leapmotor", model: "B10 BEV", battery: 56.2, maxAc: 11.0, maxDc: 70.0, range: 292 },
-    { id: "leapmotor_c10_eletrico_bev_699_kwh", type: "BEV", brand: "Leapmotor", model: "C10 Elétrico - BEV 69.9 kWh", battery: 69.9, maxAc: 11.0, maxDc: 84.0, range: 420 },
-    { id: "leapmotor_c10_ultra_hibrido_reev_15_plug_in_phev", type: "PHEV", brand: "Leapmotor", model: "C10 Ultra Híbrido - REEV 1.5 Plug-in", battery: 28.4, maxAc: 6.6, maxDc: 30.0, range: 420 },
+    { id: "leapmotor_c10_eletrico_bev_699_kwh", type: "BEV", brand: "Leapmotor", model: "C10 Elétrico - BEV 69.9 kWh", battery: 69.9, maxAc: 11.0, maxDc: 84.0, range: 362 },
+    { id: "leapmotor_c10_ultra_hibrido_reev_15_plug_in_phev", type: "PHEV", brand: "Leapmotor", model: "C10 Ultra Híbrido - REEV 1.5 Plug-in", battery: 28.4, maxAc: 6.6, maxDc: 30.0, range: 140 },
 
     // Lexus
-    { id: "lexus_rz_500e", type: "BEV", brand: "Lexus", model: "RZ 500e", battery: 77.0, maxAc: 11.0, maxDc: 150.0, range: 400 },
+    { id: "lexus_rz_500e", type: "BEV", brand: "Lexus", model: "RZ 500e", battery: 77.0, maxAc: 11.0, maxDc: 150.0, range: 380 },
 
     // MG
     { id: "mg_mg4_luxury", type: "BEV", brand: "MG", model: "MG4 Luxury", battery: 64.0, maxAc: 11.0, maxDc: 135.0, range: 333 },
@@ -1267,14 +1819,14 @@
     { id: "mg_mg4_urban_luxury_54_kwh", type: "BEV", brand: "MG", model: "MG4 Urban Luxury 54 kWh", battery: 54.0, maxAc: 6.6, maxDc: 88.0, range: 281 },
 
     // Mitsubishi
-    { id: "mitsubishi_outlander_phev", type: "PHEV", brand: "Mitsubishi", model: "Outlander PHEV", battery: 20.0, maxAc: 3.7, maxDc: 22.0, range: 115 },
+    { id: "mitsubishi_outlander_phev", type: "PHEV", brand: "Mitsubishi", model: "Outlander PHEV", battery: 20.0, maxAc: 3.7, maxDc: 22.0, range: 67 },
 
     // Omoda
-    { id: "omoda_7_phev", type: "PHEV", brand: "Omoda", model: "Omoda 7 PHEV", battery: 18.4, maxAc: 6.6, maxDc: 50.0, range: 100 },
+    { id: "omoda_7_phev", type: "PHEV", brand: "Omoda", model: "Omoda 7 PHEV", battery: 18.4, maxAc: 6.6, maxDc: 50.0, range: 75 },
     { id: "omoda_e5_bev", type: "BEV", brand: "Omoda", model: "Omoda E5", battery: 61.1, maxAc: 11.0, maxDc: 80.0, range: 318 },
 
     // Peugeot
-    { id: "peugeot_e_2008", type: "BEV", brand: "Peugeot", model: "e-2008", battery: 54.0, maxAc: 11.0, maxDc: 100.0, range: 281 },
+    { id: "peugeot_e_2008", type: "BEV", brand: "Peugeot", model: "e-2008", battery: 54.0, maxAc: 11.0, maxDc: 100.0, range: 261 },
 
     // Renault
     { id: "renault_kwid_e_tech", type: "BEV", brand: "Renault", model: "Kwid E-Tech", battery: 26.8, maxAc: 6.6, maxDc: 30.0, range: 139 },
@@ -1288,9 +1840,9 @@
 
     // Volvo
     { id: "volvo_ex30_cross_country", type: "BEV", brand: "Volvo", model: "EX30 Cross Country", battery: 69.0, maxAc: 7.4, maxDc: 153.0, range: 338 },
-    { id: "volvo_ex30_plus", type: "BEV", brand: "Volvo", model: "EX30 Plus", battery: 51.0, maxAc: 7.4, maxDc: 150.0, range: 338 },
+    { id: "volvo_ex30_plus", type: "BEV", brand: "Volvo", model: "EX30 Plus", battery: 51.0, maxAc: 7.4, maxDc: 150.0, range: 250 },
     { id: "volvo_ex30_ultra_twin_motor", type: "BEV", brand: "Volvo", model: "EX30 Ultra Twin Motor", battery: 69.0, maxAc: 11.0, maxDc: 153.0, range: 338 },
-    { id: "volvo_xc60_recharge_phev", type: "PHEV", brand: "Volvo", model: "XC60 Recharge (PHEV)", battery: 18.8, maxAc: 6.4, maxDc: 0.0, range: 100 },
+    { id: "volvo_xc60_recharge_phev", type: "PHEV", brand: "Volvo", model: "XC60 Recharge (PHEV)", battery: 18.8, maxAc: 6.4, maxDc: 0.0, range: 55 },
 
     // Zeekr
     { id: "zeekr_7x", type: "BEV", brand: "Zeekr", model: "7X", battery: 75.0, maxAc: 22.0, maxDc: 250.0, range: 390 },
@@ -1333,6 +1885,81 @@
     const resTime = document.getElementById('res-time');
     const resCost = document.getElementById('res-cost');
     const tableBody = document.getElementById('table-body');
+
+    // Navegação por Abas Principais
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('#tab-charging, #tab-consumption');
+
+    function switchTab(targetTabId) {
+      tabButtons.forEach(btn => {
+        const isActive = (btn.dataset.tab === targetTabId);
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+      tabContents.forEach(content => {
+        const isTarget = (content.id === targetTabId);
+        content.classList.toggle('hidden', !isTarget);
+      });
+    }
+
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', function() {
+        switchTab(this.dataset.tab);
+      });
+    });
+
+    // Elementos da Aba de Autonomia & Consumo
+    const resTripConsumption = document.getElementById('res-trip-consumption');
+    const resTripKmpkwh = document.getElementById('res-trip-kmpkwh');
+    const resTripRemainingRange = document.getElementById('res-trip-remaining-range');
+    const resTripRemainingEnergy = document.getElementById('res-trip-remaining-energy');
+    const resTripTotalRange = document.getElementById('res-trip-total-range');
+    const resTripRangeBadge = document.getElementById('res-trip-range-badge');
+    const resTripCost = document.getElementById('res-trip-cost');
+    const resTripCostPerKm = document.getElementById('res-trip-cost-per-km');
+    const tripBatteryDisplay = document.getElementById('trip-battery-display');
+
+    const inputTripDistance = document.getElementById('input-trip-distance');
+    const sliderTripDistance = document.getElementById('slider-trip-distance');
+    const inputTripStart = document.getElementById('input-trip-start');
+    const sliderTripStart = document.getElementById('slider-trip-start');
+    const inputTripCurrent = document.getElementById('input-trip-current');
+    const sliderTripCurrent = document.getElementById('slider-trip-current');
+
+    const tripBatteryInfoCard = document.getElementById('trip-battery-info-card');
+    const tripBatteryControlItem = document.getElementById('trip-battery-control-item');
+    const inputTripBattery = document.getElementById('input-trip-battery');
+    const sliderTripBattery = document.getElementById('slider-trip-battery');
+
+    // Sub-modo de Viagem: Trecho Direto vs Viagem com Paradas
+    const submodeBtnSingle = document.getElementById('submode-btn-single');
+    const submodeBtnMulti = document.getElementById('submode-btn-multi');
+    const containerSingleTrip = document.getElementById('container-single-trip');
+    const containerMultiTrip = document.getElementById('container-multi-trip');
+
+    // Elementos do Sub-modo de Viagem com Paradas
+    const resMultiConsumption = document.getElementById('res-multi-consumption');
+    const resMultiKmpkwh = document.getElementById('res-multi-kmpkwh');
+    const resMultiTotalCost = document.getElementById('res-multi-total-cost');
+    const resMultiCostPerKm = document.getElementById('res-multi-cost-per-km');
+    const resMultiTotalEnergy = document.getElementById('res-multi-total-energy');
+    const resMultiStopsInfo = document.getElementById('res-multi-stops-info');
+    const resMultiFinalCost = document.getElementById('res-multi-final-cost');
+    const resMultiFinalEnergy = document.getElementById('res-multi-final-energy');
+
+    const inputMultiDistance = document.getElementById('input-multi-distance');
+    const sliderMultiDistance = document.getElementById('slider-multi-distance');
+    const inputMultiStartSoc = document.getElementById('input-multi-start-soc');
+    const inputMultiStartTariff = document.getElementById('input-multi-start-tariff');
+    const inputMultiArrivalSoc = document.getElementById('input-multi-arrival-soc');
+    const inputMultiFinalTariff = document.getElementById('input-multi-final-tariff');
+    const btnAddTripStop = document.getElementById('btn-add-trip-stop');
+    const multiStopsList = document.getElementById('multi-stops-list');
+
+    let tripStops = [
+      { arrivalSoc: 20, departureSoc: 80, tariff: 2.40 },
+      { arrivalSoc: 18, departureSoc: 80, tariff: 2.80 }
+    ];
 
     // Gerenciamento de Tema (Light / Dark)
     function initTheme() {
@@ -1563,6 +2190,7 @@
 
       closeVehicleModal();
       recalculate();
+      recalculateConsumption();
     }
 
     function clearVehicleSelection() {
@@ -1573,6 +2201,7 @@
       updateChargerPresets(null);
       renderModelsList();
       recalculate();
+      recalculateConsumption();
     }
 
     function resetModalFilters() {
@@ -1615,7 +2244,47 @@
         c.classList.toggle('active', c.dataset.val === '80');
       });
 
+      // Resetar Controles de Consumo & Viagem
+      sliderTripDistance.value = 183;
+      inputTripDistance.value = '183';
+      sliderTripStart.value = 100;
+      inputTripStart.value = '100';
+      sliderTripCurrent.value = 47;
+      inputTripCurrent.value = '47';
+      sliderTripBattery.value = 60.5;
+      inputTripBattery.value = '60,5';
+
+      document.querySelectorAll('#trip-distance-presets .preset-chip').forEach(c => {
+        c.classList.toggle('active', c.dataset.val === '183');
+      });
+      document.querySelectorAll('#trip-start-presets .preset-chip').forEach(c => {
+        c.classList.toggle('active', c.dataset.val === '100');
+      });
+      document.querySelectorAll('#trip-current-presets .preset-chip').forEach(c => {
+        c.classList.toggle('active', c.dataset.val === '47');
+      });
+      // Resetar Viagem com Paradas
+      if (sliderMultiDistance) sliderMultiDistance.value = 800;
+      if (inputMultiDistance) inputMultiDistance.value = '800';
+      if (inputMultiStartSoc) inputMultiStartSoc.value = '100';
+      if (inputMultiStartTariff) inputMultiStartTariff.value = '1,79';
+      if (inputMultiArrivalSoc) inputMultiArrivalSoc.value = '34';
+      if (inputMultiFinalTariff) inputMultiFinalTariff.value = '1,79';
+
+      document.querySelectorAll('#multi-distance-presets .preset-chip').forEach(c => {
+        c.classList.toggle('active', c.dataset.val === '800');
+      });
+
+      tripStops = [
+        { arrivalSoc: 20, departureSoc: 80, tariff: 2.40 },
+        { arrivalSoc: 18, departureSoc: 80, tariff: 2.80 }
+      ];
+      renderTripStops();
+
       recalculate();
+      recalculateConsumption();
+      recalculateMultiStop();
+      switchSubMode('single');
     }
 
     // Gerenciamento e Eventos do Modal
@@ -1910,7 +2579,11 @@
       inputStart.value = startSoc;
       inputTarget.value = targetSoc;
 
+      if (sliderTripBattery) sliderTripBattery.value = battery;
+      if (inputTripBattery) inputTripBattery.value = formatPt(battery, 2);
+
       recalculate();
+      recalculateConsumption();
     }
 
     function onInputChange() {
@@ -1929,15 +2602,434 @@
       sliderStart.value = Math.min(Math.max(startSoc, 0), 100);
       sliderTarget.value = Math.min(Math.max(targetSoc, 0), 100);
 
+      if (sliderTripBattery) sliderTripBattery.value = sliderBattery.value;
+      if (inputTripBattery) inputTripBattery.value = formatPt(battery, 2);
+
       recalculate();
+      recalculateConsumption();
     }
+
+    // ============================================================
+    // Lógica e Eventos da Aba de Autonomia & Consumo
+    // ============================================================
+    function recalculateConsumption() {
+      let battery;
+      if (currentVehicle) {
+        if (tripBatteryInfoCard) tripBatteryInfoCard.style.display = 'flex';
+        if (tripBatteryControlItem) tripBatteryControlItem.style.display = 'none';
+        battery = currentVehicle.battery;
+        if (tripBatteryDisplay) tripBatteryDisplay.textContent = formatPt(battery, 2) + ' kWh (' + currentVehicle.brand + ' ' + currentVehicle.model + ')';
+        if (sliderTripBattery) sliderTripBattery.value = battery;
+        if (inputTripBattery) inputTripBattery.value = formatPt(battery, 2);
+      } else {
+        if (tripBatteryInfoCard) tripBatteryInfoCard.style.display = 'none';
+        if (tripBatteryControlItem) tripBatteryControlItem.style.display = 'flex';
+        battery = parsePtNumber(inputTripBattery ? inputTripBattery.value : inputBattery.value) || 60.5;
+      }
+
+      const distance = parsePtNumber(inputTripDistance.value);
+      let startSoc = parsePtNumber(inputTripStart.value);
+      let currentSoc = parsePtNumber(inputTripCurrent.value);
+      const tariff = parsePtNumber(inputTariff.value);
+
+      if (startSoc < currentSoc) {
+        startSoc = currentSoc;
+        inputTripStart.value = startSoc;
+        sliderTripStart.value = startSoc;
+      }
+
+      const deltaPercent = Math.max(0, startSoc - currentSoc);
+      const energySpentKwh = (deltaPercent / 100) * battery;
+      const energyRemainingKwh = (currentSoc / 100) * battery;
+
+      if (distance > 0 && deltaPercent > 0) {
+        const kwhPer100Km = (energySpentKwh / distance) * 100;
+        const kmPerKwh = distance / energySpentKwh;
+        const remainingRangeKm = energyRemainingKwh * kmPerKwh;
+        const totalRangeKm = distance + remainingRangeKm;
+        const tripCost = energySpentKwh * tariff;
+        const costPerKm = tripCost / distance;
+
+        resTripConsumption.textContent = formatPt(kwhPer100Km, 2);
+        resTripKmpkwh.textContent = formatPt(kmPerKwh, 2) + ' km/kWh';
+        resTripRemainingRange.textContent = formatPt(remainingRangeKm, 1) + ' km';
+        resTripRemainingEnergy.textContent = formatPt(currentSoc, 0) + '% (' + formatPt(energyRemainingKwh, 2) + ' kWh restantes)';
+        resTripTotalRange.textContent = formatPt(totalRangeKm, 1) + ' km';
+
+        if (currentVehicle && currentVehicle.range && currentVehicle.range > 0) {
+          const diffPercent = ((totalRangeKm - currentVehicle.range) / currentVehicle.range) * 100;
+          const sign = diffPercent >= 0 ? '+' : '';
+          resTripRangeBadge.textContent = sign + formatPt(diffPercent, 1) + '% vs. ' + currentVehicle.range + ' km oficial';
+          resTripRangeBadge.className = 'badge-efficiency ' + (diffPercent >= 0 ? 'positive' : 'negative');
+        } else {
+          resTripRangeBadge.textContent = 'Projeção para 100% de bateria';
+          resTripRangeBadge.className = 'badge-efficiency neutral';
+        }
+
+        resTripCost.textContent = 'R$ ' + formatPt(tripCost, 2);
+        resTripCostPerKm.textContent = 'R$ ' + formatPt(costPerKm, 2) + ' / km';
+      } else {
+        resTripConsumption.textContent = '--';
+        resTripKmpkwh.textContent = '-- km/kWh';
+        resTripRemainingRange.textContent = '--';
+        resTripRemainingEnergy.textContent = formatPt(currentSoc, 0) + '% (' + formatPt(energyRemainingKwh, 2) + ' kWh restantes)';
+        resTripTotalRange.textContent = '--';
+        resTripRangeBadge.textContent = 'Informe distância e consumo';
+        resTripRangeBadge.className = 'badge-efficiency neutral';
+        resTripCost.textContent = '--';
+        resTripCostPerKm.textContent = '--';
+      }
+
+      recalculateMultiStop();
+    }
+
+    function onTripSliderChange() {
+      let distance = parseFloat(sliderTripDistance.value);
+      let startSoc = parseInt(sliderTripStart.value, 10);
+      let currentSoc = parseInt(sliderTripCurrent.value, 10);
+
+      if (startSoc < currentSoc) {
+        startSoc = currentSoc;
+        sliderTripStart.value = startSoc;
+      }
+
+      inputTripDistance.value = distance;
+      inputTripStart.value = startSoc;
+      inputTripCurrent.value = currentSoc;
+
+      recalculateConsumption();
+    }
+
+    function onTripInputChange() {
+      let distance = parsePtNumber(inputTripDistance.value);
+      let startSoc = parsePtNumber(inputTripStart.value);
+      let currentSoc = parsePtNumber(inputTripCurrent.value);
+
+      if (startSoc < currentSoc) {
+        startSoc = currentSoc;
+        inputTripStart.value = startSoc;
+      }
+
+      sliderTripDistance.value = Math.min(Math.max(distance, 1), 800);
+      sliderTripStart.value = Math.min(Math.max(startSoc, 0), 100);
+      sliderTripCurrent.value = Math.min(Math.max(currentSoc, 0), 100);
+
+      recalculateConsumption();
+    }
+
+    function onTripBatterySliderChange() {
+      let battery = parseFloat(sliderTripBattery.value);
+      inputTripBattery.value = formatPt(battery, 2);
+      sliderBattery.value = battery;
+      inputBattery.value = formatPt(battery, 2);
+
+      recalculate();
+      recalculateConsumption();
+    }
+
+    function onTripBatteryInputChange() {
+      let battery = parsePtNumber(inputTripBattery.value);
+      sliderTripBattery.value = Math.min(Math.max(battery, 5.0), 150.0);
+      sliderBattery.value = sliderTripBattery.value;
+      inputBattery.value = formatPt(battery, 2);
+
+      recalculate();
+      recalculateConsumption();
+    }
+
+    if (sliderTripBattery) sliderTripBattery.addEventListener('input', onTripBatterySliderChange);
+    if (inputTripBattery) inputTripBattery.addEventListener('input', onTripBatteryInputChange);
+
+    [sliderTripDistance, sliderTripStart, sliderTripCurrent].forEach(s => s.addEventListener('input', onTripSliderChange));
+    [inputTripDistance, inputTripStart, inputTripCurrent].forEach(i => i.addEventListener('input', onTripInputChange));
+
+    // Presets de Distância (valores e incrementos)
+    document.querySelectorAll('#trip-distance-presets .preset-chip').forEach(chip => {
+      chip.addEventListener('click', function() {
+        if (this.dataset.add) {
+          const add = parseInt(this.dataset.add, 10);
+          const currentVal = parsePtNumber(inputTripDistance.value);
+          const newVal = Math.min(currentVal + add, 800);
+          inputTripDistance.value = newVal;
+          sliderTripDistance.value = newVal;
+          document.querySelectorAll('#trip-distance-presets .preset-chip').forEach(c => c.classList.remove('active'));
+        } else if (this.dataset.val) {
+          document.querySelectorAll('#trip-distance-presets .preset-chip').forEach(c => c.classList.remove('active'));
+          this.classList.add('active');
+          const val = parseInt(this.dataset.val, 10);
+          inputTripDistance.value = val;
+          sliderTripDistance.value = val;
+        }
+        onTripInputChange();
+      });
+    });
+
+    // Presets de Carga Inicial
+    document.querySelectorAll('#trip-start-presets .preset-chip').forEach(chip => {
+      chip.addEventListener('click', function() {
+        document.querySelectorAll('#trip-start-presets .preset-chip').forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+        const val = parseInt(this.dataset.val, 10);
+        inputTripStart.value = val;
+        sliderTripStart.value = val;
+        onTripInputChange();
+      });
+    });
+
+    // Presets de Carga Restante
+    document.querySelectorAll('#trip-current-presets .preset-chip').forEach(chip => {
+      chip.addEventListener('click', function() {
+        document.querySelectorAll('#trip-current-presets .preset-chip').forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+        const val = parseInt(this.dataset.val, 10);
+        inputTripCurrent.value = val;
+        sliderTripCurrent.value = val;
+        onTripInputChange();
+      });
+    });
 
     [sliderCharger, sliderBattery, sliderStart, sliderTarget].forEach(s => s.addEventListener('input', onSliderChange));
     [inputCharger, inputBattery, inputStart, inputTarget, inputTariff].forEach(i => i.addEventListener('input', onInputChange));
 
+    // ============================================================
+    // Sub-modo: Viagem com Paradas de Recarga
+    // ============================================================
+    function switchSubMode(mode) {
+      if (mode === 'single') {
+        if (submodeBtnSingle) submodeBtnSingle.classList.add('active');
+        if (submodeBtnMulti) submodeBtnMulti.classList.remove('active');
+        if (containerSingleTrip) containerSingleTrip.classList.remove('hidden');
+        if (containerMultiTrip) containerMultiTrip.classList.add('hidden');
+      } else {
+        if (submodeBtnSingle) submodeBtnSingle.classList.remove('active');
+        if (submodeBtnMulti) submodeBtnMulti.classList.add('active');
+        if (containerSingleTrip) containerSingleTrip.classList.add('hidden');
+        if (containerMultiTrip) containerMultiTrip.classList.remove('hidden');
+        recalculateMultiStop();
+      }
+    }
+
+    if (submodeBtnSingle) submodeBtnSingle.addEventListener('click', () => switchSubMode('single'));
+    if (submodeBtnMulti) submodeBtnMulti.addEventListener('click', () => switchSubMode('multi'));
+
+    function renderTripStops() {
+      if (!multiStopsList) return;
+      multiStopsList.innerHTML = '';
+
+      let currentBattery = currentVehicle ? currentVehicle.battery : (parsePtNumber(inputTripBattery ? inputTripBattery.value : inputBattery.value) || 60.5);
+
+      tripStops.forEach((stop, index) => {
+        const item = document.createElement('div');
+        item.className = 'stop-item-card';
+
+        const addedPercent = Math.max(0, stop.departureSoc - stop.arrivalSoc);
+        const addedKwh = (addedPercent / 100) * currentBattery;
+        const stopCost = addedKwh * stop.tariff;
+
+        item.innerHTML = `
+          <div class="stop-item-header">
+            <span class="stop-item-title">⚡ Parada #${index + 1}</span>
+            <button type="button" class="btn-remove-stop" data-index="${index}" title="Excluir esta parada">🗑️ Excluir</button>
+          </div>
+          <div class="stop-inputs-grid">
+            <div class="stop-input-group">
+              <label>Carga Chegada (%)</label>
+              <input type="number" class="stop-mini-input stop-arrival" data-index="${index}" value="${stop.arrivalSoc}" min="0" max="100" step="1">
+            </div>
+            <div class="stop-input-group">
+              <label>Carga Saída (%)</label>
+              <input type="number" class="stop-mini-input stop-departure" data-index="${index}" value="${stop.departureSoc}" min="0" max="100" step="1">
+            </div>
+            <div class="stop-input-group">
+              <label>Tarifa (R$/kWh)</label>
+              <input type="text" class="stop-mini-input stop-tariff" data-index="${index}" value="${formatPt(stop.tariff, 2)}">
+            </div>
+          </div>
+          <div class="stop-item-calc">
+            Injetado: +${addedPercent}% (${formatPt(addedKwh, 1)} kWh) • <strong>R$ ${formatPt(stopCost, 2)}</strong>
+          </div>
+        `;
+        multiStopsList.appendChild(item);
+      });
+
+      // Listeners de remoção
+      multiStopsList.querySelectorAll('.btn-remove-stop').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const idx = parseInt(this.dataset.index, 10);
+          removeTripStop(idx);
+        });
+      });
+
+      // Listeners dos campos de cada parada
+      multiStopsList.querySelectorAll('.stop-arrival').forEach(input => {
+        input.addEventListener('input', function() {
+          const idx = parseInt(this.dataset.index, 10);
+          tripStops[idx].arrivalSoc = Math.min(Math.max(parseInt(this.value, 10) || 0, 0), 100);
+          recalculateMultiStop();
+        });
+      });
+
+      multiStopsList.querySelectorAll('.stop-departure').forEach(input => {
+        input.addEventListener('input', function() {
+          const idx = parseInt(this.dataset.index, 10);
+          tripStops[idx].departureSoc = Math.min(Math.max(parseInt(this.value, 10) || 0, 0), 100);
+          recalculateMultiStop();
+        });
+      });
+
+      multiStopsList.querySelectorAll('.stop-tariff').forEach(input => {
+        input.addEventListener('input', function() {
+          const idx = parseInt(this.dataset.index, 10);
+          tripStops[idx].tariff = parsePtNumber(this.value) || 0;
+          recalculateMultiStop();
+        });
+      });
+    }
+
+    function addTripStop() {
+      const lastStop = tripStops[tripStops.length - 1];
+      const newArrival = lastStop ? Math.max(15, lastStop.arrivalSoc) : 20;
+      const newDeparture = 80;
+      const newTariff = lastStop ? lastStop.tariff : 2.50;
+      tripStops.push({ arrivalSoc: newArrival, departureSoc: newDeparture, tariff: newTariff });
+      renderTripStops();
+      recalculateMultiStop();
+    }
+
+    function removeTripStop(index) {
+      if (tripStops.length > 0) {
+        tripStops.splice(index, 1);
+        renderTripStops();
+        recalculateMultiStop();
+      }
+    }
+
+    if (btnAddTripStop) {
+      btnAddTripStop.addEventListener('click', addTripStop);
+    }
+
+    function recalculateMultiStop() {
+      let battery;
+      if (currentVehicle) {
+        battery = currentVehicle.battery;
+      } else {
+        battery = parsePtNumber(inputTripBattery ? inputTripBattery.value : inputBattery.value) || 60.5;
+      }
+
+      const distance = parsePtNumber(inputMultiDistance ? inputMultiDistance.value : '800') || 0;
+      const startSoc = Math.min(Math.max(parseInt(inputMultiStartSoc ? inputMultiStartSoc.value : '100', 10) || 0, 0), 100);
+      const startTariff = parsePtNumber(inputMultiStartTariff ? inputMultiStartTariff.value : '1,79') || 0;
+      const arrivalSoc = Math.min(Math.max(parseInt(inputMultiArrivalSoc ? inputMultiArrivalSoc.value : '34', 10) || 0, 0), 100);
+      const finalTariff = parsePtNumber(inputMultiFinalTariff ? inputMultiFinalTariff.value : '1,79') || 0;
+
+      // Atualiza os subtextos de cálculo nas paradas
+      if (multiStopsList) {
+        const cards = multiStopsList.querySelectorAll('.stop-item-card');
+        tripStops.forEach((stop, idx) => {
+          if (cards[idx]) {
+            const addedPercent = Math.max(0, stop.departureSoc - stop.arrivalSoc);
+            const addedKwh = (addedPercent / 100) * battery;
+            const stopCost = addedKwh * (stop.tariff || 0);
+            const calcEl = cards[idx].querySelector('.stop-item-calc');
+            if (calcEl) {
+              calcEl.innerHTML = `Injetado: +${addedPercent}% (${formatPt(addedKwh, 1)} kWh) • <strong>R$ ${formatPt(stopCost, 2)}</strong>`;
+            }
+          }
+        });
+      }
+
+      // 1) Delta de energia da partida consumida (startSoc - arrivalSoc)
+      const netStartPercent = Math.max(0, startSoc - arrivalSoc);
+      const startEnergyKwh = (netStartPercent / 100) * battery;
+      const startCost = startEnergyKwh * startTariff;
+
+      // 2) Soma de todas as recargas nas paradas
+      let totalStopsPercent = 0;
+      let totalStopsCost = 0;
+      tripStops.forEach(s => {
+        const stopDelta = Math.max(0, s.departureSoc - s.arrivalSoc);
+        totalStopsPercent += stopDelta;
+        totalStopsCost += ((stopDelta / 100) * battery) * (s.tariff || 0);
+      });
+
+      const totalStopsKwh = (totalStopsPercent / 100) * battery;
+      const totalEnergyKwh = startEnergyKwh + totalStopsKwh;
+      const totalTripCost = startCost + totalStopsCost;
+
+      // 3) Recarga no destino final para 100%
+      const finalNeededPercent = Math.max(0, 100 - arrivalSoc);
+      const finalNeededKwh = (finalNeededPercent / 100) * battery;
+      const finalRechargeCost = finalNeededKwh * finalTariff;
+
+      if (distance > 0 && totalEnergyKwh > 0) {
+        const kwhPer100Km = (totalEnergyKwh / distance) * 100;
+        const kmPerKwh = distance / totalEnergyKwh;
+        const costPerKm = totalTripCost / distance;
+
+        if (resMultiConsumption) resMultiConsumption.textContent = formatPt(kwhPer100Km, 2);
+        if (resMultiKmpkwh) resMultiKmpkwh.textContent = formatPt(kmPerKwh, 2) + ' km/kWh';
+        if (resMultiTotalCost) resMultiTotalCost.textContent = 'R$ ' + formatPt(totalTripCost, 2);
+        if (resMultiCostPerKm) resMultiCostPerKm.textContent = 'R$ ' + formatPt(costPerKm, 2) + ' / km';
+        if (resMultiTotalEnergy) resMultiTotalEnergy.textContent = formatPt(totalEnergyKwh, 1) + ' kWh';
+        if (resMultiStopsInfo) {
+          const stopsCount = tripStops.length;
+          resMultiStopsInfo.textContent = stopsCount + (stopsCount === 1 ? ' parada' : ' paradas') + ' (' + formatPt(totalStopsKwh, 1) + ' kWh)';
+        }
+      } else {
+        if (resMultiConsumption) resMultiConsumption.textContent = '--';
+        if (resMultiKmpkwh) resMultiKmpkwh.textContent = '-- km/kWh';
+        if (resMultiTotalCost) resMultiTotalCost.textContent = '--';
+        if (resMultiCostPerKm) resMultiCostPerKm.textContent = '-- / km';
+        if (resMultiTotalEnergy) resMultiTotalEnergy.textContent = '--';
+        if (resMultiStopsInfo) resMultiStopsInfo.textContent = '-- paradas';
+      }
+
+      if (resMultiFinalCost) resMultiFinalCost.textContent = 'R$ ' + formatPt(finalRechargeCost, 2);
+      if (resMultiFinalEnergy) resMultiFinalEnergy.textContent = formatPt(finalNeededKwh, 1) + ' kWh para 100%';
+    }
+
+    function onMultiDistanceSliderChange() {
+      const val = parseFloat(sliderMultiDistance.value);
+      inputMultiDistance.value = val;
+      document.querySelectorAll('#multi-distance-presets .preset-chip').forEach(c => {
+        c.classList.toggle('active', parseInt(c.dataset.val, 10) === val);
+      });
+      recalculateMultiStop();
+    }
+
+    function onMultiDistanceInputChange() {
+      const val = parsePtNumber(inputMultiDistance.value);
+      sliderMultiDistance.value = Math.min(Math.max(val, 50), 2000);
+      document.querySelectorAll('#multi-distance-presets .preset-chip').forEach(c => {
+        c.classList.toggle('active', parseInt(c.dataset.val, 10) === val);
+      });
+      recalculateMultiStop();
+    }
+
+    if (sliderMultiDistance) sliderMultiDistance.addEventListener('input', onMultiDistanceSliderChange);
+    if (inputMultiDistance) inputMultiDistance.addEventListener('input', onMultiDistanceInputChange);
+
+    [inputMultiStartSoc, inputMultiStartTariff, inputMultiArrivalSoc, inputMultiFinalTariff].forEach(input => {
+      if (input) input.addEventListener('input', recalculateMultiStop);
+    });
+
+    document.querySelectorAll('#multi-distance-presets .preset-chip').forEach(chip => {
+      chip.addEventListener('click', function() {
+        document.querySelectorAll('#multi-distance-presets .preset-chip').forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+        const val = parseInt(this.dataset.val, 10);
+        inputMultiDistance.value = val;
+        sliderMultiDistance.value = val;
+        recalculateMultiStop();
+      });
+    });
+
     initTheme();
     initVehicleModal();
     onSliderChange();
+    recalculateConsumption();
+    renderTripStops();
+    recalculateMultiStop();
 
     if (typeof google !== 'undefined' && google.script && google.script.run) {
       google.script.run.withSuccessHandler(function(serverData) {
