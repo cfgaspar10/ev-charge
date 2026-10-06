@@ -1,2 +1,32 @@
+# Sistema Operacional
 .DS_Store
+Thumbs.db
+
+# Logs
+logs
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Variáveis de ambiente sensíveis (nunca comitar!)
+.env
+.env.local
+.env.*.local
+
+# Dependências Node.js
+node_modules/
+
+# Volumes e dados persistentes locais do Docker
+pgdata/
+postgres-data/
+
+# Builds e temporários
+dist/
+build/
+.cache/
+
+# Chaves e certificados
+*.pem
+*.key
+*.cert
