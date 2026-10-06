@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
+  <title>Calculadora de Recarga VE</title>
+  
+  <!-- PWA & Mobile Web App Meta Tags -->
+  <meta name="theme-color" content="#181C14" id="meta-theme-color">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="Recarga VE">
+  <meta name="description" content="Calculadora inteligente de tempo, energia e custo de recarga de veículos elétricos e híbridos.">
+  
+  <!-- iOS Safari Web App -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Recarga VE">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23181C14'/%3E%3Cpath d='M46 15 L25 54 L48 54 L44 85 L75 42 L52 42 Z' fill='%23578FCA' stroke='%23ECDFCC' stroke-width='2'/%3E%3C/svg%3E">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%233674B5'/%3E%3Cpath d='M46 15 L25 54 L48 54 L44 85 L75 42 L52 42 Z' fill='%23ECDFCC'/%3E%3C/svg%3E">
+  
+  <!-- Estilos desacoplados -->
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+  <!-- Cabeçalho -->
+  <header class="app-header">
+    <div class="app-title-box">
+      <div class="app-logo">⚡</div>
+      <h1 class="app-title">Recarga VE</h1>
+    </div>
+    <div class="header-actions">
+      <button type="button" id="btn-reset-all" class="reset-all-btn" title="Restaurar valores padrões da calculadora">🔄 Zerar</button>
+      <span class="app-badge">v2.2.0</span>
+      <button type="button" id="theme-toggle-btn" class="theme-toggle-btn" title="Alternar Tema (Claro / Escuro)">🌙</button>
+    </div>
+  </header>
+
+  <!-- Topo: Seletor de Veículo + Tarifa de Energia -->
+  <div class="top-controls-grid">
+    
+    <!-- Seletor de Veículo -->
+    <button type="button" id="open-vehicle-modal" class="vehicle-selector-btn">
+      <div class="vehicle-btn-content">
+        <span class="vehicle-btn-label">Veículo</span>
+        <span class="vehicle-btn-title" id="selected-vehicle-display">🚗 Toque para escolher o modelo...</span>
+      </div>
+      <div class="vehicle-btn-actions">
+        <span id="clear-vehicle-btn" class="clear-vehicle-btn" title="Zerar seleção de veículo">✕ Zerar</span>
+        <div class="vehicle-btn-icon-box">▼</div>
+      </div>
+    </button>
+
+    <!-- Tarifa de Energia no Topo -->
+    <div class="tariff-top-bar">
+      <div class="tariff-title-wrap">
+        <span class="tariff-title">💰 Tarifa de Energia</span>
+      </div>
+      <div class="tariff-input-box">
+        <span class="tariff-currency">R$</span>
+        <input type="text" id="input-tariff" class="tariff-input" value="1,79" placeholder="1,79">
+        <span class="tariff-currency">/kWh</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Navegação por Abas (Segmented Control) -->
+  <nav class="tab-navigation" role="tablist">
+    <button type="button" class="tab-btn active" id="tab-btn-charging" data-tab="tab-charging" role="tab" aria-selected="true">
+      <span>⚡</span> Recarga
+    </button>
+    <button type="button" class="tab-btn" id="tab-btn-consumption" data-tab="tab-consumption" role="tab" aria-selected="false">
+      <span>📊</span> Autonomia & Consumo
+    </button>
+  </nav>
+
+  <!-- ============================================================
+       ABA 1: RECARGA (Calculadora)
+       ============================================================ -->
+  <div id="tab-charging" class="tab-content">
+    
+    <!-- Cards de Resumo Compactos (KPIs) -->
+    <div class="summary-grid">
+      <div class="summary-card card-energy">
+        <div class="summary-header-label"><span>⚡</span> Energia</div>
+        <span class="summary-value" id="res-energy">--</span>
+      </div>
+      <div class="summary-card card-time">
+        <div class="summary-header-label"><span>⏱️</span> Tempo Estimado</div>
+        <span class="summary-value" id="res-time">--</span>
+      </div>
+      <div class="summary-card card-cost">
+        <div class="summary-header-label"><span>💰</span> Custo</div>
+        <span class="summary-value" id="res-cost">--</span>
+      </div>
+    </div>
+
+    <!-- Tabela de Estimativas (Sem os 60%) -->
+    <div class="table-card">
+      <div class="table-header-title">Estimativas por Meta de Carga</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Meta</th>
+            <th>Energia</th>
+            <th>Tempo Estimado</th>
+            <th>Custo</th>
+          </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+
+    <!-- Painel de Controles Compacto -->
+    <div class="controls-panel">
+      
+      <!-- Potência do Carregador Adaptativo -->
+      <div class="control-item">
+        <div class="control-header-row">
+          <div class="control-title">
+            <span class="emoji">🔌</span> Carregador (kW)
+            <span id="vehicle-limit-info" class="vehicle-limit-hint"></span>
+          </div>
+          <input type="text" id="input-charger" class="pill-input" value="6.6">
+        </div>
+        <div class="presets-row" id="charger-presets"></div>
+        <div class="slider-container">
+          <input type="range" id="slider-charger" min="1.0" max="150.0" step="0.1" value="6.6">
+        </div>
+      </div>
+
+      <!-- Capacidade da Bateria -->
+      <div class="control-item">
+        <div class="control-header-row">
+          <div class="control-title"><span class="emoji">🔋</span> Bateria (kWh)</div>
+          <input type="text" id="input-battery" class="pill-input" value="60,5">
+        </div>
+        <div class="slider-container">
+          <input type="range" id="slider-battery" min="5.0" max="150.0" step="0.01" value="60.5">
+        </div>
+      </div>
+
+      <!-- Carga Inicial -->
+      <div class="control-item">
+        <div class="control-header-row">
+          <div class="control-title"><span class="emoji">📉</span> Carga Inicial (%)</div>
+          <input type="text" id="input-start" class="pill-input" value="20">
+        </div>
+        <div class="presets-row" id="start-presets">
+          <button type="button" class="preset-chip" data-val="10">10%</button>
+          <button type="button" class="preset-chip active" data-val="20">20%</button>
+          <button type="button" class="preset-chip" data-val="30">30%</button>
+          <button type="button" class="preset-chip" data-val="50">50%</button>
+        </div>
+        <div class="slider-container">
+          <input type="range" id="slider-start" min="0" max="100" step="1" value="20">
+        </div>
+      </div>
+
+      <!-- Carga Alvo -->
+      <div class="control-item">
+        <div class="control-header-row">
+          <div class="control-title"><span class="emoji">🎯</span> Carga Alvo (%)</div>
+          <input type="text" id="input-target" class="pill-input" value="80">
+        </div>
+        <div class="presets-row" id="target-presets">
+          <button type="button" class="preset-chip" data-val="50">50%</button>
+          <button type="button" class="preset-chip" data-val="75">75%</button>
+          <button type="button" class="preset-chip active" data-val="80">80% (Diário)</button>
+          <button type="button" class="preset-chip" data-val="100">100% (Viagem)</button>
+        </div>
+        <div class="slider-container">
+          <input type="range" id="slider-target" min="0" max="100" step="1" value="80">
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ============================================================
+       ABA 2: AUTONOMIA & CONSUMO
+       ============================================================ -->
+  <div id="tab-consumption" class="tab-content hidden">
+
+    <!-- Alternador de Sub-modo: Trecho Direto vs Viagem com Paradas -->
+    <div class="sub-mode-pill-row">
+      <button type="button" class="sub-mode-pill active" id="submode-btn-single" data-submode="single">
+        <span>📍</span> Trecho Direto
+      </button>
+      <button type="button" class="sub-mode-pill" id="submode-btn-multi" data-submode="multi">
+        <span>🛣️</span> Viagem com Paradas
+      </button>
+    </div>
+
+    <!-- SUB-MODO A: TRECHO DIRETO (Sem paradas) -->
+    <div id="container-single-trip" class="sub-mode-panel">
+
+      <!-- Cards de Resumo da Viagem / Consumo (Grid 2x2) -->
+      <div class="consumption-summary-grid">
+        
+        <!-- Consumo Médio -->
+        <div class="summary-card card-consumption">
+          <div class="summary-header-label"><span>⚡</span> Consumo Médio</div>
+          <div style="display: flex; align-items: baseline; gap: 3px;">
+            <span class="summary-value" id="res-trip-consumption">--</span>
+            <span style="font-size: 10px; font-weight: 600; color: var(--text-muted);">kWh/100km</span>
+          </div>
+          <span class="summary-sub-label" id="res-trip-kmpkwh">-- km/kWh</span>
+        </div>
+
+        <!-- Autonomia Restante -->
+        <div class="summary-card card-remaining">
+          <div class="summary-header-label"><span>🛣️</span> Autonomia Restante</div>
+          <span class="summary-value" id="res-trip-remaining-range">--</span>
+          <span class="summary-sub-label" id="res-trip-remaining-energy">--</span>
+        </div>
+
+        <!-- Autonomia Total Projetada -->
+        <div class="summary-card card-total-range">
+          <div class="summary-header-label"><span>🔋</span> Autonomia Total</div>
+          <span class="summary-value" id="res-trip-total-range">--</span>
+          <span class="badge-efficiency neutral" id="res-trip-range-badge">--</span>
+        </div>
+
+        <!-- Custo do Trajeto -->
+        <div class="summary-card card-trip-cost">
+          <div class="summary-header-label"><span>💰</span> Custo do Trajeto</div>
+          <span class="summary-value" id="res-trip-cost">--</span>
+          <span class="summary-sub-label" id="res-trip-cost-per-km">--</span>
+        </div>
+
+      </div>
+
+      <!-- Status da Bateria: Exibido quando HOUVER veículo selecionado -->
+      <div class="info-card-consumption" id="trip-battery-info-card" style="display: none;">
+        <div>
+          <span>🔋 Bateria: </span>
+          <strong id="trip-battery-display">60,50 kWh</strong>
+        </div>
+        <span style="font-size: 10.5px; color: var(--text-muted);">(Sincronizada com o veículo)</span>
+      </div>
+
+      <!-- Painel de Controles de Consumo -->
+      <div class="controls-panel">
+
+        <!-- Capacidade da Bateria: Exibido quando NÃO houver veículo selecionado (Permite usuário informar) -->
+        <div class="control-item" id="trip-battery-control-item">
+          <div class="control-header-row">
+            <div class="control-title">
+              <span class="emoji">🔋</span> Bateria (kWh)
+              <span class="vehicle-limit-hint">(Personalizada)</span>
+            </div>
+            <input type="text" id="input-trip-battery" class="pill-input" value="60,5">
+          </div>
+          <div class="slider-container">
+            <input type="range" id="slider-trip-battery" min="5.0" max="150.0" step="0.01" value="60.5">
+          </div>
+        </div>
+
+        <!-- Distância Percorrida -->
+        <div class="control-item">
+          <div class="control-header-row">
+            <div class="control-title"><span class="emoji">📍</span> Distância Percorrida (km)</div>
+            <input type="text" id="input-trip-distance" class="pill-input" value="183">
+          </div>
+          <div class="presets-row" id="trip-distance-presets">
+            <button type="button" class="preset-chip" data-add="10">+10 km</button>
+            <button type="button" class="preset-chip" data-add="50">+50 km</button>
+            <button type="button" class="preset-chip" data-val="50">50 km</button>
+            <button type="button" class="preset-chip" data-val="100">100 km</button>
+            <button type="button" class="preset-chip active" data-val="183">183 km</button>
+            <button type="button" class="preset-chip" data-val="250">250 km</button>
+          </div>
+          <div class="slider-container">
+            <input type="range" id="slider-trip-distance" min="1" max="800" step="1" value="183">
+          </div>
+        </div>
+
+        <!-- Carga Inicial da Viagem -->
+        <div class="control-item">
+          <div class="control-header-row">
+            <div class="control-title"><span class="emoji">🔋</span> Carga Inicial (%)</div>
+            <input type="text" id="input-trip-start" class="pill-input" value="100">
+          </div>
+          <div class="presets-row" id="trip-start-presets">
+            <button type="button" class="preset-chip" data-val="80">80%</button>
+            <button type="button" class="preset-chip" data-val="90">90%</button>
+            <button type="button" class="preset-chip active" data-val="100">100% (Cheia)</button>
+          </div>
+          <div class="slider-container">
+            <input type="range" id="slider-trip-start" min="10" max="100" step="1" value="100">
+          </div>
+        </div>
+
+        <!-- Carga Restante Atual -->
+        <div class="control-item">
+          <div class="control-header-row">
+            <div class="control-title"><span class="emoji">📉</span> Carga Restante Atual (%)</div>
+            <input type="text" id="input-trip-current" class="pill-input" value="47">
+          </div>
+          <div class="presets-row" id="trip-current-presets">
+            <button type="button" class="preset-chip" data-val="20">20%</button>
+            <button type="button" class="preset-chip" data-val="30">30%</button>
+            <button type="button" class="preset-chip active" data-val="47">47%</button>
+            <button type="button" class="preset-chip" data-val="60">60%</button>
+            <button type="button" class="preset-chip" data-val="80">80%</button>
+          </div>
+          <div class="slider-container">
+            <input type="range" id="slider-trip-current" min="0" max="100" step="1" value="47">
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- SUB-MODO B: VIAGEM COM PARADAS DE RECARGA -->
+    <div id="container-multi-trip" class="sub-mode-panel hidden">
+
+      <!-- Cards de Resumo Consolidado (Grid 2x2) -->
+      <div class="consumption-summary-grid">
+        
+        <!-- Média da Viagem -->
+        <div class="summary-card card-consumption">
+          <div class="summary-header-label"><span>⚡</span> Média da Viagem</div>
+          <div style="display: flex; align-items: baseline; gap: 3px;">
+            <span class="summary-value" id="res-multi-consumption">--</span>
+            <span style="font-size: 10px; font-weight: 600; color: var(--text-muted);">kWh/100km</span>
+          </div>
+          <span class="summary-sub-label" id="res-multi-kmpkwh">-- km/kWh</span>
+        </div>
+
+        <!-- Custo Total da Viagem -->
+        <div class="summary-card card-trip-cost">
+          <div class="summary-header-label"><span>💰</span> Custo Total</div>
+          <span class="summary-value" id="res-multi-total-cost">--</span>
+          <span class="summary-sub-label" id="res-multi-cost-per-km">-- / km</span>
+        </div>
+
+        <!-- Energia Consumida nos Motores -->
+        <div class="summary-card card-total-range">
+          <div class="summary-header-label"><span>🔌</span> Energia Consumida</div>
+          <span class="summary-value" id="res-multi-total-energy">--</span>
+          <span class="summary-sub-label" id="res-multi-stops-info">-- paradas</span>
+        </div>
+
+        <!-- Recarga Final no Destino -->
+        <div class="summary-card card-remaining">
+          <div class="summary-header-label"><span>🔋</span> Recarga no Destino</div>
+          <span class="summary-value" id="res-multi-final-cost">--</span>
+          <span class="summary-sub-label" id="res-multi-final-energy">para 100%</span>
+        </div>
+
+      </div>
+
+      <!-- Painel de Controles da Viagem Longa -->
+      <div class="controls-panel">
+
+        <!-- Distância Total da Viagem -->
+        <div class="control-item">
+          <div class="control-header-row">
+            <div class="control-title"><span class="emoji">📍</span> Distância Total da Viagem (km)</div>
+            <input type="text" id="input-multi-distance" class="pill-input" value="800">
+          </div>
+          <div class="presets-row" id="multi-distance-presets">
+            <button type="button" class="preset-chip" data-val="300">300 km</button>
+            <button type="button" class="preset-chip" data-val="500">500 km</button>
+            <button type="button" class="preset-chip active" data-val="800">800 km</button>
+            <button type="button" class="preset-chip" data-val="1000">1.000 km</button>
+            <button type="button" class="preset-chip" data-val="1200">1.200 km</button>
+          </div>
+          <div class="slider-container">
+            <input type="range" id="slider-multi-distance" min="50" max="2000" step="10" value="800">
+          </div>
+        </div>
+
+        <!-- Partida (Saída) -->
+        <div class="control-item">
+          <div class="control-header-row">
+            <div class="control-title"><span class="emoji">🏠</span> Carga e Tarifa de Saída</div>
+          </div>
+          <div class="stop-inputs-grid" style="grid-template-columns: 1fr 1.2fr;">
+            <div class="stop-input-group">
+              <label>Carga Inicial (%)</label>
+              <input type="number" id="input-multi-start-soc" class="stop-mini-input" value="100" min="10" max="100">
+            </div>
+            <div class="stop-input-group">
+              <label>Tarifa Saída (R$/kWh)</label>
+              <input type="text" id="input-multi-start-tariff" class="stop-mini-input" value="1,79">
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção de Paradas de Recarga na Rodovia -->
+        <div class="stops-section-header">
+          <div class="stops-section-title">
+            <span>⚡</span> Paradas de Recarga no Caminho
+          </div>
+        </div>
+
+        <!-- Lista Dinâmica de Paradas -->
+        <div class="stops-list-container" id="multi-stops-list"></div>
+
+        <!-- Botão Adicionar Parada -->
+        <button type="button" id="btn-add-trip-stop" class="btn-add-stop">
+          <span>➕</span> Adicionar Parada de Recarga
+        </button>
+
+        <!-- Chegada ao Destino Final -->
+        <div class="control-item" style="margin-top: 4px; border-top: 1px solid var(--border-color); padding-top: 8px;">
+          <div class="control-header-row">
+            <div class="control-title"><span class="emoji">🏁</span> Chegada ao Destino Final</div>
+          </div>
+          <div class="stop-inputs-grid" style="grid-template-columns: 1fr 1.2fr;">
+            <div class="stop-input-group">
+              <label>Carga Restante (%)</label>
+              <input type="number" id="input-multi-arrival-soc" class="stop-mini-input" value="34" min="0" max="100">
+            </div>
+            <div class="stop-input-group">
+              <label>Tarifa no Destino (R$/kWh)</label>
+              <input type="text" id="input-multi-final-tariff" class="stop-mini-input" value="1,79">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Rodapé / Copyright -->
+  <footer class="app-footer">
+    <p>Desenvolvido por <strong>GasparDevs</strong></p>
+    <p>Contato: <a href="mailto:carlesandrogaspar@gmail.com" class="footer-link">carlesandrogaspar@gmail.com</a></p>
+  </footer>
+
+  <!-- Modal / Bottom Sheet de Seleção -->
+  <div class="modal-overlay" id="vehicle-modal">
+    <div class="modal-sheet">
+      <div class="modal-handle-bar"></div>
+      <div class="modal-header">
+        <div class="modal-title-box">
+          <h3>Selecionar Veículo</h3>
+          <p id="modal-vehicle-count">80 modelos disponíveis</p>
+        </div>
+        <div class="modal-header-actions">
+          <button type="button" class="modal-reset-filters-btn" id="modal-reset-filters" title="Zerar filtros de pesquisa">Zerar filtros</button>
+          <button type="button" class="modal-close-btn" id="close-vehicle-modal" aria-label="Fechar">✕</button>
+        </div>
+      </div>
+
+      <!-- Campo de Busca -->
+      <div class="search-box-wrap">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="modal-search-input" class="search-input" placeholder="Buscar marca ou modelo..." autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" enterkeyhint="search">
+          <button type="button" id="modal-search-clear" class="search-clear-btn">✕</button>
+        </div>
+      </div>
+
+      <!-- Filtro por Tipo -->
+      <div class="filter-pills-row">
+        <button type="button" class="filter-type-pill active" data-type="ALL">Todos</button>
+        <button type="button" class="filter-type-pill" data-type="BEV">⚡ 100% Elétrico (BEV)</button>
+        <button type="button" class="filter-type-pill" data-type="PHEV">🔋 Plug-in (PHEV)</button>
+      </div>
+
+      <!-- Carrossel de Marcas -->
+      <div class="brand-pills-container" id="modal-brand-pills"></div>
+
+      <!-- Lista de Modelos -->
+      <div class="models-list" id="modal-models-list"></div>
+    </div>
+  </div>
+
+  <!-- Adaptador de API e Script da Aplicação -->
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

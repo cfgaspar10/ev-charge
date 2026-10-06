@@ -1,0 +1,25 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+model Veiculo {
+  id        String   @id
+  type      String   // BEV ou PHEV
+  brand     String
+  model     String
+  battery   Float    // Capacidade da bateria em kWh
+  maxAc     Float    // Potência máxima AC em kW
+  maxDc     Float    // Potência máxima DC em kW
+  range     Int      // Autonomia em km (ciclo PBEV / Inmetro)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("veiculos")
+}

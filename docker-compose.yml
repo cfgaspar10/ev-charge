@@ -1,0 +1,47 @@
+services:
+  app-db:
+    image: postgres:16-alpine
+    container_name: ${DB_CONTAINER_NAME:-ev-calc-db-local}
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-ev_calculator_dev}
+    volumes:
+      - ev_pgdata:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_HOST_PORT:-5433}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-ev_calculator_dev}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-net
+
+  app-server:
+    build:
+      context: .
+      dockerfile: ./server/Dockerfile
+    container_name: ${APP_CONTAINER_NAME:-ev-calc-app-local}
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: 3000
+      APP_SECRET: ${APP_SECRET:-ev_calc_secret_dev_2026}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@app-db:5432/${POSTGRES_DB:-ev_calculator_dev}?schema=public
+    ports:
+      - "${APP_BIND_IP:-0.0.0.0}:${APP_PORT:-3001}:3000"
+    depends_on:
+      app-db:
+        condition: service_healthy
+    networks:
+      - app-net
+
+networks:
+  app-net:
+    driver: bridge
+
+volumes:
+  ev_pgdata:
+    name: ev_calculator_pgdata
