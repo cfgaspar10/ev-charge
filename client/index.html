@@ -30,9 +30,8 @@
       <h1 class="app-title">Recarga VE</h1>
     </div>
     <div class="header-actions">
-      <button type="button" id="btn-toggle-admin" class="reset-all-btn admin-toggle-btn" title="Área do Administrador">🔐 Admin</button>
+      <button type="button" id="btn-open-sugerir" class="reset-all-btn btn-sugerir" title="Não encontrou seu modelo? Sugira a inclusão">💡 Sugerir Veículo</button>
       <button type="button" id="btn-reset-all" class="reset-all-btn" title="Restaurar valores padrões da calculadora">🔄 Zerar</button>
-      <span class="app-badge">v1.0.0</span>
       <button type="button" id="theme-toggle-btn" class="theme-toggle-btn" title="Alternar Tema (Claro / Escuro)">🌙</button>
     </div>
   </header>
@@ -432,10 +431,16 @@
 
   </div>
 
-  <!-- Rodapé / Copyright -->
+  <!-- Rodapé / Copyright & Área Administrativa -->
   <footer class="app-footer">
-    <p>Desenvolvido por <strong>GasparDevs</strong></p>
-    <p>Contato: <a href="mailto:carlesandrogaspar@gmail.com" class="footer-link">carlesandrogaspar@gmail.com</a></p>
+    <div class="footer-admin-row">
+      <button type="button" id="btn-open-solicitacoes" class="footer-admin-btn admin-only-element btn-solicitacoes" title="Ver solicitações de veículos enviadas pelos usuários">📬 Solicitações <span id="badge-solicitacoes-count" class="badge-count hidden">0</span></button>
+      <button type="button" id="btn-toggle-admin" class="footer-admin-btn admin-toggle-btn" title="Área do Administrador">🔐 Admin</button>
+      <span class="app-badge">v1.0.0</span>
+    </div>
+    <div class="footer-info-row">
+      <p>Desenvolvido por <strong>GasparDevs</strong> • <a href="mailto:carlesandrogaspar@gmail.com" class="footer-link">carlesandrogaspar@gmail.com</a></p>
+    </div>
   </footer>
 
   <!-- Modal / Bottom Sheet de Seleção -->
@@ -448,6 +453,8 @@
           <p id="modal-vehicle-count">80 modelos disponíveis</p>
         </div>
         <div class="modal-header-actions">
+          <button type="button" class="modal-add-btn btn-sugerir-modal" id="btn-modal-sugerir-veiculo" title="Sugerir veículo que não está na lista">💡 Sugerir Veículo</button>
+          <button type="button" class="modal-add-btn admin-only-element btn-solicitacoes-modal" id="btn-modal-solicitacoes" title="Ver solicitações de veículos (Admin)">📬 Solicitações (<span id="modal-solicitacoes-count">0</span>)</button>
           <button type="button" class="modal-add-btn admin-only-element" id="btn-open-novo-veiculo" title="Cadastrar Novo Veículo (Admin)">➕ Novo Veículo</button>
           <button type="button" class="modal-reset-filters-btn" id="modal-reset-filters" title="Zerar filtros de pesquisa">Zerar filtros</button>
           <button type="button" class="modal-close-btn" id="close-vehicle-modal" aria-label="Fechar">✕</button>
@@ -577,6 +584,102 @@
           </div>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Modal de Sugestão / Solicitação de Veículo (Visitante/Usuário) -->
+  <div class="modal-overlay" id="modal-sugerir-veiculo">
+    <div class="modal-sheet modal-dialog-medium">
+      <div class="modal-handle-bar"></div>
+      <div class="modal-header">
+        <div class="modal-title-box">
+          <h3>💡 Sugerir Inclusão de Veículo</h3>
+          <p>Não encontrou seu modelo? Envie os dados para nossa equipe incluir na calculadora.</p>
+        </div>
+        <button type="button" class="modal-close-btn" id="close-sugerir-veiculo-modal">✕</button>
+      </div>
+
+      <form id="form-sugerir-veiculo" class="admin-form-body">
+        <div class="admin-form-grid">
+          
+          <div class="form-group">
+            <label for="sugerir-marca">Marca / Montadora *</label>
+            <input type="text" id="sugerir-marca" class="admin-form-input" placeholder="Ex: BYD, Volvo, GWM, Tesla..." required>
+          </div>
+
+          <div class="form-group">
+            <label for="sugerir-modelo">Modelo / Versão e Ano *</label>
+            <input type="text" id="sugerir-modelo" class="admin-form-input" placeholder="Ex: Dolphin Mini 2026, EX30 Ultra..." required>
+          </div>
+
+          <div class="form-group">
+            <label for="sugerir-tipo">Tipo de Propulsão</label>
+            <select id="sugerir-tipo" class="admin-form-input">
+              <option value="BEV">⚡ 100% Elétrico (BEV)</option>
+              <option value="PHEV">🔋 Híbrido Plug-in (PHEV)</option>
+              <option value="">❓ Não sei informar</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="sugerir-bateria">Capacidade da Bateria (kWh aproximado)</label>
+            <input type="number" id="sugerir-bateria" class="admin-form-input" step="0.1" min="1" max="250" placeholder="Ex: 38.8 (opcional)">
+          </div>
+
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label for="sugerir-url">Link de Referência / Ficha Técnica (URL)</label>
+            <input type="url" id="sugerir-url" class="admin-form-input" placeholder="https://site-da-montadora.com.br/modelo (opcional)">
+          </div>
+
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label for="sugerir-notes">Observações ou Detalhes Adicionais</label>
+            <textarea id="sugerir-notes" class="admin-form-input" rows="2" placeholder="Ex: Carro lançado recentemente, suporta recarga rápida DC... (opcional)" style="resize: vertical;"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="sugerir-nome">Seu Nome (opcional)</label>
+            <input type="text" id="sugerir-nome" class="admin-form-input" placeholder="Seu nome ou apelido">
+          </div>
+
+          <div class="form-group">
+            <label for="sugerir-email">Seu E-mail (opcional)</label>
+            <input type="email" id="sugerir-email" class="admin-form-input" placeholder="Para avisarmos quando for incluído">
+          </div>
+
+        </div>
+
+        <div id="sugerir-veiculo-msg" class="admin-msg-box hidden"></div>
+
+        <div class="form-actions-row">
+          <button type="button" class="btn-secondary" id="btn-cancel-sugerir">Cancelar</button>
+          <button type="submit" class="btn-primary" id="btn-submit-sugerir">🚀 Enviar Sugestão</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal do Painel de Solicitações (Admin) -->
+  <div class="modal-overlay" id="modal-painel-solicitacoes">
+    <div class="modal-sheet modal-dialog-large">
+      <div class="modal-handle-bar"></div>
+      <div class="modal-header">
+        <div class="modal-title-box">
+          <h3>📬 Solicitações de Inclusão de Veículos</h3>
+          <p>Avalie as sugestões enviadas pelos usuários e cadastre diretamente no catálogo</p>
+        </div>
+        <button type="button" class="modal-close-btn" id="close-painel-solicitacoes-modal">✕</button>
+      </div>
+
+      <div class="solicitacoes-filter-bar">
+        <button type="button" class="solicitacao-tab-btn active" data-status="">Todas</button>
+        <button type="button" class="solicitacao-tab-btn" data-status="PENDENTE">⏳ Pendentes</button>
+        <button type="button" class="solicitacao-tab-btn" data-status="APROVADA">✅ Aprovadas</button>
+        <button type="button" class="solicitacao-tab-btn" data-status="REJEITADA">❌ Rejeitadas</button>
+      </div>
+
+      <div id="lista-solicitacoes-admin" class="solicitacoes-list-container">
+        <!-- Renderizado dinamicamente via app.js -->
+      </div>
     </div>
   </div>
 

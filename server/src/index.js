@@ -70,12 +70,38 @@ apiRouter.get('/', (req, res) => {
         metodo: 'DELETE',
         rota: '/api/veiculos/:id',
         descricao: '[Admin] Desativa ou remove um veículo do catálogo (Header x-admin-key)'
+      },
+      {
+        metodo: 'POST',
+        rota: '/api/solicitacoes',
+        descricao: 'Envia uma sugestão de inclusão de novo veículo pelo visitante'
+      },
+      {
+        metodo: 'GET',
+        rota: '/api/solicitacoes',
+        descricao: '[Admin] Lista as solicitações de inclusão de veículos (Header x-admin-key)'
+      },
+      {
+        metodo: 'GET',
+        rota: '/api/solicitacoes/contagem-pendentes',
+        descricao: '[Admin] Retorna o número de solicitações pendentes (Header x-admin-key)'
+      },
+      {
+        metodo: 'PUT',
+        rota: '/api/solicitacoes/:id',
+        descricao: '[Admin] Atualiza o status de uma solicitação (APROVADA/REJEITADA) (Header x-admin-key)'
+      },
+      {
+        metodo: 'DELETE',
+        rota: '/api/solicitacoes/:id',
+        descricao: '[Admin] Remove uma solicitação da lista (Header x-admin-key)'
       }
     ]
   });
 });
 
 apiRouter.use('/veiculos', require('./routes/veiculos.routes'));
+apiRouter.use('/solicitacoes', require('./routes/solicitacoes.routes'));
 
 // Atende API na raiz e em subcaminhos suportados pelo proxy reverso
 app.use('/api', apiRouter);

@@ -23,3 +23,21 @@ model Veiculo {
 
   @@map("veiculos")
 }
+
+model SolicitacaoVeiculo {
+  id          Int      @id @default(autoincrement())
+  userName    String?  // Nome de quem solicitou
+  userEmail   String?  // E-mail para contato
+  brand       String   // Marca
+  model       String   // Modelo / Versão
+  type        String?  // BEV ou PHEV
+  battery     Float?   // Bateria estimada em kWh
+  sourceUrl   String?  // Link de referência ou ficha técnica
+  notes       String?  // Observações do usuário
+  status      String   @default("PENDENTE") // PENDENTE, APROVADA, REJEITADA
+  adminNotes  String?  // Observações do administrador
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("solicitacoes_veiculos")
+}

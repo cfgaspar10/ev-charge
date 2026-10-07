@@ -137,6 +137,44 @@
         method: 'DELETE',
         adminKey
       });
+    },
+
+    // Métodos de Solicitação / Sugestão de novos veículos
+    async enviarSolicitacao(dados) {
+      return fetchAPI('/solicitacoes', {
+        method: 'POST',
+        body: JSON.stringify(dados)
+      });
+    },
+
+    async listarSolicitacoes(status = '', adminKey) {
+      const query = status ? `?status=${encodeURIComponent(status)}` : '';
+      return fetchAPI('/solicitacoes' + query, {
+        method: 'GET',
+        adminKey
+      });
+    },
+
+    async contarSolicitacoesPendentes(adminKey) {
+      return fetchAPI('/solicitacoes/contagem-pendentes', {
+        method: 'GET',
+        adminKey
+      });
+    },
+
+    async atualizarStatusSolicitacao(id, status, adminNotes = '', adminKey) {
+      return fetchAPI(`/solicitacoes/${encodeURIComponent(id)}`, {
+        method: 'PUT',
+        body: JSON.stringify({ status, adminNotes }),
+        adminKey
+      });
+    },
+
+    async excluirSolicitacao(id, adminKey) {
+      return fetchAPI(`/solicitacoes/${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+        adminKey
+      });
     }
   };
 
