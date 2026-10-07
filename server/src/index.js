@@ -121,6 +121,17 @@ app.use('/app/api', apiRouter);
 
 // Servir frontend SPA estático da pasta client
 const clientPath = path.resolve(__dirname, '../../client');
+
+// Configuração especial de cabeçalhos para o Service Worker PWA
+const handleServiceWorker = (req, res) => {
+  res.setHeader('Service-Worker-Allowed', '/');
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.sendFile(path.join(clientPath, 'sw.js'));
+};
+app.get('/sw.js', handleServiceWorker);
+app.get('/app/sw.js', handleServiceWorker);
+app.get('/app-hml/sw.js', handleServiceWorker);
+
 app.use(express.static(clientPath));
 app.use('/app-hml', express.static(clientPath));
 app.use('/app', express.static(clientPath));

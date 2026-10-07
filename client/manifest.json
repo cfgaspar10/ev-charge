@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+  "id": "./",
+  "name": "kWhub - Central & Calculadora de Recarga VE",
+  "short_name": "kWhub",
+  "description": "Central inteligente para simulação, planejamento de recarga, autonomia e custos de veículos elétricos e híbridos.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ],
+  "background_color": "#0B0F17",
+  "theme_color": "#0B0F17",
+  "orientation": "any",
+  "categories": [
+    "utilities",
+    "travel",
+    "productivity",
+    "automotive"
+  ],
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "assets/icons/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/icon-maskable-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "assets/icons/icon-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Simulador de Recarga",
+      "short_name": "Recarga",
+      "description": "Calcular tempo, energia e custo da recarga VE",
+      "url": "./index.html#recarga",
+      "icons": [
+        {
+          "src": "assets/icons/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Autonomia & Consumo",
+      "short_name": "Autonomia",
+      "description": "Simular paradas de viagem e consumo por trecho",
+      "url": "./index.html#autonomia",
+      "icons": [
+        {
+          "src": "assets/icons/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Sugerir Novo Veículo",
+      "short_name": "Sugerir",
+      "description": "Indicar modelo para inclusão no catálogo homologado",
+      "url": "./index.html#sugerir",
+      "icons": [
+        {
+          "src": "assets/icons/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

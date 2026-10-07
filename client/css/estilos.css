@@ -187,6 +187,16 @@
       color: #e06c75;
       background: rgba(224, 108, 117, 0.1);
     }
+    .btn-instalar {
+      border-color: rgba(37, 99, 235, 0.4);
+      color: var(--accent-blue-light);
+      background: rgba(37, 99, 235, 0.12);
+    }
+    .btn-instalar:hover, .btn-instalar:active {
+      border-color: var(--accent-blue);
+      color: #ffffff;
+      background: var(--accent-blue);
+    }
     .app-badge {
       font-size: 10px;
       font-weight: 600;

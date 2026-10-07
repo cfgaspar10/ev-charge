@@ -47,8 +47,8 @@ flowchart TD
 ```
 
 ### Principais Componentes:
-- **Frontend (`/client`):** Single Page Application (SPA) responsiva com suporte a temas Claro/Escuro, emulador de chamadas assíncronas e interface orientada a componentes.
-- **Backend (`/server`):** Servidor HTTP leve construído com Node.js e Express, disponibilizando APIs RESTful (`/api/veiculos`, `/health`, etc.).
+- **Frontend PWA (`/client`):** Single Page Application (SPA) e Progressive Web App (PWA) instalável (Android, iOS e Desktop) com Service Worker para cache resiliente e operação offline em viagens, temas Claro/Escuro e interface responsiva.
+- **Backend (`/server`):** Servidor HTTP leve construído com Node.js e Express, disponibilizando APIs RESTful (`/api/veiculos`, `/health`, etc.) com suporte a cabeçalhos otimizados para Service Workers.
 - **Persistência (`PostgreSQL + Prisma`):** Banco de dados relacional para armazenamento da base homologada de veículos, perfis de consumo e histórico.
 - **Infraestrutura (`Docker & Compose`):** Empacotamento unificado que garante paridade entre o ambiente de desenvolvimento local e os servidores de homologação e produção.
 
@@ -58,13 +58,17 @@ flowchart TD
 
 ```text
 .
-├── client/                     # Frontend desacoplado
+├── client/                     # Frontend desacoplado e PWA
 │   ├── index.html              # Interface principal SPA
+│   ├── manifest.json           # Manifesto PWA com atalhos e metadados
+│   ├── sw.js                   # Service Worker com cache e suporte offline
+│   ├── assets/                 # Ícones de alta resolução PWA (16x16 até 512x512)
 │   ├── css/
 │   │   └── estilos.css         # Estilos, variáveis CSS e temas
 │   └── js/
 │       ├── api.js              # Camada de comunicação REST / Emulador GAS
-│       └── app.js              # Regras de negócio, cálculos e eventos da UI
+│       ├── app.js              # Regras de negócio, cálculos e eventos da UI
+│       └── pwa.js              # Ciclo de vida PWA, instalação e notificações
 ├── server/                     # Backend Node.js
 │   ├── Dockerfile              # Imagem multi-stage de produção
 │   ├── package.json            # Dependências da API
