@@ -95,6 +95,16 @@ apiRouter.get('/', (req, res) => {
         metodo: 'DELETE',
         rota: '/api/solicitacoes/:id',
         descricao: '[Admin] Remove uma solicitação da lista (Header x-admin-key)'
+      },
+      {
+        metodo: 'POST',
+        rota: '/api/sync/verificar',
+        descricao: '[Admin] Varre eletricos.app e retorna novos modelos BEV/PHEV encontrados (Header x-admin-key)'
+      },
+      {
+        metodo: 'POST',
+        rota: '/api/sync/executar',
+        descricao: '[Admin] Importa modelos selecionados com progresso em tempo real SSE (Header x-admin-key)'
       }
     ]
   });
@@ -102,6 +112,7 @@ apiRouter.get('/', (req, res) => {
 
 apiRouter.use('/veiculos', require('./routes/veiculos.routes'));
 apiRouter.use('/solicitacoes', require('./routes/solicitacoes.routes'));
+apiRouter.use('/sync', require('./routes/sync.routes'));
 
 // Atende API na raiz e em subcaminhos suportados pelo proxy reverso
 app.use('/api', apiRouter);

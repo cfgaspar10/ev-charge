@@ -3,6 +3,76 @@ const prisma = new PrismaClient();
 
 const VEICULOS = [
   {
+    "id": "audi_a6_avant_e_tron_s_line",
+    "type": "BEV",
+    "brand": "Audi",
+    "model": "A6 Avant e-tron S Line",
+    "battery": 100,
+    "maxAc": 11,
+    "maxDc": 270,
+    "range": 474
+  },
+  {
+    "id": "audi_a6_sportback_e_tron_s_line",
+    "type": "BEV",
+    "brand": "Audi",
+    "model": "A6 Sportback e-tron S line",
+    "battery": 100,
+    "maxAc": 11,
+    "maxDc": 270,
+    "range": 445
+  },
+  {
+    "id": "audi_q6_e_tron_s_line_quattro",
+    "type": "BEV",
+    "brand": "Audi",
+    "model": "Q6 e-tron S line quattro",
+    "battery": 100,
+    "maxAc": 11,
+    "maxDc": 270,
+    "range": 424
+  },
+  {
+    "id": "audi_q6_sportback_e_tron_55_quattro",
+    "type": "BEV",
+    "brand": "Audi",
+    "model": "Q6 Sportback e-tron 55 quattro",
+    "battery": 100,
+    "maxAc": 11,
+    "maxDc": 270,
+    "range": 427
+  },
+  {
+    "id": "audi_rs_e_tron_gt_performance",
+    "type": "BEV",
+    "brand": "Audi",
+    "model": "RS e-tron GT performance",
+    "battery": 105,
+    "maxAc": 22,
+    "maxDc": 320,
+    "range": 490
+  },
+  {
+    "id": "audi_sq6_sportback_e_tron_quattro",
+    "type": "BEV",
+    "brand": "Audi",
+    "model": "SQ6 Sportback e-tron quattro",
+    "battery": 100,
+    "maxAc": 11,
+    "maxDc": 270,
+    "range": 428
+  },
+  {
+    "id": "avatr_11_awd",
+    "type": "BEV",
+    "brand": "AVATR",
+    "model": "11 AWD",
+    "battery": 116,
+    "maxAc": 11,
+    "maxDc": 240,
+    "range": 550
+  },
+  {
     "id": "bmw_ix_50",
     "type": "BEV",
     "brand": "BMW",
@@ -233,6 +303,16 @@ const VEICULOS = [
     "range": 250
   },
   {
+    "id": "caoa_changan_cs55_ultra_hybrid_phev_flex",
+    "type": "PHEV",
+    "brand": "CAOA Changan",
+    "model": "CS55 Ultra-Hybrid PHEV Flex",
+    "battery": 18.4,
+    "maxAc": 6.6,
+    "maxDc": 30,
+    "range": 85
+  },
+  {
     "id": "caoa_chery_icar",
     "type": "BEV",
     "brand": "Caoa Chery",
@@ -273,6 +353,36 @@ const VEICULOS = [
     "range": 54
   },
   {
+    "id": "chery_tiggo_7_pro_phev_2027",
+    "type": "PHEV",
+    "brand": "Chery",
+    "model": "Tiggo 7 Pro PHEV 2027",
+    "battery": 18.4,
+    "maxAc": 6.6,
+    "maxDc": 50,
+    "range": 54
+  },
+  {
+    "id": "chery_tiggo_8_pro_phev_2027",
+    "type": "PHEV",
+    "brand": "Chery",
+    "model": "Tiggo 8 Pro PHEV 2027",
+    "battery": 18.4,
+    "maxAc": 6.6,
+    "maxDc": 50,
+    "range": 54
+  },
+  {
+    "id": "chery_tiggo_9_phev",
+    "type": "PHEV",
+    "brand": "Chery",
+    "model": "Tiggo 9 PHEV",
+    "battery": 34.46,
+    "maxAc": 6.6,
+    "maxDc": 60,
+    "range": 110
+  },
+  {
     "id": "chevrolet_blazer_ev_rs",
     "type": "BEV",
     "brand": "Chevrolet",
@@ -301,6 +411,36 @@ const VEICULOS = [
     "maxAc": 6.6,
     "maxDc": 80,
     "range": 312
+  },
+  {
+    "id": "chevrolet_spark_euv",
+    "type": "BEV",
+    "brand": "Chevrolet",
+    "model": "Spark EUV",
+    "battery": 41.9,
+    "maxAc": 7,
+    "maxDc": 50,
+    "range": 260
+  },
+  {
+    "id": "denza_b5_phev",
+    "type": "PHEV",
+    "brand": "Denza",
+    "model": "B5 PHEV",
+    "battery": 31.8,
+    "maxAc": 6.6,
+    "maxDc": 40,
+    "range": 90
+  },
+  {
+    "id": "denza_z9_gt",
+    "type": "BEV",
+    "brand": "Denza",
+    "model": "Z9 GT",
+    "battery": 100,
+    "maxAc": 22,
+    "maxDc": 270,
+    "range": 440
   },
   {
     "id": "fiat_500e",
@@ -351,6 +491,36 @@ const VEICULOS = [
     "maxAc": 11,
     "maxDc": 180,
     "range": 389
+  },
+  {
+    "id": "gac_gs9_phev",
+    "type": "PHEV",
+    "brand": "GAC",
+    "model": "GS9 PHEV",
+    "battery": 44.5,
+    "maxAc": 6.6,
+    "maxDc": 50,
+    "range": 115
+  },
+  {
+    "id": "gac_hyptec_ht_elite",
+    "type": "BEV",
+    "brand": "GAC",
+    "model": "Hyptec HT Elite",
+    "battery": 72.7,
+    "maxAc": 11,
+    "maxDc": 150,
+    "range": 362
+  },
+  {
+    "id": "gac_hyptec_ht_ultra",
+    "type": "BEV",
+    "brand": "GAC",
+    "model": "Hyptec HT Ultra",
+    "battery": 72.7,
+    "maxAc": 11,
+    "maxDc": 200,
+    "range": 362
   },
   {
     "id": "geely_ex2",
@@ -483,6 +653,16 @@ const VEICULOS = [
     "range": 130
   },
   {
+    "id": "gwm_wey_07_dark_edition_phev",
+    "type": "PHEV",
+    "brand": "GWM",
+    "model": "Wey 07 Dark Edition PHEV",
+    "battery": 42.5,
+    "maxAc": 6.6,
+    "maxDc": 50,
+    "range": 128
+  },
+  {
     "id": "hyundai_ioniq_5",
     "type": "BEV",
     "brand": "Hyundai",
@@ -553,6 +733,16 @@ const VEICULOS = [
     "range": 44
   },
   {
+    "id": "jetour_s06_phev",
+    "type": "PHEV",
+    "brand": "Jetour",
+    "model": "S06 PHEV",
+    "battery": 19.4,
+    "maxAc": 6.6,
+    "maxDc": 30,
+    "range": 80
+  },
+  {
     "id": "jetour_t1_phev",
     "type": "PHEV",
     "brand": "Jetour",
@@ -571,6 +761,16 @@ const VEICULOS = [
     "maxAc": 6.6,
     "maxDc": 30,
     "range": 90
+  },
+  {
+    "id": "jetour_t2_xwd_4x4_phev",
+    "type": "PHEV",
+    "brand": "Jetour",
+    "model": "T2 XWD 4x4 PHEV",
+    "battery": 43.2,
+    "maxAc": 6.6,
+    "maxDc": 50,
+    "range": 100
   },
   {
     "id": "kia_ev5_land",
@@ -633,6 +833,56 @@ const VEICULOS = [
     "range": 380
   },
   {
+    "id": "mercedes_benz_amg_c_63_s_e_performance",
+    "type": "PHEV",
+    "brand": "Mercedes-Benz",
+    "model": "AMG C 63 S E Performance",
+    "battery": 6.1,
+    "maxAc": 3.7,
+    "maxDc": 0,
+    "range": 13
+  },
+  {
+    "id": "mercedes_benz_amg_glc_63_s_e_performance_coupe",
+    "type": "PHEV",
+    "brand": "Mercedes-Benz",
+    "model": "AMG GLC 63 S E Performance Coupé",
+    "battery": 6.1,
+    "maxAc": 3.7,
+    "maxDc": 0,
+    "range": 12
+  },
+  {
+    "id": "mercedes_benz_amg_gt_63_s_e_performance",
+    "type": "PHEV",
+    "brand": "Mercedes-Benz",
+    "model": "AMG GT 63 S E Performance",
+    "battery": 6.1,
+    "maxAc": 3.7,
+    "maxDc": 0,
+    "range": 12
+  },
+  {
+    "id": "mercedes_benz_amg_s_63_e_performance",
+    "type": "PHEV",
+    "brand": "Mercedes-Benz",
+    "model": "AMG S 63 E Performance",
+    "battery": 13.1,
+    "maxAc": 3.7,
+    "maxDc": 0,
+    "range": 33
+  },
+  {
+    "id": "mg_cyberster_roadster",
+    "type": "BEV",
+    "brand": "MG",
+    "model": "Cyberster Roadster",
+    "battery": 77,
+    "maxAc": 11,
+    "maxDc": 144,
+    "range": 342
+  },
+  {
     "id": "mg_mg4_luxury",
     "type": "BEV",
     "brand": "MG",
@@ -673,6 +923,36 @@ const VEICULOS = [
     "range": 281
   },
   {
+    "id": "mg_mg4_x_power",
+    "type": "BEV",
+    "brand": "MG",
+    "model": "MG4 X-Power",
+    "battery": 64,
+    "maxAc": 11,
+    "maxDc": 140,
+    "range": 279
+  },
+  {
+    "id": "mg_s5_ev_comfort",
+    "type": "BEV",
+    "brand": "MG",
+    "model": "S5 EV Comfort",
+    "battery": 49.1,
+    "maxAc": 7,
+    "maxDc": 90,
+    "range": 320
+  },
+  {
+    "id": "mg_s5_ev_luxury",
+    "type": "BEV",
+    "brand": "MG",
+    "model": "S5 EV Luxury",
+    "battery": 62,
+    "maxAc": 11,
+    "maxDc": 120,
+    "range": 351
+  },
+  {
     "id": "mitsubishi_outlander_phev",
     "type": "PHEV",
     "brand": "Mitsubishi",
@@ -681,6 +961,16 @@ const VEICULOS = [
     "maxAc": 3.7,
     "maxDc": 22,
     "range": 67
+  },
+  {
+    "id": "omoda_7_shs_p_luxury_phev",
+    "type": "PHEV",
+    "brand": "Omoda",
+    "model": "7 SHS-P Luxury PHEV",
+    "battery": 18.4,
+    "maxAc": 6.6,
+    "maxDc": 30,
+    "range": 85
   },
   {
     "id": "omoda_7_phev",
@@ -711,6 +1001,126 @@ const VEICULOS = [
     "maxAc": 11,
     "maxDc": 100,
     "range": 261
+  },
+  {
+    "id": "porsche_cayenne_e_hybrid",
+    "type": "PHEV",
+    "brand": "Porsche",
+    "model": "Cayenne E-Hybrid",
+    "battery": 25.9,
+    "maxAc": 11,
+    "maxDc": 0,
+    "range": 55
+  },
+  {
+    "id": "porsche_cayenne_turbo_e_hybrid",
+    "type": "PHEV",
+    "brand": "Porsche",
+    "model": "Cayenne Turbo E-Hybrid",
+    "battery": 25.9,
+    "maxAc": 11,
+    "maxDc": 0,
+    "range": 51
+  },
+  {
+    "id": "porsche_macan_4_electric",
+    "type": "BEV",
+    "brand": "Porsche",
+    "model": "Macan 4 Electric",
+    "battery": 100,
+    "maxAc": 11,
+    "maxDc": 270,
+    "range": 443
+  },
+  {
+    "id": "porsche_macan_4s_electric",
+    "type": "BEV",
+    "brand": "Porsche",
+    "model": "Macan 4S Electric",
+    "battery": 100,
+    "maxAc": 11,
+    "maxDc": 270,
+    "range": 438
+  },
+  {
+    "id": "porsche_macan_gts_electric",
+    "type": "BEV",
+    "brand": "Porsche",
+    "model": "Macan GTS Electric",
+    "battery": 100,
+    "maxAc": 11,
+    "maxDc": 270,
+    "range": 441
+  },
+  {
+    "id": "porsche_macan_turbo_electric",
+    "type": "BEV",
+    "brand": "Porsche",
+    "model": "Macan Turbo Electric",
+    "battery": 100,
+    "maxAc": 11,
+    "maxDc": 270,
+    "range": 435
+  },
+  {
+    "id": "porsche_panamera_4_e_hybrid",
+    "type": "PHEV",
+    "brand": "Porsche",
+    "model": "Panamera 4 E-Hybrid",
+    "battery": 25.9,
+    "maxAc": 11,
+    "maxDc": 0,
+    "range": 64
+  },
+  {
+    "id": "porsche_panamera_turbo_e_hybrid",
+    "type": "PHEV",
+    "brand": "Porsche",
+    "model": "Panamera Turbo E-Hybrid",
+    "battery": 25.9,
+    "maxAc": 11,
+    "maxDc": 0,
+    "range": 61
+  },
+  {
+    "id": "porsche_taycan_4s_cross_turismo",
+    "type": "BEV",
+    "brand": "Porsche",
+    "model": "Taycan 4S Cross Turismo",
+    "battery": 105,
+    "maxAc": 22,
+    "maxDc": 320,
+    "range": 452
+  },
+  {
+    "id": "porsche_taycan_gts",
+    "type": "BEV",
+    "brand": "Porsche",
+    "model": "Taycan GTS",
+    "battery": 105,
+    "maxAc": 22,
+    "maxDc": 320,
+    "range": 460
+  },
+  {
+    "id": "porsche_taycan_turbo_gt_weissach",
+    "type": "BEV",
+    "brand": "Porsche",
+    "model": "Taycan Turbo GT Weissach",
+    "battery": 105,
+    "maxAc": 22,
+    "maxDc": 320,
+    "range": 430
+  },
+  {
+    "id": "porsche_taycan_turbo_s",
+    "type": "BEV",
+    "brand": "Porsche",
+    "model": "Taycan Turbo S",
+    "battery": 105,
+    "maxAc": 22,
+    "maxDc": 320,
+    "range": 440
   },
   {
     "id": "renault_kwid_e_tech",
@@ -751,6 +1161,26 @@ const VEICULOS = [
     "maxAc": 11,
     "maxDc": 150,
     "range": 380
+  },
+  {
+    "id": "toyota_rav4_xse_plug_in",
+    "type": "PHEV",
+    "brand": "Toyota",
+    "model": "RAV4 XSE Plug-in",
+    "battery": 18.1,
+    "maxAc": 6.6,
+    "maxDc": 0,
+    "range": 55
+  },
+  {
+    "id": "volkswagen_id_4",
+    "type": "BEV",
+    "brand": "Volkswagen",
+    "model": "ID.4",
+    "battery": 84,
+    "maxAc": 11,
+    "maxDc": 135,
+    "range": 389
   },
   {
     "id": "volvo_ex30_cross_country",
@@ -825,7 +1255,7 @@ const VEICULOS = [
 ];
 
 async function main() {
-  console.log("Iniciando seed de veículos...");
+  console.log("Iniciando seed do banco de dados...");
   let count = 0;
   for (const v of VEICULOS) {
     await prisma.veiculo.upsert({

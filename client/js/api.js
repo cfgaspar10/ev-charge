@@ -175,6 +175,67 @@
         method: 'DELETE',
         adminKey
       });
+    },
+
+    // Métodos de Sincronização com eletricos.app
+    async verificarSync(adminKey) {
+      return fetchAPI('/sync/verificar', {
+        method: 'POST',
+        adminKey
+      });
+    },
+
+    async executarSyncStream(veiculos, onProgresso, onConcluido, onErro, adminKey) {
+      const chave = adminKey || getStoredAdminKey();
+      try {
+        const response = await fetch(API_BASE + '/sync/executar', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-admin-key': chave
+          },
+          body: JSON.stringify({ veiculos })
+        });
+
+        if (!response.ok) {
+          const err = await response.json().catch(() => ({}));
+          throw new Error(err.erro || 'Erro ao iniciar sincronização.');
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder('utf-8');
+        let buffer = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+
+          const lines = buffer.split('\n\n');
+          buffer = lines.pop(); // Mantém o pedaço incompleto
+
+          for (const bloco of lines) {
+            if (!bloco.trim()) continue;
+            const eventMatch = bloco.match(/^event:\s*([a-zA-Z0-9_-]+)/m);
+            const dataMatch = bloco.match(/^data:\s*(.+)$/m);
+            const eventType = eventMatch ? eventMatch[1] : 'message';
+            let data = {};
+            try {
+              if (dataMatch) data = JSON.parse(dataMatch[1]);
+            } catch (e) {}
+
+            if (eventType === 'progresso' && onProgresso) {
+              onProgresso(data);
+            } else if (eventType === 'fim' && onConcluido) {
+              onConcluido(data);
+            } else if (eventType === 'erro' && onErro) {
+              onErro(data);
+            }
+          }
+        }
+      } catch (err) {
+        if (onErro) onErro({ mensagem: err.message });
+      }
     }
   };
 

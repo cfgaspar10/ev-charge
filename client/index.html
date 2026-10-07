@@ -434,6 +434,7 @@
   <!-- Rodapé / Copyright & Área Administrativa -->
   <footer class="app-footer">
     <div class="footer-admin-row">
+      <button type="button" id="btn-open-sync" class="footer-admin-btn admin-only-element btn-sync" title="Sincronizar catálogo com eletricos.app">🔄 Sincronizar Catálogo</button>
       <button type="button" id="btn-open-solicitacoes" class="footer-admin-btn admin-only-element btn-solicitacoes" title="Ver solicitações de veículos enviadas pelos usuários">📬 Solicitações <span id="badge-solicitacoes-count" class="badge-count hidden">0</span></button>
       <button type="button" id="btn-toggle-admin" class="footer-admin-btn admin-toggle-btn" title="Área do Administrador">🔐 Admin</button>
       <span class="app-badge">v1.0.0</span>
@@ -455,6 +456,7 @@
         <div class="modal-header-actions">
           <button type="button" class="modal-add-btn btn-sugerir-modal" id="btn-modal-sugerir-veiculo" title="Sugerir veículo que não está na lista">💡 Sugerir Veículo</button>
           <button type="button" class="modal-add-btn admin-only-element btn-solicitacoes-modal" id="btn-modal-solicitacoes" title="Ver solicitações de veículos (Admin)">📬 Solicitações (<span id="modal-solicitacoes-count">0</span>)</button>
+          <button type="button" class="modal-add-btn admin-only-element btn-sync-modal" id="btn-modal-sync-catalogo" title="Sincronizar novos veículos com eletricos.app (Admin)">🔄 Sincronizar</button>
           <button type="button" class="modal-add-btn admin-only-element" id="btn-open-novo-veiculo" title="Cadastrar Novo Veículo (Admin)">➕ Novo Veículo</button>
           <button type="button" class="modal-reset-filters-btn" id="modal-reset-filters" title="Zerar filtros de pesquisa">Zerar filtros</button>
           <button type="button" class="modal-close-btn" id="close-vehicle-modal" aria-label="Fechar">✕</button>
@@ -680,6 +682,103 @@
       <div id="lista-solicitacoes-admin" class="solicitacoes-list-container">
         <!-- Renderizado dinamicamente via app.js -->
       </div>
+    </div>
+  </div>
+
+  <!-- Modal de Sincronização de Catálogo com eletricos.app (Admin) -->
+  <div class="modal-overlay" id="modal-sync-catalogo">
+    <div class="modal-sheet modal-sync-dialog">
+      <div class="modal-handle-bar"></div>
+      <div class="modal-header">
+        <div class="modal-title-box">
+          <h3>🔄 Sincronização com eletricos.app</h3>
+          <p>Varredura automática e importação de modelos BEV e PHEV homologados</p>
+        </div>
+        <button type="button" class="modal-close-btn" id="close-sync-modal">✕</button>
+      </div>
+
+      <!-- Estado 1: Varrendo / Verificando -->
+      <div id="sync-view-loading" class="sync-state-view">
+        <div class="sync-spinner-box">
+          <div class="sync-pulse-icon">📡</div>
+          <h4>Conectando ao catálogo oficial...</h4>
+          <p>Varrendo os últimos veículos cadastrados em eletricos.app e comparando com a base do sistema...</p>
+        </div>
+      </div>
+
+      <!-- Estado 2: Já atualizado (Nenhum veículo novo) -->
+      <div id="sync-view-uptodate" class="sync-state-view hidden">
+        <div class="sync-uptodate-box">
+          <div class="sync-big-emoji">🎉</div>
+          <h4>Catálogo 100% Atualizado!</h4>
+          <p>Todos os modelos 100% elétricos (BEV) e híbridos plug-in (PHEV) encontrados na fonte externa já constam cadastrados na aplicação.</p>
+          <div class="sync-kpi-row">
+            <div class="sync-kpi-card">
+              <span class="kpi-label">Veículos na Fonte</span>
+              <span class="kpi-val" id="sync-stat-remoto">0</span>
+            </div>
+            <div class="sync-kpi-card">
+              <span class="kpi-label">Ativos no Banco</span>
+              <span class="kpi-val" id="sync-stat-locais">0</span>
+            </div>
+          </div>
+          <div class="form-actions-row" style="margin-top: 18px;">
+            <button type="button" class="btn-secondary" id="btn-sync-fechar-uptodate">Fechar</button>
+            <button type="button" class="btn-primary" id="btn-sync-reverificar">🔍 Verificar Novamente</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Estado 3: Novidades Encontradas (Lista com Seleção) -->
+      <div id="sync-view-novidades" class="sync-state-view hidden">
+        <div class="sync-alert-bar">
+          <div class="sync-alert-text">
+            <span>🚀 Foram identificados </span>
+            <strong id="sync-badge-novos-total">0</strong> novos modelos prontos para importação!
+          </div>
+          <div class="sync-batch-btns">
+            <button type="button" id="btn-sync-select-all" class="sync-mini-btn">Marcar Todos</button>
+            <button type="button" id="btn-sync-deselect-all" class="sync-mini-btn">Desmarcar</button>
+          </div>
+        </div>
+
+        <div id="sync-novos-list" class="sync-novos-list">
+          <!-- Renderizado via app.js -->
+        </div>
+
+        <div class="form-actions-row" style="margin-top: 14px;">
+          <button type="button" class="btn-secondary" id="btn-sync-cancelar">Cancelar</button>
+          <button type="button" class="btn-primary btn-sync-import" id="btn-sync-confirmar">
+            📥 Importar Selecionados (<span id="sync-count-selecionados">0</span>)
+          </button>
+        </div>
+      </div>
+
+      <!-- Estado 4: Progresso em Tempo Real (SSE) -->
+      <div id="sync-view-progress" class="sync-state-view hidden">
+        <div class="sync-progress-container">
+          <div class="sync-progress-header">
+            <div class="sync-progress-status-text">
+              <h4 id="sync-progress-title">Importando veículos...</h4>
+              <p id="sync-progress-subtitle">Conectando ao banco de dados...</p>
+            </div>
+            <div class="sync-progress-badge" id="sync-progress-percent">0%</div>
+          </div>
+
+          <div class="sync-progress-track">
+            <div class="sync-progress-bar" id="sync-progress-bar" style="width: 0%;"></div>
+          </div>
+
+          <div class="sync-terminal-log" id="sync-terminal-log">
+            <!-- Linhas de progresso em tempo real -->
+          </div>
+
+          <div id="sync-progress-footer-actions" class="form-actions-row hidden" style="margin-top: 16px;">
+            <button type="button" class="btn-primary" id="btn-sync-finalizar-ok">✅ Concluir e Atualizar Calculadora</button>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
