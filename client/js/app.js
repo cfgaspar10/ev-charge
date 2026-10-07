@@ -204,6 +204,8 @@
     const modelsListContainer = document.getElementById('modal-models-list');
     const selectedVehicleDisplay = document.getElementById('selected-vehicle-display');
     const clearVehicleBtn = document.getElementById('clear-vehicle-btn');
+    const btnReturnSavedVehicle = document.getElementById('btn-return-saved-vehicle');
+    const modalSavedVehicleCard = document.getElementById('modal-saved-vehicle-card');
     const btnResetAll = document.getElementById('btn-reset-all');
     const modalResetFiltersBtn = document.getElementById('modal-reset-filters');
     const modalSearchInput = document.getElementById('modal-search-input');
@@ -399,6 +401,7 @@
       }
 
       renderBrandPills();
+      renderSavedVehicleBanner();
       renderModelsList();
       updateChargerPresets(currentVehicle);
     }
@@ -500,6 +503,14 @@
             '<button type="button" class="btn-card-action danger btn-delete-card" title="Desativar este modelo">🚫 Desativar</button>';
         }
 
+        const saved = getSavedVehicle();
+        const isFav = isVehicleSame(saved, v);
+
+        const favBtnHtml = 
+          '<button type="button" class="btn-card-fav' + (isFav ? ' is-fav' : '') + '" title="' + (isFav ? 'Seu veículo salvo (Clique para desvincular)' : 'Definir como Meu Veículo principal') + '">' +
+            (isFav ? '⭐ Meu Veículo' : '☆ Salvar') +
+          '</button>';
+
         item.innerHTML = 
           '<div class="model-info-left">' +
             '<span class="model-brand-name">' + v.brand + '</span>' +
@@ -511,6 +522,7 @@
           '</div>' +
           '<div class="model-card-right">' +
             '<div class="model-badge-battery">' + v.battery + ' kWh</div>' +
+            favBtnHtml +
             '<div class="model-card-admin-actions">' +
               adminActionsHtml +
             '</div>' +
@@ -519,6 +531,18 @@
         item.addEventListener('click', function() {
           selectVehicle(v);
         });
+
+        const btnFav = item.querySelector('.btn-card-fav');
+        if (btnFav) {
+          btnFav.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (isFav) {
+              desfavoritarMeuVeiculo();
+            } else {
+              favoritarVeiculo(v);
+            }
+          });
+        }
 
         const btnRestore = item.querySelector('.btn-restore-card');
         if (btnRestore) {
@@ -610,10 +634,139 @@
       });
     }
 
-    function selectVehicle(v) {
+    // Chaves de Persistência Local (Offline First)
+    const STORAGE_KEY_SAVED_VEHICLE = 'kwhub_saved_vehicle';
+    const STORAGE_KEY_TARIFF = 'kwhub_user_tariff';
+
+    let toastTimeout = null;
+    function showToast(mensagem, tipo = 'info') {
+      const toast = document.getElementById('app-toast');
+      if (!toast) return;
+      toast.textContent = mensagem;
+      toast.className = 'app-toast ' + tipo + ' show';
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3200);
+    }
+
+    function getSavedVehicle() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY_SAVED_VEHICLE);
+        if (!raw) return null;
+        const v = JSON.parse(raw);
+        return (v && typeof v.battery === 'number') ? v : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function setSavedVehicle(v) {
+      try {
+        if (v) {
+          localStorage.setItem(STORAGE_KEY_SAVED_VEHICLE, JSON.stringify(v));
+        } else {
+          localStorage.removeItem(STORAGE_KEY_SAVED_VEHICLE);
+        }
+      } catch (e) {
+        console.warn('Erro ao salvar veículo no localStorage:', e);
+      }
+    }
+
+    function isVehicleSame(a, b) {
+      if (!a || !b) return false;
+      if (a.id && b.id && a.id === b.id) return true;
+      return (a.brand === b.brand && a.model === b.model);
+    }
+
+    function atualizarDisplayVeiculo() {
+      const saved = getSavedVehicle();
+      const isSavedActive = isVehicleSame(saved, currentVehicle);
+
+      if (currentVehicle) {
+        if (isSavedActive) {
+          selectedVehicleDisplay.innerHTML = '⭐ <span class="vehicle-fav-tag">Meu Veículo:</span> ' + escapeHtml(currentVehicle.brand + ' ' + currentVehicle.model) + ' (' + formatPt(currentVehicle.battery, 2) + ' kWh)';
+        } else {
+          selectedVehicleDisplay.textContent = '🚗 ' + currentVehicle.brand + ' ' + currentVehicle.model + ' (' + formatPt(currentVehicle.battery, 2) + ' kWh)';
+        }
+        if (clearVehicleBtn) clearVehicleBtn.style.display = 'inline-flex';
+      } else {
+        selectedVehicleDisplay.textContent = '🚗 Toque para escolher o modelo...';
+        if (clearVehicleBtn) clearVehicleBtn.style.display = 'none';
+      }
+
+      // Botão de retorno rápido ao meu veículo salvo
+      if (btnReturnSavedVehicle) {
+        if (saved && (!currentVehicle || !isSavedActive)) {
+          btnReturnSavedVehicle.style.display = 'inline-flex';
+          btnReturnSavedVehicle.title = 'Voltar para seu veículo: ' + saved.brand + ' ' + saved.model;
+        } else {
+          btnReturnSavedVehicle.style.display = 'none';
+        }
+      }
+    }
+
+    function renderSavedVehicleBanner() {
+      if (!modalSavedVehicleCard) return;
+      const saved = getSavedVehicle();
+      if (!saved || currentSearchTerm) {
+        modalSavedVehicleCard.style.display = 'none';
+        modalSavedVehicleCard.innerHTML = '';
+        return;
+      }
+
+      modalSavedVehicleCard.style.display = 'flex';
+      const isCurrentlySelected = isVehicleSame(saved, currentVehicle);
+
+      modalSavedVehicleCard.innerHTML = 
+        '<div class="saved-vehicle-card-info">' +
+          '<span class="saved-vehicle-card-badge">⭐ Meu Veículo Salvo</span>' +
+          '<div class="saved-vehicle-card-title">' + escapeHtml(saved.brand + ' ' + saved.model) + '</div>' +
+          '<div class="saved-vehicle-card-specs">🔋 ' + formatPt(saved.battery, 2) + ' kWh | ⚡ AC: ' + saved.maxAc + ' kW' + (saved.maxDc > 0 ? ' | 🚀 DC: ' + saved.maxDc + ' kW' : '') + (saved.range ? ' | 🛣️ ' + saved.range + ' km' : '') + '</div>' +
+        '</div>' +
+        '<div class="saved-vehicle-card-actions">' +
+          (isCurrentlySelected 
+            ? '<button type="button" class="btn-saved-card-select is-active" disabled>✓ Em uso</button>' 
+            : '<button type="button" class="btn-saved-card-select" id="btn-use-saved-vehicle">⚡ Usar este</button>') +
+          '<button type="button" class="btn-saved-card-remove" id="btn-remove-saved-vehicle" title="Remover dos favoritos">✕ Remover</button>' +
+        '</div>';
+
+      const btnUse = modalSavedVehicleCard.querySelector('#btn-use-saved-vehicle');
+      if (btnUse) {
+        btnUse.addEventListener('click', function(e) {
+          e.stopPropagation();
+          selectVehicle(saved, true);
+        });
+      }
+
+      const btnRemove = modalSavedVehicleCard.querySelector('#btn-remove-saved-vehicle');
+      if (btnRemove) {
+        btnRemove.addEventListener('click', function(e) {
+          e.stopPropagation();
+          desfavoritarMeuVeiculo();
+        });
+      }
+    }
+
+    function favoritarVeiculo(v) {
+      setSavedVehicle(v);
+      showToast('⭐ ' + v.brand + ' ' + v.model + ' definido como seu veículo padrão!');
+      selectVehicle(v, false);
+    }
+
+    function desfavoritarMeuVeiculo() {
+      const saved = getSavedVehicle();
+      const nomeVeiculo = saved ? (saved.brand + ' ' + saved.model) : 'Veículo';
+      setSavedVehicle(null);
+      showToast('Veículo favorito desvinculado: ' + nomeVeiculo + '. Você pode escolher qualquer modelo.');
+      atualizarDisplayVeiculo();
+      renderSavedVehicleBanner();
+      renderModelsList();
+    }
+
+    function selectVehicle(v, fecharModal = true) {
       currentVehicle = v;
-      selectedVehicleDisplay.textContent = '🚗 ' + v.brand + ' ' + v.model + ' (' + formatPt(v.battery, 2) + ' kWh)';
-      if (clearVehicleBtn) clearVehicleBtn.style.display = 'inline-flex';
+      atualizarDisplayVeiculo();
       
       sliderBattery.value = v.battery;
       inputBattery.value = formatPt(v.battery, 2);
@@ -624,19 +777,22 @@
 
       updateChargerPresets(v);
       renderModelsList();
+      renderSavedVehicleBanner();
 
-      closeVehicleModal();
+      if (fecharModal) {
+        closeVehicleModal();
+      }
       recalculate();
       recalculateConsumption();
     }
 
     function clearVehicleSelection() {
       currentVehicle = null;
-      selectedVehicleDisplay.textContent = '🚗 Toque para escolher o modelo...';
-      if (clearVehicleBtn) clearVehicleBtn.style.display = 'none';
+      atualizarDisplayVeiculo();
       if (vehicleLimitInfo) vehicleLimitInfo.textContent = '';
       updateChargerPresets(null);
       renderModelsList();
+      renderSavedVehicleBanner();
       recalculate();
       recalculateConsumption();
     }
@@ -768,6 +924,7 @@
       } else {
         modal.classList.remove('has-search');
       }
+      renderSavedVehicleBanner();
       updateResetFiltersBtnVisibility();
     }
 
@@ -804,6 +961,17 @@
       clearVehicleBtn.addEventListener('click', function(e) {
         e.stopPropagation();
         clearVehicleSelection();
+      });
+    }
+
+    if (btnReturnSavedVehicle) {
+      btnReturnSavedVehicle.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const saved = getSavedVehicle();
+        if (saved) {
+          selectVehicle(saved, false);
+          showToast('⭐ Veículo restaurado: ' + saved.brand + ' ' + saved.model);
+        }
       });
     }
 
@@ -1481,6 +1649,11 @@
 
     [sliderCharger, sliderBattery, sliderStart, sliderTarget].forEach(s => s.addEventListener('input', onSliderChange));
     [inputCharger, inputBattery, inputStart, inputTarget, inputTariff].forEach(i => i.addEventListener('input', onInputChange));
+    inputTariff.addEventListener('input', function() {
+      try {
+        localStorage.setItem(STORAGE_KEY_TARIFF, inputTariff.value);
+      } catch (e) {}
+    });
 
     // ============================================================
     // Sub-modo: Viagem com Paradas de Recarga
@@ -1715,9 +1888,26 @@
       });
     });
 
+    // Restaurar tarifa salva do usuário
+    try {
+      const savedTariff = localStorage.getItem(STORAGE_KEY_TARIFF);
+      if (savedTariff) {
+        inputTariff.value = savedTariff;
+      }
+    } catch (e) {}
+
     initTheme();
     initVehicleModal();
-    onSliderChange();
+
+    // Restaurar veículo favorito do usuário (Offline First)
+    const savedVehicleOnStart = getSavedVehicle();
+    if (savedVehicleOnStart) {
+      selectVehicle(savedVehicleOnStart, false);
+    } else {
+      atualizarDisplayVeiculo();
+      onSliderChange();
+    }
+
     recalculateConsumption();
     renderTripStops();
     recalculateMultiStop();
@@ -2134,13 +2324,35 @@
       });
     }
 
+    // Sincronização inteligente com dados atualizados do catálogo
+    function sincronizarVeiculoSalvoComCatalogo(catalogo) {
+      if (!Array.isArray(catalogo) || catalogo.length === 0) return;
+      const saved = getSavedVehicle();
+      if (saved) {
+        const matched = catalogo.find(v => isVehicleSame(v, saved));
+        if (matched) {
+          setSavedVehicle(matched);
+          if (currentVehicle && isVehicleSame(currentVehicle, saved)) {
+            currentVehicle = matched;
+            sliderBattery.value = matched.battery;
+            inputBattery.value = formatPt(matched.battery, 2);
+            updateChargerPresets(matched);
+          }
+        }
+      }
+    }
+
     // Carregamento inicial de veículos da API
     if (window.EV_API && window.EV_API.listarVeiculos) {
       window.EV_API.listarVeiculos()
         .then(serverData => {
           if (serverData && serverData.length > 0) {
             VEHICLE_DATA = serverData;
+            sincronizarVeiculoSalvoComCatalogo(serverData);
             initVehicleModal();
+            atualizarDisplayVeiculo();
+            recalculate();
+            recalculateConsumption();
           }
         })
         .catch(err => {
@@ -2150,7 +2362,11 @@
       google.script.run.withSuccessHandler(function(serverData) {
         if (serverData && serverData.length > 0) {
           VEHICLE_DATA = serverData;
+          sincronizarVeiculoSalvoComCatalogo(serverData);
           initVehicleModal();
+          atualizarDisplayVeiculo();
+          recalculate();
+          recalculateConsumption();
         }
       }).obterListaVeiculos();
     }

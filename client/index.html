@@ -64,6 +64,7 @@
         <span class="vehicle-btn-title" id="selected-vehicle-display">🚗 Toque para escolher o modelo...</span>
       </div>
       <div class="vehicle-btn-actions">
+        <span id="btn-return-saved-vehicle" class="saved-vehicle-quick-btn" title="Voltar ao meu veículo salvo" style="display: none;">⭐ Meu Veículo</span>
         <span id="clear-vehicle-btn" class="clear-vehicle-btn" title="Zerar seleção de veículo">✕ Zerar</span>
         <div class="vehicle-btn-icon-box">▼</div>
       </div>
@@ -592,6 +593,9 @@
       <!-- Carrossel de Marcas -->
       <div class="brand-pills-container" id="modal-brand-pills"></div>
 
+      <!-- Banner / Atalho para Meu Veículo Salvo -->
+      <div id="modal-saved-vehicle-card" class="modal-saved-vehicle-card" style="display: none;"></div>
+
       <!-- Lista de Modelos -->
       <div class="models-list" id="modal-models-list"></div>
     </div>
@@ -890,6 +894,9 @@
 
     </div>
   </div>
+
+  <!-- Toast de Notificações Rápidas -->
+  <div id="app-toast" class="app-toast" role="alert" aria-live="polite"></div>
 
   <!-- Adaptador de API e Script da Aplicação -->
   <script src="js/api.js"></script>
