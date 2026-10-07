@@ -20,7 +20,7 @@ app.use(express.json());
 app.get('/health', (req, res) => {
   res.json({
     status: 'ok',
-    app: 'EV Charging Calculator',
+    app: 'kWhub',
     timestamp: new Date().toISOString()
   });
 });
@@ -31,9 +31,9 @@ const apiRouter = express.Router();
 // Índice descritivo das rotas da API
 apiRouter.get('/', (req, res) => {
   res.json({
-    nome: 'EV Charging Calculator API',
+    nome: 'kWhub API',
     versao: '1.0.0',
-    descricao: 'API REST para simulação e catálogo de veículos elétricos',
+    descricao: 'API REST para simulação, recarga e catálogo de veículos elétricos (kWhub)',
     endpoints: [
       {
         metodo: 'GET',
@@ -132,6 +132,6 @@ app.get('*', (req, res) => {
 
 // Inicialização do servidor
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`⚡ EV Charging Calculator Server rodando na porta ${PORT}`);
+  console.log(`⚡ kWhub Server rodando na porta ${PORT}`);
   console.log(`📁 Servindo frontend estático de: ${clientPath}`);
 });

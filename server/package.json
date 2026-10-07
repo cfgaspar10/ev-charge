@@ -1,7 +1,7 @@
 {
-  "name": "ev-charging-calculator-server",
+  "name": "kwhub-server",
   "version": "1.0.0",
-  "description": "Backend API para Calculadora de Recarga de Veículos Elétricos",
+  "description": "Backend API para kWhub - Central de Inteligência em Recarga VE",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",

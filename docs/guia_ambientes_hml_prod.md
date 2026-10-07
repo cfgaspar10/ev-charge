@@ -13,10 +13,10 @@ mkdir -p ~/stacks
 cd ~/stacks
 
 # Ambiente de Homologação (branch develop)
-git clone -b develop git@github.com:cfgaspar10/ev-charge.git ev-calc-hml
+git clone -b develop git@github.com:cfgaspar10/kwhub-app.git ev-calc-hml
 
 # Ambiente de Produção (branch main)
-git clone -b main git@github.com:cfgaspar10/ev-charge.git ev-calc-prod
+git clone -b main git@github.com:cfgaspar10/kwhub-app.git ev-calc-prod
 ```
 
 ---
@@ -59,7 +59,7 @@ APP_SECRET=chave_secreta_exclusiva_prod_2026
 
 ## 3. 🌐 Configuração do Nginx (Proxy Reverso)
 
-Crie o arquivo `/etc/nginx/sites-available/ev-charge`:
+Crie o arquivo `/etc/nginx/sites-available/kwhub-app`:
 
 ```nginx
 # Homologação (HML)
@@ -97,7 +97,7 @@ server {
 
 Ativação e SSL:
 ```bash
-sudo ln -s /etc/nginx/sites-available/ev-charge /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/kwhub-app /etc/nginx/sites-enabled/
 sudo nginx -t && sudo systemctl reload nginx
 sudo certbot --nginx -d hml.seudominio.com -d app.seudominio.com
 ```
@@ -106,7 +106,7 @@ sudo certbot --nginx -d hml.seudominio.com -d app.seudominio.com
 
 ## 4. 🔑 Secrets Necessários no GitHub Actions
 
-No repositório `cfgaspar10/ev-charge` (**Settings** > **Secrets and variables** > **Actions**), cadastre:
+No repositório `cfgaspar10/kwhub-app` (**Settings** > **Secrets and variables** > **Actions**), cadastre:
 - `TAILSCALE_AUTHKEY`: Token de autorização Tailscale para permitir que o GitHub Actions conecte na VPN da VPS.
 - `SSH_HOST`: IP privado da VPS na rede Tailscale (ex: `100.x.y.z`).
 - `SSH_USER`: Usuário de login da VPS (ex: `ubuntu`).

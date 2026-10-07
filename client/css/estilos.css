@@ -1,35 +1,42 @@
     /* ============================================================
-       Paleta de Cores Color Hunt: #3674B5 | #578FCA | #A1E3F9 | #D1F8EF
+       Identidade Visual kWhub (Paleta de Cores & Design Tokens)
        ============================================================ */
     :root {
-      /* ============================================================
-         Modo Escuro (Color Hunt: #181C14 | #3C3D37 | #697565 | #ECDFCC)
-         ============================================================ */
-      --color-dark-bg: #181C14;
-      --color-dark-card: #3C3D37;
-      --color-dark-accent: #697565;
-      --color-dark-light: #ECDFCC;
+      /* Modo Escuro (Tech Navy & Electric Blue - Alto Contraste) */
+      --color-brand-cyan: #38BDF8;
+      --color-brand-green: #10B981;
+      --color-brand-violet: #8B5CF6;
 
-      --bg-primary: #181C14;
-      --bg-card: #22261E;
-      --bg-card-hover: #2C3127;
-      --bg-input: #1A1E16;
-      --border-color: #3C3D37;
-      --border-focus: #697565;
-      --accent-blue: #697565;
-      --accent-cyan: #ECDFCC;
-      --accent-mint: #ECDFCC;
-      --text-primary: #ECDFCC;
-      --text-secondary: #B4BEAF;
-      --text-muted: #7D8779;
-      --table-header-bg: #1E2319;
-      --table-selected-bg: rgba(105, 117, 101, 0.32);
-      --table-border-subtle: rgba(236, 223, 204, 0.07);
-      --badge-battery-bg: linear-gradient(135deg, #3C3D37, #697565);
-      --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-      --slider-track: #2D3227;
-      --thumb-border: #ECDFCC;
-      --logo-bg: linear-gradient(135deg, #697565, #3C3D37);
+      --bg-primary: #0B0F17;
+      --bg-card: #131A26;
+      --bg-card-hover: #1A2436;
+      --bg-input: #0F1622;
+      --border-color: rgba(255, 255, 255, 0.09);
+      --border-focus: #3B82F6;
+
+      /* Azul Elétrico com contraste nítido e elegante */
+      --accent-blue: #2563EB;
+      --accent-blue-hover: #1D4ED8;
+      --accent-blue-deep: #1E40AF;
+      --accent-blue-light: #60A5FA;
+
+      /* Azul Celeste Suave para detalhes secundários de texto */
+      --accent-cyan: #38BDF8;
+      --accent-mint: #10B981;
+
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+
+      --table-header-bg: #0F1726;
+      --table-selected-bg: rgba(37, 99, 235, 0.15);
+      --table-border-subtle: rgba(255, 255, 255, 0.06);
+
+      --badge-battery-bg: linear-gradient(135deg, #2563EB, #10B981);
+      --card-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+      --slider-track: #1E293B;
+      --thumb-border: #3B82F6;
+      --logo-bg: linear-gradient(135deg, #38BDF8, #10B981);
       
       --radius-sm: 6px;
       --radius-md: 10px;
@@ -38,28 +45,34 @@
     }
 
     [data-theme="light"] {
-      /* ============================================================
-         Modo Claro (Color Hunt: #3674B5 | #578FCA | #A1E3F9 | #D1F8EF)
-         ============================================================ */
-      --bg-primary: #F2F7FA;
+      /* Modo Claro (Clean Tech) */
+      --bg-primary: #F8FAFC;
       --bg-card: #FFFFFF;
-      --bg-card-hover: #EBF4F9;
-      --bg-input: #F6FAFC;
-      --border-color: #D3E2EE;
-      --border-focus: #3674B5;
-      --accent-blue: #3674B5;
-      --accent-cyan: #0284c7;
-      --accent-mint: #0d9488;
-      --text-primary: #0D1C2E;
-      --text-secondary: #3D5267;
+      --bg-card-hover: #F1F5F9;
+      --bg-input: #F8FAFC;
+      --border-color: #E2E8F0;
+      --border-focus: #2563EB;
+
+      --accent-blue: #2563EB;
+      --accent-blue-hover: #1D4ED8;
+      --accent-blue-deep: #1E40AF;
+      --accent-blue-light: #2563EB;
+
+      --accent-cyan: #0284C7;
+      --accent-mint: #10B981;
+
+      --text-primary: #0F172A;
+      --text-secondary: #475569;
       --text-muted: #64748B;
-      --table-header-bg: #EBF2F7;
-      --table-selected-bg: rgba(54, 116, 181, 0.12);
-      --table-border-subtle: #E2ECF3;
-      --badge-battery-bg: linear-gradient(135deg, #3674B5, #578FCA);
-      --card-shadow: 0 2px 8px rgba(54, 116, 181, 0.08);
-      --slider-track: #DCE7F0;
-      --thumb-border: #3674B5;
+
+      --table-header-bg: #F1F5F9;
+      --table-selected-bg: rgba(37, 99, 235, 0.08);
+      --table-border-subtle: #E2E8F0;
+
+      --badge-battery-bg: linear-gradient(135deg, #2563EB, #10B981);
+      --card-shadow: 0 2px 10px rgba(15, 23, 42, 0.06);
+      --slider-track: #E2E8F0;
+      --thumb-border: #2563EB;
     }
 
     * {
@@ -97,24 +110,57 @@
     .app-title-box {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
     }
     .app-logo {
-      width: 26px;
-      height: 26px;
-      background: var(--badge-battery-bg);
-      border-radius: 7px;
+      width: 28px;
+      height: 28px;
+      background: rgba(37, 99, 235, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.35);
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 14px;
-      box-shadow: 0 2px 8px rgba(54, 116, 181, 0.35);
+      box-shadow: 0 0 10px rgba(37, 99, 235, 0.2);
+    }
+    [data-theme="light"] .app-logo {
+      background: rgba(37, 99, 235, 0.08);
+      border: 1px solid rgba(37, 99, 235, 0.25);
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.12);
     }
     .app-title {
-      font-size: 17px;
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      user-select: none;
+    }
+    .brand-kw {
+      color: var(--accent-blue-light);
+      font-weight: 800;
+      text-shadow: none;
+    }
+    [data-theme="light"] .brand-kw {
+      color: var(--accent-blue);
+      text-shadow: none;
+    }
+    .brand-hub {
+      color: var(--text-primary);
       font-weight: 700;
       letter-spacing: -0.3px;
-      color: var(--text-primary);
+    }
+    .brand-tag {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--accent-mint);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      margin-left: 2px;
+      align-self: center;
     }
     .header-actions {
       display: flex;
@@ -426,16 +472,17 @@
       font-weight: 700;
     }
     tr.selected td:first-child {
-      color: var(--accent-blue);
+      color: var(--accent-blue-light);
     }
     .badge-target {
       font-size: 9px;
       background: var(--accent-blue);
       color: #ffffff;
-      padding: 1px 4px;
-      border-radius: 3px;
-      margin-left: 3px;
-      font-weight: 600;
+      padding: 2px 5px;
+      border-radius: 4px;
+      margin-left: 4px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
     }
 
     /* Painel de Controles */
@@ -530,6 +577,7 @@
       border-color: var(--accent-blue);
       color: #ffffff;
       font-weight: 600;
+      box-shadow: 0 1px 4px rgba(37, 99, 235, 0.35);
     }
 
     /* Sliders */
@@ -555,21 +603,21 @@
       height: 18px;
       border-radius: 50%;
       background: #ffffff;
-      border: 2.5px solid var(--thumb-border);
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+      border: 3px solid var(--thumb-border);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
       cursor: pointer;
     }
     input[type=range]:active::-webkit-slider-thumb {
       transform: scale(1.15);
-      box-shadow: 0 0 0 4px rgba(87, 143, 202, 0.25);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.3);
     }
     input[type=range]::-moz-range-thumb {
       width: 16px;
       height: 16px;
       border-radius: 50%;
       background: #ffffff;
-      border: 2.5px solid var(--thumb-border);
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+      border: 3px solid var(--thumb-border);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
       cursor: pointer;
     }
 
@@ -1048,12 +1096,12 @@
     }
     .tab-btn.active {
       background: var(--accent-blue);
-      color: #ffffff;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+      color: #ffffff !important;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
     }
     [data-theme="dark"] .tab-btn.active {
       background: var(--accent-blue);
-      color: #ECDFCC;
+      color: #ffffff !important;
     }
     .tab-content {
       display: flex;

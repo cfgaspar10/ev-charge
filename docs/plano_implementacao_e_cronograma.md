@@ -9,7 +9,7 @@ Este documento oficializa o plano técnico e cronograma para migração da aplic
 * Estruturar o desenvolvimento local sobre contêineres Docker (Node.js + PostgreSQL 16 com Prisma ORM).
 * Criar uma esteira de versionamento profissional com branches `develop` (Homologação - HML) e `main` (Produção - PROD).
 * Configurar e proteger a VPS (Oracle Cloud / Ubuntu) com Tailscale VPN, Swapfile e Nginx com SSL Let's Encrypt.
-* Automatizar o deploy contínuo com GitHub Actions direcionado ao repositório `git@github.com:cfgaspar10/ev-charge.git`.
+* Automatizar o deploy contínuo com GitHub Actions direcionado ao repositório `git@github.com:cfgaspar10/kwhub-app.git`.
 * Garantir rotinas de backup diário com retenção de 15 dias.
 
 ---
@@ -18,7 +18,7 @@ Este documento oficializa o plano técnico e cronograma para migração da aplic
 
 ```mermaid
 flowchart TD
-    subgraph Repositorio [GitHub: cfgaspar10/ev-charge]
+    subgraph Repositorio [GitHub: cfgaspar10/kwhub-app]
         DEV_BRANCH[Branch: develop]
         MAIN_BRANCH[Branch: main]
     end
@@ -62,7 +62,7 @@ flowchart TD
 | **02** | **Fase 1** | Criação do backend Express em `server/src/`, modelagem relacional Prisma (`schema.prisma`) e script de seed da base de veículos (`seed.js`). | 1 a 2 dias | Ativ. 01 | API REST com endpoints `/api/veiculos` |
 | **03** | **Fase 2** | Criação do `server/Dockerfile` multi-stage, `docker-compose.yml` e arquivo `.env.example` para ambiente local. | 1 dia | Ativ. 02 | Docker local funcional com PostgreSQL |
 | **04** | **Fase 2** | Execução e validação ponta a ponta dos cálculos, seleção de veículos e persistência localmente via Docker. | 1 dia | Ativ. 03 | Homologação local concluída com sucesso |
-| **05** | **Fase 3** | Criação da branch `develop`, ajuste fino do `.gitignore`, commits estruturados e envio ao repositório GitHub. | 0.5 dia | Ativ. 04 | Repositório `ev-charge` sincronizado com branches ativas |
+| **05** | **Fase 3** | Criação da branch `develop`, ajuste fino do `.gitignore`, commits estruturados e envio ao repositório GitHub. | 0.5 dia | Ativ. 04 | Repositório `kwhub-app` sincronizado com branches ativas |
 | **06** | **Fase 4** | Preparação da VPS: regras de firewall (`iptables` e Security Lists), Swapfile de 4GB a 8GB, Docker e Tailscale. | 1 dia | Ativ. 05 | VPS segura e conectada à malha Tailscale |
 | **07** | **Fase 5** | Configuração dos diretórios de Stacks na VPS (`~/stacks/ev-calc-hml` e `~/stacks/ev-calc-prod`) com variáveis `.env` independentes. | 0.5 dia | Ativ. 06 | Contêineres de HML (:3001) e PROD (:3000) ativos |
 | **08** | **Fase 5** | Configuração do Proxy Reverso Nginx e emissão automática de certificados SSL com Certbot. | 0.5 dia | Ativ. 07 | URLs públicas HTTPS acessíveis com segurança |

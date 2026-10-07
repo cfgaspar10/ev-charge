@@ -2090,25 +2090,25 @@
 
       switch (tipoMensagem) {
         case 'APROVADA':
-          assunto = `Boas notícias! O veículo que você sugeriu já está disponível no Recarga VE ⚡`;
-          corpo = `Olá, ${nome}!\n\nTemos ótimas notícias! A sua sugestão para inclusão do veículo ${veiculo} foi analisada e ele já se encontra disponível no catálogo oficial da Calculadora de Recarga VE.\n\nAgora você já pode simular o tempo de carregamento (em tomada comum, wallbox ou recarga rápida DC), custo de energia e consumo de viagem!\n\n🔗 Acesse agora e confira:\n${urlApp}\n\nMuito obrigado por colaborar com a comunidade de mobilidade elétrica!\n\nAtenciosamente,\nEquipe Recarga VE\n${urlApp}`;
+          assunto = `Boas notícias! O veículo que você sugeriu já está disponível no kWhub ⚡`;
+          corpo = `Olá, ${nome}!\n\nTemos ótimas notícias! A sua sugestão para inclusão do veículo ${veiculo} foi analisada e ele já se encontra disponível no catálogo oficial do kWhub.\n\nAgora você já pode simular o tempo de carregamento (em tomada comum, wallbox ou recarga rápida DC), custo de energia e consumo de viagem!\n\n🔗 Acesse agora e confira:\n${urlApp}\n\nMuito obrigado por colaborar com a comunidade de mobilidade elétrica!\n\nAtenciosamente,\nEquipe kWhub\n${urlApp}`;
           break;
 
         case 'REJEITADA':
-          assunto = `Atualização sobre sua sugestão de veículo (${veiculo}) - Recarga VE`;
+          assunto = `Atualização sobre sua sugestão de veículo (${veiculo}) - kWhub`;
           const motivoTexto = s.adminNotes ? `\nMotivo informado: ${s.adminNotes}\n` : '';
-          corpo = `Olá, ${nome}!\n\nAgradecemos pelo envio da sugestão do modelo ${veiculo}.\n\nNo momento, não conseguimos homologar este modelo em nosso catálogo pelo seguinte motivo:${motivoTexto || '\nDados técnicos de bateria ainda não homologados oficialmente pelo Inmetro / PBEV no Brasil.'}\n\nAssim que os dados oficiais forem publicados pelas montadoras, realizaremos a inclusão.\n\nAtenciosamente,\nEquipe Recarga VE\n${urlApp}`;
+          corpo = `Olá, ${nome}!\n\nAgradecemos pelo envio da sugestão do modelo ${veiculo}.\n\nNo momento, não conseguimos homologar este modelo em nosso catálogo pelo seguinte motivo:${motivoTexto || '\nDados técnicos de bateria ainda não homologados oficialmente pelo Inmetro / PBEV no Brasil.'}\n\nAssim que os dados oficiais forem publicados pelas montadoras, realizaremos a inclusão.\n\nAtenciosamente,\nEquipe kWhub\n${urlApp}`;
           break;
 
         case 'JA_EXISTE':
-          assunto = `Sobre a sua sugestão do ${veiculo} - Recarga VE`;
-          corpo = `Olá, ${nome}!\n\nObrigado por entrar em contato e sugerir o veículo ${veiculo}.\n\nIdentificamos que este modelo (ou versão correspondente) já se encontra disponível no catálogo da Calculadora de Recarga VE!\n\nPara encontrá-lo, basta digitar o nome no campo de busca ou selecionar a montadora ${s.brand} no filtro.\n\n🔗 Acesse e faça sua simulação:\n${urlApp}\n\nCaso note qualquer divergência nas especificações técnicas cadastradas, fique à vontade para nos responder por este e-mail.\n\nAtenciosamente,\nEquipe Recarga VE\n${urlApp}`;
+          assunto = `Sobre a sua sugestão do ${veiculo} - kWhub`;
+          corpo = `Olá, ${nome}!\n\nObrigado por entrar em contato e sugerir o veículo ${veiculo}.\n\nIdentificamos que este modelo (ou versão correspondente) já se encontra disponível no catálogo do kWhub!\n\nPara encontrá-lo, basta digitar o nome no campo de busca ou selecionar a montadora ${s.brand} no filtro.\n\n🔗 Acesse e faça sua simulação:\n${urlApp}\n\nCaso note qualquer divergência nas especificações técnicas cadastradas, fique à vontade para nos responder por este e-mail.\n\nAtenciosamente,\nEquipe kWhub\n${urlApp}`;
           break;
 
         case 'PENDENTE':
         default:
-          assunto = `Recebemos sua sugestão de veículo (${veiculo}) - Recarga VE ⏳`;
-          corpo = `Olá, ${nome}!\n\nConfirmamos o recebimento da sua sugestão para inclusão do veículo ${veiculo} na Calculadora de Recarga VE.\n\nNossa equipe técnica já está analisando as especificações oficiais de bateria e potência de recarga (AC/DC) para homologar o modelo no catálogo.\n\nAssim que o veículo for incluído, enviaremos uma nova notificação por aqui.\n\nObrigado pela sua colaboração!\n\nAtenciosamente,\nEquipe Recarga VE\n${urlApp}`;
+          assunto = `Recebemos sua sugestão de veículo (${veiculo}) - kWhub ⏳`;
+          corpo = `Olá, ${nome}!\n\nConfirmamos o recebimento da sua sugestão para inclusão do veículo ${veiculo} no kWhub.\n\nNossa equipe técnica já está analisando as especificações oficiais de bateria e potência de recarga (AC/DC) para homologar o modelo no catálogo.\n\nAssim que o veículo for incluído, enviaremos uma nova notificação por aqui.\n\nObrigado pela sua colaboração!\n\nAtenciosamente,\nEquipe kWhub\n${urlApp}`;
           break;
       }
 
