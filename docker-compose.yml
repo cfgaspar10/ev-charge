@@ -29,7 +29,11 @@ services:
       NODE_ENV: ${NODE_ENV:-development}
       PORT: 3000
       APP_SECRET: ${APP_SECRET:-ev_calc_secret_dev_2026}
+      ADMIN_KEY: ${ADMIN_KEY:-admin123}
       DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@app-db:5432/${POSTGRES_DB:-ev_calculator_dev}?schema=public
+    volumes:
+      - ./client:/client
+      - ./server/src:/app/src
     ports:
       - "${APP_BIND_IP:-0.0.0.0}:${APP_PORT:-3001}:3000"
     depends_on:

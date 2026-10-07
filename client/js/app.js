@@ -281,7 +281,15 @@
 
     function getFilteredVehicles() {
       const list = VEHICLE_DATA.filter(v => {
-        const matchesType = (selectedTypeFilter === 'ALL') || (v.type === selectedTypeFilter);
+        // Se filtro for inativos, traz somente inativos
+        if (selectedTypeFilter === 'INACTIVE') {
+          if (v.active !== false) return false;
+        } else {
+          // Nos demais filtros, só traz ativos
+          if (v.active === false) return false;
+          if (selectedTypeFilter !== 'ALL' && v.type !== selectedTypeFilter) return false;
+        }
+
         const matchesBrand = (selectedBrandFilter === 'ALL') || (v.brand === selectedBrandFilter);
         
         let matchesSearch = true;
@@ -289,7 +297,7 @@
           const term = currentSearchTerm.toLowerCase();
           matchesSearch = v.brand.toLowerCase().includes(term) || v.model.toLowerCase().includes(term);
         }
-        return matchesType && matchesBrand && matchesSearch;
+        return matchesBrand && matchesSearch;
       });
 
       return list.sort((a, b) => {
@@ -300,14 +308,28 @@
     }
 
     function initVehicleModal() {
-      modalVehicleCount.textContent = VEHICLE_DATA.length + ' modelos disponíveis';
+      const ativos = VEHICLE_DATA.filter(v => v.active !== false);
+      const inativos = VEHICLE_DATA.filter(v => v.active === false);
+
+      const inativosCountEl = document.getElementById('inativos-count');
+      if (inativosCountEl) inativosCountEl.textContent = inativos.length;
+
+      if (selectedTypeFilter === 'INACTIVE') {
+        modalVehicleCount.textContent = inativos.length + ' modelos desativados';
+      } else {
+        modalVehicleCount.textContent = ativos.length + ' modelos disponíveis';
+      }
+
       renderBrandPills();
       renderModelsList();
       updateChargerPresets(currentVehicle);
     }
 
     function renderBrandPills() {
-      const availableVehicles = VEHICLE_DATA.filter(v => (selectedTypeFilter === 'ALL' || v.type === selectedTypeFilter));
+      const availableVehicles = (selectedTypeFilter === 'INACTIVE')
+        ? VEHICLE_DATA.filter(v => v.active === false)
+        : VEHICLE_DATA.filter(v => v.active !== false && (selectedTypeFilter === 'ALL' || v.type === selectedTypeFilter));
+
       const brands = ['ALL', ...new Set(availableVehicles.map(v => v.brand))].sort((a, b) => {
         if (a === 'ALL') return -1;
         if (b === 'ALL') return 1;
@@ -368,27 +390,68 @@
 
       filtered.forEach(v => {
         const item = document.createElement('div');
-        item.className = 'model-card-item';
+        const isInativo = (v.active === false);
+        item.className = 'model-card-item' + (isInativo ? ' is-inactive' : '');
         
         const typeClass = (v.type === 'BEV') ? 'bev' : 'phev';
         const typeLabel = (v.type === 'BEV') ? '100% ELÉTRICO' : 'HÍBRIDO PLUG-IN';
+
+        let adminActionsHtml = '';
+        if (isInativo) {
+          adminActionsHtml = 
+            '<button type="button" class="btn-card-action success btn-restore-card" title="Reativar este modelo no catálogo">♻️ Reativar</button>' +
+            '<button type="button" class="btn-card-action btn-edit-card" title="Editar especificações">✏️</button>' +
+            '<button type="button" class="btn-card-action danger btn-delete-card" title="Excluir definitivamente do banco de dados">🗑️</button>';
+        } else {
+          adminActionsHtml = 
+            '<button type="button" class="btn-card-action btn-edit-card" title="Editar especificações deste modelo">✏️ Editar</button>' +
+            '<button type="button" class="btn-card-action danger btn-delete-card" title="Desativar este modelo">🚫 Desativar</button>';
+        }
 
         item.innerHTML = 
           '<div class="model-info-left">' +
             '<span class="model-brand-name">' + v.brand + '</span>' +
             '<div class="model-card-name">' + 
               v.model + 
-              '<span class="type-badge ' + typeClass + '">' + typeLabel + '</span>' +
+              (isInativo ? '<span class="type-badge inactive">DESATIVADO</span>' : '<span class="type-badge ' + typeClass + '">' + typeLabel + '</span>') +
             '</div>' +
-            '<div class="model-card-specs">⚡ AC: ' + v.maxAc + ' kW' + (v.maxDc > 0 ? ' | 🚀 DC: ' + v.maxDc + ' kW' : '') + '</div>' +
+            '<div class="model-card-specs">⚡ AC: ' + v.maxAc + ' kW' + (v.maxDc > 0 ? ' | 🚀 DC: ' + v.maxDc + ' kW' : '') + (v.range ? ' | 🛣️ ' + v.range + ' km' : '') + '</div>' +
           '</div>' +
           '<div class="model-card-right">' +
             '<div class="model-badge-battery">' + v.battery + ' kWh</div>' +
+            '<div class="model-card-admin-actions">' +
+              adminActionsHtml +
+            '</div>' +
           '</div>';
         
         item.addEventListener('click', function() {
           selectVehicle(v);
         });
+
+        const btnRestore = item.querySelector('.btn-restore-card');
+        if (btnRestore) {
+          btnRestore.addEventListener('click', function(e) {
+            e.stopPropagation();
+            dispararReativacaoVeiculo(v);
+          });
+        }
+
+        const btnEdit = item.querySelector('.btn-edit-card');
+        if (btnEdit) {
+          btnEdit.addEventListener('click', function(e) {
+            e.stopPropagation();
+            dispararEdicaoVeiculo(v);
+          });
+        }
+
+        const btnDelete = item.querySelector('.btn-delete-card');
+        if (btnDelete) {
+          btnDelete.addEventListener('click', function(e) {
+            e.stopPropagation();
+            dispararExclusaoVeiculo(v, isInativo);
+          });
+        }
+
         modelsListContainer.appendChild(item);
       });
     }
@@ -1313,7 +1376,400 @@
     renderTripStops();
     recalculateMultiStop();
 
-    if (typeof google !== 'undefined' && google.script && google.script.run) {
+    // ============================================================
+    // Módulo Administrativo: CRUD Completo de Veículos
+    // ============================================================
+    const btnOpenNovoVeiculo = document.getElementById('btn-open-novo-veiculo');
+    const btnAdminShortcut = document.getElementById('btn-admin-shortcut');
+    const modalAdminLogin = document.getElementById('modal-admin-login');
+    const closeAdminLoginModal = document.getElementById('close-admin-login-modal');
+    const btnCancelAdminLogin = document.getElementById('btn-cancel-admin-login');
+    const formAdminLogin = document.getElementById('form-admin-login');
+    const adminInputKey = document.getElementById('admin-input-key');
+    const adminLoginMsg = document.getElementById('admin-login-msg');
+
+    const modalNovoVeiculo = document.getElementById('modal-novo-veiculo');
+    const modalNovoVeiculoTitle = document.getElementById('modal-novo-veiculo-title');
+    const modalNovoVeiculoDesc = document.getElementById('modal-novo-veiculo-desc');
+    const closeNovoVeiculoModal = document.getElementById('close-novo-veiculo-modal');
+    const btnCancelNovoVeiculo = document.getElementById('btn-cancel-novo-veiculo');
+    const formNovoVeiculo = document.getElementById('form-novo-veiculo');
+    const novoVeiculoId = document.getElementById('novo-veiculo-id');
+    const btnSalvarNovoVeiculo = document.getElementById('btn-salvar-novo-veiculo');
+    const btnExcluirVeiculo = document.getElementById('btn-excluir-veiculo');
+    const novoVeiculoMsg = document.getElementById('novo-veiculo-msg');
+    const marcasDatalist = document.getElementById('marcas-datalist');
+
+    let pendingAdminAction = null;
+
+    function populateMarcasDatalist() {
+      if (!marcasDatalist) return;
+      const marcasUnicas = [...new Set(VEHICLE_DATA.map(v => v.brand))].sort();
+      marcasDatalist.innerHTML = marcasUnicas.map(m => `<option value="${m}">`).join('');
+    }
+
+    function abrirModalNovoVeiculo() {
+      populateMarcasDatalist();
+      if (modalAdminLogin) modalAdminLogin.classList.remove('active');
+      if (novoVeiculoMsg) novoVeiculoMsg.className = 'admin-msg-box hidden';
+      
+      // Modo Criação
+      if (novoVeiculoId) novoVeiculoId.value = '';
+      if (modalNovoVeiculoTitle) modalNovoVeiculoTitle.textContent = '⚡ Cadastrar Novo Veículo';
+      if (modalNovoVeiculoDesc) modalNovoVeiculoDesc.textContent = 'Adicione um novo modelo homologado ao catálogo';
+      if (btnSalvarNovoVeiculo) btnSalvarNovoVeiculo.textContent = '💾 Salvar no Catálogo';
+      if (btnExcluirVeiculo) btnExcluirVeiculo.classList.add('hidden');
+      if (formNovoVeiculo) formNovoVeiculo.reset();
+      const activeCheck = document.getElementById('novo-veiculo-active');
+      if (activeCheck) activeCheck.checked = true;
+
+      if (modalNovoVeiculo) modalNovoVeiculo.classList.add('active');
+    }
+
+    function abrirModalEdicao(v) {
+      populateMarcasDatalist();
+      if (modalAdminLogin) modalAdminLogin.classList.remove('active');
+      if (novoVeiculoMsg) novoVeiculoMsg.className = 'admin-msg-box hidden';
+
+      // Modo Edição
+      if (novoVeiculoId) novoVeiculoId.value = v.id;
+      if (modalNovoVeiculoTitle) modalNovoVeiculoTitle.textContent = `✏️ Editar Veículo: ${v.brand} ${v.model}`;
+      if (modalNovoVeiculoDesc) modalNovoVeiculoDesc.textContent = `Altere as especificações técnicas de ${v.model}`;
+      if (btnSalvarNovoVeiculo) btnSalvarNovoVeiculo.textContent = '💾 Salvar Alterações';
+      if (btnExcluirVeiculo) {
+        btnExcluirVeiculo.classList.remove('hidden');
+        btnExcluirVeiculo.textContent = (v.active === false) ? '🗑️ Excluir Definitivo' : '🚫 Desativar Veículo';
+      }
+
+      document.getElementById('novo-veiculo-marca').value = v.brand;
+      document.getElementById('novo-veiculo-modelo').value = v.model;
+      document.getElementById('novo-veiculo-tipo').value = v.type;
+      document.getElementById('novo-veiculo-bateria').value = v.battery;
+      document.getElementById('novo-veiculo-max-ac').value = v.maxAc;
+      document.getElementById('novo-veiculo-max-dc').value = v.maxDc;
+      document.getElementById('novo-veiculo-range').value = v.range;
+      const activeCheck = document.getElementById('novo-veiculo-active');
+      if (activeCheck) activeCheck.checked = (v.active !== false);
+
+      if (modalNovoVeiculo) modalNovoVeiculo.classList.add('active');
+    }
+
+    function abrirModalAdminLogin(onSuccessAction) {
+      pendingAdminAction = onSuccessAction || null;
+      if (adminLoginMsg) adminLoginMsg.className = 'admin-msg-box hidden';
+      if (adminInputKey) adminInputKey.value = '';
+      if (modalAdminLogin) modalAdminLogin.classList.add('active');
+    }
+
+    async function dispararAberturaNovoVeiculo() {
+      if (window.EV_API && window.EV_API.hasAdminKey()) {
+        try {
+          await window.EV_API.verificarAdmin();
+          abrirModalNovoVeiculo();
+        } catch (e) {
+          window.EV_API.clearAdminKey();
+          abrirModalAdminLogin(() => abrirModalNovoVeiculo());
+        }
+      } else {
+        abrirModalAdminLogin(() => abrirModalNovoVeiculo());
+      }
+    }
+
+    async function dispararEdicaoVeiculo(v) {
+      if (window.EV_API && window.EV_API.hasAdminKey()) {
+        try {
+          await window.EV_API.verificarAdmin();
+          abrirModalEdicao(v);
+        } catch (e) {
+          window.EV_API.clearAdminKey();
+          abrirModalAdminLogin(() => abrirModalEdicao(v));
+        }
+      } else {
+        abrirModalAdminLogin(() => abrirModalEdicao(v));
+      }
+    }
+
+    async function dispararReativacaoVeiculo(v) {
+      if (window.EV_API && window.EV_API.hasAdminKey()) {
+        try {
+          await window.EV_API.verificarAdmin();
+          await executarReativacao(v.id);
+        } catch (e) {
+          window.EV_API.clearAdminKey();
+          abrirModalAdminLogin(async () => {
+            await executarReativacao(v.id);
+          });
+        }
+      } else {
+        abrirModalAdminLogin(async () => {
+          await executarReativacao(v.id);
+        });
+      }
+    }
+
+    async function executarReativacao(id) {
+      try {
+        await window.EV_API.atualizarVeiculo(id, { active: true });
+        alert('Veículo reativado com sucesso no catálogo!');
+        if (window.EV_API.listarVeiculos) {
+          const listaAtualizada = await window.EV_API.listarVeiculos(true);
+          if (listaAtualizada) {
+            VEHICLE_DATA = listaAtualizada;
+            initVehicleModal();
+          }
+        }
+      } catch (err) {
+        alert('Falha ao reativar: ' + (err.message || 'Erro desconhecido'));
+      }
+    }
+
+    async function dispararExclusaoVeiculo(v, isInativo = false) {
+      const confirmMsg = isInativo
+        ? `⚠️ ATENÇÃO: Deseja EXCLUIR DEFINITIVAMENTE o veículo "${v.brand} ${v.model}" do banco de dados? Esta ação não pode ser desfeita.`
+        : `Deseja DESATIVAR o veículo "${v.brand} ${v.model}" do catálogo? Ele ficará na aba de Desativados e poderá ser reativado quando quiser.`;
+
+      if (!confirm(confirmMsg)) return;
+
+      if (window.EV_API && window.EV_API.hasAdminKey()) {
+        try {
+          await window.EV_API.verificarAdmin();
+          await executarExclusao(v.id, isInativo);
+        } catch (e) {
+          window.EV_API.clearAdminKey();
+          abrirModalAdminLogin(async () => {
+            await executarExclusao(v.id, isInativo);
+          });
+        }
+      } else {
+        abrirModalAdminLogin(async () => {
+          await executarExclusao(v.id, isInativo);
+        });
+      }
+    }
+
+    async function executarExclusao(id, permanente = false) {
+      try {
+        await window.EV_API.desativarVeiculo(id, null, permanente);
+        alert(permanente ? 'Veículo excluído definitivamente!' : 'Veículo desativado com sucesso!');
+        
+        // Recarrega lista
+        if (window.EV_API.listarVeiculos) {
+          const listaAtualizada = await window.EV_API.listarVeiculos(true);
+          if (listaAtualizada) {
+            VEHICLE_DATA = listaAtualizada;
+            initVehicleModal();
+          }
+        }
+        
+        if (modalNovoVeiculo) modalNovoVeiculo.classList.remove('active');
+      } catch (err) {
+        alert('Falha na operação: ' + (err.message || 'Erro desconhecido'));
+      }
+    }
+
+    const btnToggleAdmin = document.getElementById('btn-toggle-admin');
+
+    function atualizarEstadoVisualAdmin() {
+      const estaLogado = window.EV_API && window.EV_API.hasAdminKey();
+      if (estaLogado) {
+        document.body.classList.add('admin-mode-active');
+        if (btnToggleAdmin) {
+          btnToggleAdmin.innerHTML = '🛡️ Sair Admin';
+          btnToggleAdmin.title = 'Modo Administrador Ativo (Clique para Sair)';
+        }
+        // Carrega catálogo completo incluindo desativados
+        if (window.EV_API.listarVeiculos) {
+          window.EV_API.listarVeiculos(true).then(dados => {
+            if (dados && dados.length > 0) {
+              VEHICLE_DATA = dados;
+              initVehicleModal();
+            }
+          }).catch(() => {});
+        }
+      } else {
+        document.body.classList.remove('admin-mode-active');
+        if (btnToggleAdmin) {
+          btnToggleAdmin.innerHTML = '🔐 Admin';
+          btnToggleAdmin.title = 'Acesso Administrativo (Login)';
+        }
+        // Se filtro estava em inativos, volta para Todos
+        if (selectedTypeFilter === 'INACTIVE') {
+          selectedTypeFilter = 'ALL';
+          document.querySelectorAll('.filter-type-pill').forEach(b => {
+            b.classList.toggle('active', b.dataset.type === 'ALL');
+          });
+        }
+        // Carrega apenas veículos ativos
+        if (window.EV_API.listarVeiculos) {
+          window.EV_API.listarVeiculos(false).then(dados => {
+            if (dados && dados.length > 0) {
+              VEHICLE_DATA = dados;
+              initVehicleModal();
+            }
+          }).catch(() => {});
+        }
+      }
+    }
+
+    // Inicialização do estado visual do Admin
+    atualizarEstadoVisualAdmin();
+    if (window.EV_API && window.EV_API.hasAdminKey()) {
+      window.EV_API.verificarAdmin().catch(() => {
+        window.EV_API.clearAdminKey();
+        atualizarEstadoVisualAdmin();
+      });
+    }
+
+    if (btnToggleAdmin) {
+      btnToggleAdmin.addEventListener('click', function() {
+        if (window.EV_API && window.EV_API.hasAdminKey()) {
+          if (confirm('Deseja sair do Modo Administrador e voltar à visualização limpa do cliente?')) {
+            window.EV_API.clearAdminKey();
+            atualizarEstadoVisualAdmin();
+          }
+        } else {
+          abrirModalAdminLogin();
+        }
+      });
+    }
+
+    if (btnOpenNovoVeiculo) btnOpenNovoVeiculo.addEventListener('click', dispararAberturaNovoVeiculo);
+
+    if (closeAdminLoginModal) closeAdminLoginModal.addEventListener('click', () => modalAdminLogin.classList.remove('active'));
+    if (btnCancelAdminLogin) btnCancelAdminLogin.addEventListener('click', () => modalAdminLogin.classList.remove('active'));
+
+    if (formAdminLogin) {
+      formAdminLogin.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const key = adminInputKey.value.trim();
+        if (!key) return;
+
+        adminLoginMsg.className = 'admin-msg-box';
+        adminLoginMsg.textContent = 'Verificando credenciais...';
+
+        try {
+          await window.EV_API.verificarAdmin(key);
+          window.EV_API.setAdminKey(key, true);
+          atualizarEstadoVisualAdmin();
+          adminLoginMsg.className = 'admin-msg-box sucesso';
+          adminLoginMsg.textContent = 'Acesso liberado!';
+          
+          setTimeout(() => {
+            if (modalAdminLogin) modalAdminLogin.classList.remove('active');
+            if (typeof pendingAdminAction === 'function') {
+              const action = pendingAdminAction;
+              pendingAdminAction = null;
+              action();
+            }
+          }, 400);
+        } catch (err) {
+          adminLoginMsg.className = 'admin-msg-box erro';
+          adminLoginMsg.textContent = 'Senha incorreta. Tente novamente.';
+        }
+      });
+    }
+
+    if (closeNovoVeiculoModal) closeNovoVeiculoModal.addEventListener('click', () => modalNovoVeiculo.classList.remove('active'));
+    if (btnCancelNovoVeiculo) btnCancelNovoVeiculo.addEventListener('click', () => modalNovoVeiculo.classList.remove('active'));
+
+    if (btnExcluirVeiculo) {
+      btnExcluirVeiculo.addEventListener('click', async function() {
+        const id = novoVeiculoId ? novoVeiculoId.value : null;
+        if (!id) return;
+        const veiculoAtual = VEHICLE_DATA.find(v => v.id === id);
+        const isInativo = veiculoAtual ? (veiculoAtual.active === false) : false;
+        await dispararExclusaoVeiculo(veiculoAtual || { id, brand: 'este', model: 'veículo' }, isInativo);
+      });
+    }
+
+    if (formNovoVeiculo) {
+      formNovoVeiculo.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const idAtual = novoVeiculoId ? novoVeiculoId.value : null;
+        const brand = document.getElementById('novo-veiculo-marca').value.trim();
+        const model = document.getElementById('novo-veiculo-modelo').value.trim();
+        const type = document.getElementById('novo-veiculo-tipo').value;
+        const battery = parseFloat(document.getElementById('novo-veiculo-bateria').value);
+        const maxAc = parseFloat(document.getElementById('novo-veiculo-max-ac').value);
+        const maxDc = parseFloat(document.getElementById('novo-veiculo-max-dc').value);
+        const range = parseInt(document.getElementById('novo-veiculo-range').value, 10);
+        const activeCheck = document.getElementById('novo-veiculo-active');
+        const active = activeCheck ? activeCheck.checked : true;
+
+        novoVeiculoMsg.className = 'admin-msg-box';
+        novoVeiculoMsg.textContent = idAtual ? 'Atualizando dados...' : 'Salvando no banco de dados...';
+
+        try {
+          let res;
+          if (idAtual) {
+            // Operação de UPDATE (PUT)
+            res = await window.EV_API.atualizarVeiculo(idAtual, {
+              brand,
+              model,
+              type,
+              battery,
+              maxAc,
+              maxDc,
+              range,
+              active
+            });
+            novoVeiculoMsg.className = 'admin-msg-box sucesso';
+            novoVeiculoMsg.textContent = 'Veículo atualizado com sucesso!';
+          } else {
+            // Operação de CREATE (POST)
+            res = await window.EV_API.cadastrarVeiculo({
+              brand,
+              model,
+              type,
+              battery,
+              maxAc,
+              maxDc,
+              range,
+              active
+            });
+            novoVeiculoMsg.className = 'admin-msg-box sucesso';
+            novoVeiculoMsg.textContent = 'Veículo cadastrado com sucesso!';
+          }
+
+          // Atualiza o catálogo local em tempo real
+          if (window.EV_API.listarVeiculos) {
+            const listaAtualizada = await window.EV_API.listarVeiculos(true);
+            if (listaAtualizada && listaAtualizada.length > 0) {
+              VEHICLE_DATA = listaAtualizada;
+              initVehicleModal();
+            }
+          }
+
+          if (res.veiculo && res.veiculo.active !== false) {
+            selectVehicle(res.veiculo);
+          }
+
+          setTimeout(() => {
+            modalNovoVeiculo.classList.remove('active');
+            if (vehicleModal) vehicleModal.classList.remove('active');
+            formNovoVeiculo.reset();
+          }, 1000);
+
+        } catch (err) {
+          novoVeiculoMsg.className = 'admin-msg-box erro';
+          novoVeiculoMsg.textContent = 'Erro ao processar: ' + (err.message || 'Falha na comunicação');
+        }
+      });
+    }
+
+    // Carregamento inicial de veículos da API
+    if (window.EV_API && window.EV_API.listarVeiculos) {
+      window.EV_API.listarVeiculos()
+        .then(serverData => {
+          if (serverData && serverData.length > 0) {
+            VEHICLE_DATA = serverData;
+            initVehicleModal();
+          }
+        })
+        .catch(err => {
+          console.warn('Usando catálogo inicial padrão:', err);
+        });
+    } else if (typeof google !== 'undefined' && google.script && google.script.run) {
       google.script.run.withSuccessHandler(function(serverData) {
         if (serverData && serverData.length > 0) {
           VEHICLE_DATA = serverData;

@@ -27,6 +27,54 @@ app.get('/health', (req, res) => {
 
 // Router de API
 const apiRouter = express.Router();
+
+// Índice descritivo das rotas da API
+apiRouter.get('/', (req, res) => {
+  res.json({
+    nome: 'EV Charging Calculator API',
+    versao: '1.0.0',
+    descricao: 'API REST para simulação e catálogo de veículos elétricos',
+    endpoints: [
+      {
+        metodo: 'GET',
+        rota: '/health',
+        descricao: 'Verificação de integridade e status do servidor'
+      },
+      {
+        metodo: 'GET',
+        rota: '/api/veiculos',
+        descricao: 'Retorna a lista completa com todos os 82 veículos cadastrados no PostgreSQL'
+      },
+      {
+        metodo: 'GET',
+        rota: '/api/veiculos/:id',
+        exemplo: '/api/veiculos/byd_dolphin_mini',
+        descricao: 'Retorna as especificações técnicas de um veículo específico por ID'
+      },
+      {
+        metodo: 'POST',
+        rota: '/api/veiculos/admin/verificar',
+        descricao: '[Admin] Valida a senha/chave de acesso administrativo (Header x-admin-key)'
+      },
+      {
+        metodo: 'POST',
+        rota: '/api/veiculos',
+        descricao: '[Admin] Cadastra um novo modelo de veículo no banco de dados (Header x-admin-key)'
+      },
+      {
+        metodo: 'PUT',
+        rota: '/api/veiculos/:id',
+        descricao: '[Admin] Atualiza especificações técnicas de um veículo existente (Header x-admin-key)'
+      },
+      {
+        metodo: 'DELETE',
+        rota: '/api/veiculos/:id',
+        descricao: '[Admin] Desativa ou remove um veículo do catálogo (Header x-admin-key)'
+      }
+    ]
+  });
+});
+
 apiRouter.use('/veiculos', require('./routes/veiculos.routes'));
 
 // Atende API na raiz e em subcaminhos suportados pelo proxy reverso

@@ -695,6 +695,25 @@
       align-items: center;
       gap: 6px;
     }
+    .modal-add-btn {
+      background: rgba(54, 116, 181, 0.2);
+      border: 1px solid var(--accent-blue);
+      color: var(--accent-blue-light);
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 5px 11px;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      display: inline-flex !important;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s ease;
+    }
+    .modal-add-btn:hover {
+      background: var(--accent-blue);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
     .modal-reset-filters-btn {
       background: var(--bg-input);
       border: 1px solid var(--border-color);
@@ -1236,4 +1255,243 @@
     .btn-add-stop:hover {
       background: var(--bg-card-hover);
       border-color: var(--accent-blue);
+    }
+
+    /* Modais Administrativos e Formulário de Cadastro */
+    .modal-dialog-compact {
+      max-width: 380px !important;
+      margin: auto;
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+    }
+
+    .modal-dialog-medium {
+      max-width: 560px !important;
+      margin: auto;
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+    }
+
+    .admin-form-body {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .admin-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 520px) {
+      .admin-form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .form-group label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .admin-form-input {
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-size: 13px;
+      padding: 9px 12px;
+      outline: none;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .admin-form-input:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(87, 143, 202, 0.25);
+    }
+
+    .form-actions-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-blue-deep) 0%, var(--accent-blue) 100%);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 12.5px;
+      font-weight: 700;
+      padding: 9px 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 9px 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-primary);
+    }
+
+    .admin-msg-box {
+      font-size: 12px;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+    }
+
+    .admin-msg-box.erro {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #ef4444;
+    }
+
+    .admin-msg-box.sucesso {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #10b981;
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #ef4444;
+      border-radius: var(--radius-md);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 9px 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-danger:hover {
+      background: #ef4444;
+      color: #ffffff;
+    }
+
+    /* Ações Administrativas nos Cards de Veículos */
+    .admin-only-element {
+      display: none !important;
+    }
+    body.admin-mode-active .admin-only-element {
+      display: inline-flex !important;
+    }
+
+    .admin-toggle-btn {
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    .admin-toggle-btn:hover {
+      color: var(--accent-blue-light);
+      border-color: var(--accent-blue);
+    }
+    body.admin-mode-active .admin-toggle-btn {
+      background: rgba(16, 185, 129, 0.15) !important;
+      border-color: rgba(16, 185, 129, 0.5) !important;
+      color: #10b981 !important;
+      font-weight: 700;
+    }
+
+    .model-card-admin-actions {
+      display: none !important;
+      align-items: center;
+      gap: 5px;
+      margin-top: 6px;
+    }
+    body.admin-mode-active .model-card-admin-actions {
+      display: flex !important;
+    }
+
+    .btn-card-action {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .btn-card-action:hover {
+      border-color: var(--accent-blue);
+      color: var(--accent-blue-light);
+      background: var(--bg-card-hover);
+    }
+
+    .btn-card-action.danger:hover {
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+
+    /* Estilos de Veículos Inativos e Reativação */
+    .filter-status-pill {
+      border-color: rgba(239, 68, 68, 0.4) !important;
+      color: #ef4444 !important;
+    }
+    .filter-status-pill.active {
+      background: #ef4444 !important;
+      color: #ffffff !important;
+      border-color: #ef4444 !important;
+    }
+
+    .model-card-item.is-inactive {
+      opacity: 0.72;
+      border: 1px dashed rgba(239, 68, 68, 0.45);
+      background: rgba(239, 68, 68, 0.04);
+    }
+    .model-card-item.is-inactive:hover {
+      opacity: 1;
+      border-color: #ef4444;
+    }
+
+    .type-badge.inactive {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+
+    .btn-card-action.success {
+      border-color: rgba(16, 185, 129, 0.5);
+      color: #10b981;
+    }
+    .btn-card-action.success:hover {
+      background: #10b981;
+      color: #ffffff;
+      border-color: #10b981;
     }

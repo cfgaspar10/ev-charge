@@ -1,6 +1,7 @@
 /**
  * Emulador do SDK Google Apps Script e Adaptador REST para EV Charging Calculator
- * Permite que a aplicação funcione desacoplada do ecossistema Google Apps Script.
+ * Permite que a aplicação funcione desacoplada do ecossistema Google Apps Script
+ * e oferece métodos de administração para cadastro e gestão de veículos.
  */
 (function () {
   'use strict';
@@ -14,19 +15,43 @@
 
   const API_BASE = getContextBasePath() + '/api';
 
+  function getStoredAdminKey() {
+    return sessionStorage.getItem('ev_admin_key') || localStorage.getItem('ev_admin_key') || '';
+  }
+
+  function setStoredAdminKey(key, persist = false) {
+    if (persist) {
+      localStorage.setItem('ev_admin_key', key);
+    } else {
+      sessionStorage.setItem('ev_admin_key', key);
+    }
+  }
+
+  function clearStoredAdminKey() {
+    sessionStorage.removeItem('ev_admin_key');
+    localStorage.removeItem('ev_admin_key');
+  }
+
   async function fetchAPI(endpoint, options = {}) {
+    const headers = {
+      'Content-Type': 'application/json',
+      ...(options.headers || {})
+    };
+
+    const adminKey = options.adminKey || getStoredAdminKey();
+    if (adminKey && !headers['x-admin-key']) {
+      headers['x-admin-key'] = adminKey;
+    }
+
     const response = await fetch(API_BASE + endpoint, {
       ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        ...(options.headers || {})
-      },
+      headers,
       credentials: 'include'
     });
 
     if (!response.ok) {
       const err = await response.json().catch(() => ({}));
-      throw new Error(err.erro || err.message || 'Erro HTTP ' + response.status);
+      throw new Error(err.erro || err.mensagem || err.message || 'Erro HTTP ' + response.status);
     }
     return response.json();
   }
@@ -58,15 +83,64 @@
         });
     }
 
-    // Extensibilidade futura: salvar ou carregar simulações
-    salvarSimulacao(payload) {
-      fetchAPI('/simulacoes', { method: 'POST', body: JSON.stringify(payload) })
+    // Cadastro de veículo via admin
+    cadastrarVeiculo(payload) {
+      fetchAPI('/veiculos', { method: 'POST', body: JSON.stringify(payload) })
         .then(res => this._success(res))
         .catch(err => this._failure(err));
     }
   }
 
-  // Interceptador global window.google.script.run
+  // API Moderna acessível globalmente
+  window.EV_API = {
+    getAdminKey: getStoredAdminKey,
+    setAdminKey: setStoredAdminKey,
+    clearAdminKey: clearStoredAdminKey,
+    hasAdminKey: () => Boolean(getStoredAdminKey()),
+
+    async verificarAdmin(key) {
+      const chave = key || getStoredAdminKey();
+      return fetchAPI('/veiculos/admin/verificar', {
+        method: 'POST',
+        headers: { 'x-admin-key': chave }
+      });
+    },
+
+    async listarVeiculos(incluirInativos = false) {
+      const query = incluirInativos ? '?todos=true' : '';
+      return fetchAPI('/veiculos' + query);
+    },
+
+    async obterVeiculo(id) {
+      return fetchAPI(`/veiculos/${encodeURIComponent(id)}`);
+    },
+
+    async cadastrarVeiculo(dados, adminKey) {
+      return fetchAPI('/veiculos', {
+        method: 'POST',
+        body: JSON.stringify(dados),
+        adminKey
+      });
+    },
+
+    async atualizarVeiculo(id, dados, adminKey) {
+      return fetchAPI(`/veiculos/${encodeURIComponent(id)}`, {
+        method: 'PUT',
+        body: JSON.stringify(dados),
+        adminKey
+      });
+    },
+
+    async desativarVeiculo(id, adminKey, permanente = false) {
+      const query = permanente ? '?permanente=true' : '';
+      return fetchAPI(`/veiculos/${encodeURIComponent(id)}${query}`, {
+        method: 'DELETE',
+        adminKey
+      });
+    }
+  };
+
+  // Interceptador global window.google.script.run (Compatibilidade retroativa)
   window.google = {
     script: {
       run: new Proxy({}, {

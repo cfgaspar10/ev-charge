@@ -30,8 +30,9 @@
       <h1 class="app-title">Recarga VE</h1>
     </div>
     <div class="header-actions">
+      <button type="button" id="btn-toggle-admin" class="reset-all-btn admin-toggle-btn" title="Área do Administrador">🔐 Admin</button>
       <button type="button" id="btn-reset-all" class="reset-all-btn" title="Restaurar valores padrões da calculadora">🔄 Zerar</button>
-      <span class="app-badge">v2.2.0</span>
+      <span class="app-badge">v1.0.0</span>
       <button type="button" id="theme-toggle-btn" class="theme-toggle-btn" title="Alternar Tema (Claro / Escuro)">🌙</button>
     </div>
   </header>
@@ -447,6 +448,7 @@
           <p id="modal-vehicle-count">80 modelos disponíveis</p>
         </div>
         <div class="modal-header-actions">
+          <button type="button" class="modal-add-btn admin-only-element" id="btn-open-novo-veiculo" title="Cadastrar Novo Veículo (Admin)">➕ Novo Veículo</button>
           <button type="button" class="modal-reset-filters-btn" id="modal-reset-filters" title="Zerar filtros de pesquisa">Zerar filtros</button>
           <button type="button" class="modal-close-btn" id="close-vehicle-modal" aria-label="Fechar">✕</button>
         </div>
@@ -466,6 +468,7 @@
         <button type="button" class="filter-type-pill active" data-type="ALL">Todos</button>
         <button type="button" class="filter-type-pill" data-type="BEV">⚡ 100% Elétrico (BEV)</button>
         <button type="button" class="filter-type-pill" data-type="PHEV">🔋 Plug-in (PHEV)</button>
+        <button type="button" class="filter-type-pill admin-only-element filter-status-pill" id="filter-inativos-btn" data-type="INACTIVE" title="Exibir veículos desativados / lixeira">🚫 Desativados (<span id="inativos-count">0</span>)</button>
       </div>
 
       <!-- Carrossel de Marcas -->
@@ -473,6 +476,107 @@
 
       <!-- Lista de Modelos -->
       <div class="models-list" id="modal-models-list"></div>
+    </div>
+  </div>
+
+  <!-- Modal de Login Administrativo -->
+  <div class="modal-overlay" id="modal-admin-login">
+    <div class="modal-sheet modal-dialog-compact">
+      <div class="modal-header">
+        <div class="modal-title-box">
+          <h3>🔐 Acesso Administrativo</h3>
+          <p>Informe a senha de gestor para cadastrar e gerenciar veículos</p>
+        </div>
+        <button type="button" class="modal-close-btn" id="close-admin-login-modal">✕</button>
+      </div>
+      <form id="form-admin-login" class="admin-form-body">
+        <div class="form-group">
+          <label for="admin-input-key">Senha de Administrador</label>
+          <input type="password" id="admin-input-key" class="admin-form-input" placeholder="Digite a senha..." required autocomplete="current-password">
+        </div>
+        <div id="admin-login-msg" class="admin-msg-box hidden"></div>
+        <div class="form-actions-row">
+          <button type="button" class="btn-secondary" id="btn-cancel-admin-login">Cancelar</button>
+          <button type="submit" class="btn-primary" id="btn-submit-admin-login">Entrar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal de Cadastro de Novo Veículo -->
+  <div class="modal-overlay" id="modal-novo-veiculo">
+    <div class="modal-sheet modal-dialog-medium">
+      <div class="modal-handle-bar"></div>
+      <div class="modal-header">
+        <div class="modal-title-box">
+          <h3 id="modal-novo-veiculo-title">⚡ Cadastrar Novo Veículo</h3>
+          <p id="modal-novo-veiculo-desc">Adicione ou edite um modelo homologado no catálogo</p>
+        </div>
+        <button type="button" class="modal-close-btn" id="close-novo-veiculo-modal">✕</button>
+      </div>
+
+      <form id="form-novo-veiculo" class="admin-form-body">
+        <input type="hidden" id="novo-veiculo-id" value="">
+        <div class="admin-form-grid">
+          
+          <div class="form-group">
+            <label for="novo-veiculo-marca">Marca *</label>
+            <input type="text" id="novo-veiculo-marca" class="admin-form-input" placeholder="Ex: BYD, Volvo, GWM..." required list="marcas-datalist">
+            <datalist id="marcas-datalist"></datalist>
+          </div>
+
+          <div class="form-group">
+            <label for="novo-veiculo-modelo">Modelo / Versão *</label>
+            <input type="text" id="novo-veiculo-modelo" class="admin-form-input" placeholder="Ex: Dolphin Mini 2026, EX30 Ultra..." required>
+          </div>
+
+          <div class="form-group">
+            <label for="novo-veiculo-tipo">Tipo de Propulsão *</label>
+            <select id="novo-veiculo-tipo" class="admin-form-input" required>
+              <option value="BEV">⚡ 100% Elétrico (BEV)</option>
+              <option value="PHEV">🔋 Híbrido Plug-in (PHEV)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="novo-veiculo-bateria">Capacidade da Bateria (kWh) *</label>
+            <input type="number" id="novo-veiculo-bateria" class="admin-form-input" step="0.1" min="1" max="250" placeholder="Ex: 60.5" required>
+          </div>
+
+          <div class="form-group">
+            <label for="novo-veiculo-max-ac">Potência Máxima AC (kW) *</label>
+            <input type="number" id="novo-veiculo-max-ac" class="admin-form-input" step="0.1" min="0" max="43" placeholder="Ex: 7.0" required>
+          </div>
+
+          <div class="form-group">
+            <label for="novo-veiculo-max-dc">Potência Máxima DC (kW) *</label>
+            <input type="number" id="novo-veiculo-max-dc" class="admin-form-input" step="0.1" min="0" max="400" placeholder="Ex: 80.0" required>
+          </div>
+
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label for="novo-veiculo-range">Autonomia Homologada Inmetro / PBEV (km) *</label>
+            <input type="number" id="novo-veiculo-range" class="admin-form-input" min="1" max="1200" placeholder="Ex: 330" required>
+          </div>
+
+          <div class="form-group admin-only-element" id="group-veiculo-active" style="grid-column: 1 / -1; display: flex; flex-direction: row; align-items: center; gap: 8px; margin-top: 4px;">
+            <input type="checkbox" id="novo-veiculo-active" checked style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--accent-blue);">
+            <label for="novo-veiculo-active" style="margin: 0; cursor: pointer; text-transform: none; font-size: 12px; color: var(--text-primary);">Veículo Ativo (visível para clientes na calculadora)</label>
+          </div>
+
+        </div>
+
+        <div id="novo-veiculo-msg" class="admin-msg-box hidden"></div>
+
+        <div class="form-actions-row" style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <button type="button" class="btn-danger hidden" id="btn-excluir-veiculo">🗑️ Excluir Veículo</button>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button type="button" class="btn-secondary" id="btn-cancel-novo-veiculo">Cancelar</button>
+            <button type="submit" class="btn-primary" id="btn-salvar-novo-veiculo">💾 Salvar Alterações</button>
+          </div>
+        </div>
+      </form>
     </div>
   </div>
 
