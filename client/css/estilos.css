@@ -1237,6 +1237,90 @@
       border: 1px solid var(--border-focus);
     }
 
+    /* Alternador de Método de Entrada de Consumo (Painel vs Odômetro) */
+    .calc-method-toggle-row {
+      display: flex;
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 3px;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+    .calc-method-btn {
+      flex: 1;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 6px 6px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: all 0.2s ease;
+    }
+    .calc-method-btn:hover {
+      color: var(--text-primary);
+    }
+    .calc-method-btn.active {
+      background: var(--bg-card);
+      color: var(--accent-blue-light);
+      border-color: rgba(37, 99, 235, 0.4);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    }
+    [data-theme="light"] .calc-method-btn.active {
+      color: var(--accent-blue);
+      border-color: rgba(37, 99, 235, 0.3);
+      box-shadow: 0 1px 3px rgba(37, 99, 235, 0.12);
+    }
+
+    .calc-mode-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sub-indicator-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 2px;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--accent-blue-light);
+    }
+    [data-theme="light"] .sub-indicator-row {
+      color: var(--accent-blue);
+    }
+
+    .dashboard-sim-arrival-box {
+      margin-top: 6px;
+      padding: 8px 10px;
+      background: rgba(37, 99, 235, 0.08);
+      border: 1px solid rgba(37, 99, 235, 0.22);
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      line-height: 1.45;
+      color: var(--text-primary);
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .dashboard-sim-arrival-box.alert-warning {
+      background: rgba(245, 158, 11, 0.12);
+      border-color: rgba(245, 158, 11, 0.4);
+      color: #FBBF24;
+    }
+    .dashboard-sim-arrival-box.alert-danger {
+      background: rgba(239, 68, 68, 0.14);
+      border-color: rgba(239, 68, 68, 0.45);
+      color: #F87171;
+    }
+
     .stops-section-header {
       display: flex;
       justify-content: space-between;

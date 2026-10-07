@@ -273,6 +273,24 @@
     const inputTripBattery = document.getElementById('input-trip-battery');
     const sliderTripBattery = document.getElementById('slider-trip-battery');
 
+    // Alternador de Método de Consumo (Painel vs Odômetro)
+    let tripCalcMode = 'dashboard';
+    const btnCalcModeDashboard = document.getElementById('btn-calc-mode-dashboard');
+    const btnCalcModeOdometer = document.getElementById('btn-calc-mode-odometer');
+    const groupCalcDashboard = document.getElementById('group-calc-dashboard');
+    const groupCalcOdometer = document.getElementById('group-calc-odometer');
+
+    const inputDashboardConsumption = document.getElementById('input-dashboard-consumption');
+    const sliderDashboardConsumption = document.getElementById('slider-dashboard-consumption');
+    const inputDashboardSoc = document.getElementById('input-dashboard-soc');
+    const sliderDashboardSoc = document.getElementById('slider-dashboard-soc');
+    const inputDashboardDistance = document.getElementById('input-dashboard-distance');
+    const sliderDashboardDistance = document.getElementById('slider-dashboard-distance');
+    const dashboardKmpkwhHint = document.getElementById('dashboard-kmpkwh-hint');
+    const dashboardArrivalBox = document.getElementById('dashboard-arrival-box');
+    const dashboardArrivalText = document.getElementById('dashboard-arrival-text');
+    const btnPresetPbev = document.getElementById('btn-preset-pbev');
+
     // Sub-modo de Viagem: Trecho Direto vs Viagem com Paradas
     const submodeBtnSingle = document.getElementById('submode-btn-single');
     const submodeBtnMulti = document.getElementById('submode-btn-multi');
@@ -682,6 +700,26 @@
       document.querySelectorAll('#trip-current-presets .preset-chip').forEach(c => {
         c.classList.toggle('active', c.dataset.val === '47');
       });
+
+      // Resetar Controles do Painel (Dashboard)
+      if (inputDashboardConsumption) inputDashboardConsumption.value = '16,6';
+      if (sliderDashboardConsumption) sliderDashboardConsumption.value = 16.6;
+      if (inputDashboardSoc) inputDashboardSoc.value = '47';
+      if (sliderDashboardSoc) sliderDashboardSoc.value = 47;
+      if (inputDashboardDistance) inputDashboardDistance.value = '150';
+      if (sliderDashboardDistance) sliderDashboardDistance.value = 150;
+      switchCalcMode('dashboard');
+
+      document.querySelectorAll('#dashboard-consumption-presets .preset-chip').forEach(c => {
+        c.classList.toggle('active', c.dataset.val === '16.6');
+      });
+      document.querySelectorAll('#dashboard-soc-presets .preset-chip').forEach(c => {
+        c.classList.toggle('active', c.dataset.val === '47');
+      });
+      document.querySelectorAll('#dashboard-distance-presets .preset-chip').forEach(c => {
+        c.classList.toggle('active', c.dataset.val === '150');
+      });
+
       // Resetar Viagem com Paradas
       if (sliderMultiDistance) sliderMultiDistance.value = 800;
       if (inputMultiDistance) inputMultiDistance.value = '800';
@@ -1041,6 +1079,9 @@
     // ============================================================
     // Lógica e Eventos da Aba de Autonomia & Consumo
     // ============================================================
+    // ============================================================
+    // Lógica e Eventos da Aba de Autonomia & Consumo
+    // ============================================================
     function recalculateConsumption() {
       let battery;
       if (currentVehicle) {
@@ -1050,63 +1091,160 @@
         if (tripBatteryDisplay) tripBatteryDisplay.textContent = formatPt(battery, 2) + ' kWh (' + currentVehicle.brand + ' ' + currentVehicle.model + ')';
         if (sliderTripBattery) sliderTripBattery.value = battery;
         if (inputTripBattery) inputTripBattery.value = formatPt(battery, 2);
+
+        // Exibe atalho PBEV no modo painel quando houver autonomia oficial cadastrada
+        if (btnPresetPbev && currentVehicle.range && currentVehicle.range > 0) {
+          const officialKwhPer100 = (currentVehicle.battery / currentVehicle.range) * 100;
+          btnPresetPbev.style.display = 'inline-block';
+          btnPresetPbev.textContent = '🏷️ PBEV: ' + formatPt(officialKwhPer100, 1);
+          btnPresetPbev.dataset.val = officialKwhPer100.toFixed(1);
+        }
       } else {
         if (tripBatteryInfoCard) tripBatteryInfoCard.style.display = 'none';
         if (tripBatteryControlItem) tripBatteryControlItem.style.display = 'flex';
         battery = parsePtNumber(inputTripBattery ? inputTripBattery.value : inputBattery.value) || 60.5;
+        if (btnPresetPbev) btnPresetPbev.style.display = 'none';
       }
 
-      const distance = parsePtNumber(inputTripDistance.value);
-      let startSoc = parsePtNumber(inputTripStart.value);
-      let currentSoc = parsePtNumber(inputTripCurrent.value);
-      const tariff = parsePtNumber(inputTariff.value);
+      const tariff = parsePtNumber(inputTariff.value) || 1.79;
 
-      if (startSoc < currentSoc) {
-        startSoc = currentSoc;
-        inputTripStart.value = startSoc;
-        sliderTripStart.value = startSoc;
-      }
+      if (tripCalcMode === 'dashboard') {
+        // ========================================================
+        // MODO 1: CONSUMO INFORMADO NO PAINEL (ex: 16,6 kWh/100km)
+        // ========================================================
+        const kwhPer100Km = parsePtNumber(inputDashboardConsumption ? inputDashboardConsumption.value : '16,6') || 16.6;
+        let currentSoc = parsePtNumber(inputDashboardSoc ? inputDashboardSoc.value : '47') || 47;
+        currentSoc = Math.min(Math.max(currentSoc, 1), 100);
+        const targetDist = parsePtNumber(inputDashboardDistance ? inputDashboardDistance.value : '150') || 0;
 
-      const deltaPercent = Math.max(0, startSoc - currentSoc);
-      const energySpentKwh = (deltaPercent / 100) * battery;
-      const energyRemainingKwh = (currentSoc / 100) * battery;
+        const energyRemainingKwh = (currentSoc / 100) * battery;
 
-      if (distance > 0 && deltaPercent > 0) {
-        const kwhPer100Km = (energySpentKwh / distance) * 100;
-        const kmPerKwh = distance / energySpentKwh;
-        const remainingRangeKm = energyRemainingKwh * kmPerKwh;
-        const totalRangeKm = distance + remainingRangeKm;
-        const tripCost = energySpentKwh * tariff;
-        const costPerKm = tripCost / distance;
+        if (kwhPer100Km > 0) {
+          const kmPerKwh = 100 / kwhPer100Km;
+          const remainingRangeKm = energyRemainingKwh * kmPerKwh;
+          const totalRangeKm = battery * kmPerKwh;
+          const costPerKm = (kwhPer100Km / 100) * tariff;
 
-        resTripConsumption.textContent = formatPt(kwhPer100Km, 2);
-        resTripKmpkwh.textContent = formatPt(kmPerKwh, 2) + ' km/kWh';
-        resTripRemainingRange.textContent = formatPt(remainingRangeKm, 1) + ' km';
-        resTripRemainingEnergy.textContent = formatPt(currentSoc, 0) + '% (' + formatPt(energyRemainingKwh, 2) + ' kWh restantes)';
-        resTripTotalRange.textContent = formatPt(totalRangeKm, 1) + ' km';
+          resTripConsumption.textContent = formatPt(kwhPer100Km, 2);
+          resTripKmpkwh.textContent = formatPt(kmPerKwh, 2) + ' km/kWh';
+          if (dashboardKmpkwhHint) {
+            dashboardKmpkwhHint.textContent = `⚡ Eficiência: ~${formatPt(kmPerKwh, 2)} km/kWh`;
+          }
 
-        if (currentVehicle && currentVehicle.range && currentVehicle.range > 0) {
-          const diffPercent = ((totalRangeKm - currentVehicle.range) / currentVehicle.range) * 100;
-          const sign = diffPercent >= 0 ? '+' : '';
-          resTripRangeBadge.textContent = sign + formatPt(diffPercent, 1) + '% vs. ' + currentVehicle.range + ' km oficial';
-          resTripRangeBadge.className = 'badge-efficiency ' + (diffPercent >= 0 ? 'positive' : 'negative');
+          resTripRemainingRange.textContent = formatPt(remainingRangeKm, 1) + ' km';
+          resTripRemainingEnergy.textContent = formatPt(currentSoc, 0) + '% (' + formatPt(energyRemainingKwh, 2) + ' kWh restantes)';
+          resTripTotalRange.textContent = formatPt(totalRangeKm, 1) + ' km';
+
+          if (currentVehicle && currentVehicle.range && currentVehicle.range > 0) {
+            const diffPercent = ((totalRangeKm - currentVehicle.range) / currentVehicle.range) * 100;
+            const sign = diffPercent >= 0 ? '+' : '';
+            resTripRangeBadge.textContent = sign + formatPt(diffPercent, 1) + '% vs. ' + currentVehicle.range + ' km oficial';
+            resTripRangeBadge.className = 'badge-efficiency ' + (diffPercent >= 0 ? 'positive' : 'negative');
+          } else {
+            resTripRangeBadge.textContent = 'Projeção para 100% de bateria';
+            resTripRangeBadge.className = 'badge-efficiency neutral';
+          }
+
+          // Custo do trajeto e análise de chegada ao destino simulado
+          if (targetDist > 0) {
+            const energyNeededKwh = (targetDist / 100) * kwhPer100Km;
+            const tripCost = energyNeededKwh * tariff;
+            resTripCost.textContent = 'R$ ' + formatPt(tripCost, 2);
+            resTripCostPerKm.textContent = 'R$ ' + formatPt(costPerKm, 2) + ' / km (' + targetDist + ' km)';
+
+            const percentUsed = (energyNeededKwh / battery) * 100;
+            const arrivalSoc = currentSoc - percentUsed;
+
+            if (dashboardArrivalBox && dashboardArrivalText) {
+              if (arrivalSoc >= 15) {
+                dashboardArrivalBox.className = 'dashboard-sim-arrival-box';
+                dashboardArrivalText.innerHTML = `Para rodar <strong>${targetDist} km</strong>: gasto de <strong>${formatPt(energyNeededKwh, 1)} kWh (${formatPt(percentUsed, 0)}%)</strong>, chegando com <strong>${formatPt(arrivalSoc, 0)}%</strong> de bateria.`;
+              } else if (arrivalSoc >= 0) {
+                dashboardArrivalBox.className = 'dashboard-sim-arrival-box alert-warning';
+                dashboardArrivalText.innerHTML = `⚠️ Para rodar <strong>${targetDist} km</strong>: bateria chegará em nível baixo (<strong>${formatPt(arrivalSoc, 0)}%</strong>). Recomendada recarga antes do destino!`;
+              } else {
+                dashboardArrivalBox.className = 'dashboard-sim-arrival-box alert-danger';
+                const missingKwh = energyNeededKwh - energyRemainingKwh;
+                dashboardArrivalText.innerHTML = `🛑 Autonomia insuficiente para <strong>${targetDist} km</strong> sem recarregar! Faltam <strong>${formatPt(Math.abs(arrivalSoc), 0)}%</strong> (${formatPt(missingKwh, 1)} kWh).`;
+              }
+            }
+          } else {
+            resTripCost.textContent = 'R$ ' + formatPt(costPerKm * 100, 2) + ' / 100km';
+            resTripCostPerKm.textContent = 'R$ ' + formatPt(costPerKm, 2) + ' / km';
+            if (dashboardArrivalText) {
+              dashboardArrivalText.textContent = `Informe a distância pretendida acima para simular a carga de chegada.`;
+            }
+          }
         } else {
-          resTripRangeBadge.textContent = 'Projeção para 100% de bateria';
-          resTripRangeBadge.className = 'badge-efficiency neutral';
+          resTripConsumption.textContent = '--';
+          resTripKmpkwh.textContent = '-- km/kWh';
+          resTripRemainingRange.textContent = '--';
+          resTripTotalRange.textContent = '--';
+          resTripCost.textContent = '--';
+          resTripCostPerKm.textContent = '--';
         }
 
-        resTripCost.textContent = 'R$ ' + formatPt(tripCost, 2);
-        resTripCostPerKm.textContent = 'R$ ' + formatPt(costPerKm, 2) + ' / km';
       } else {
-        resTripConsumption.textContent = '--';
-        resTripKmpkwh.textContent = '-- km/kWh';
-        resTripRemainingRange.textContent = '--';
-        resTripRemainingEnergy.textContent = formatPt(currentSoc, 0) + '% (' + formatPt(energyRemainingKwh, 2) + ' kWh restantes)';
-        resTripTotalRange.textContent = '--';
-        resTripRangeBadge.textContent = 'Informe distância e consumo';
-        resTripRangeBadge.className = 'badge-efficiency neutral';
-        resTripCost.textContent = '--';
-        resTripCostPerKm.textContent = '--';
+        // ========================================================
+        // MODO 2: CALCULAR POR TRECHO PERCORRIDO (Odômetro)
+        // ========================================================
+        const distance = parsePtNumber(inputTripDistance.value);
+        let startSoc = parsePtNumber(inputTripStart.value);
+        let currentSoc = parsePtNumber(inputTripCurrent.value);
+
+        if (startSoc < currentSoc) {
+          startSoc = currentSoc;
+          inputTripStart.value = startSoc;
+          sliderTripStart.value = startSoc;
+        }
+
+        const deltaPercent = Math.max(0, startSoc - currentSoc);
+        const energySpentKwh = (deltaPercent / 100) * battery;
+        const energyRemainingKwh = (currentSoc / 100) * battery;
+
+        if (distance > 0 && deltaPercent > 0) {
+          const kwhPer100Km = (energySpentKwh / distance) * 100;
+          const kmPerKwh = distance / energySpentKwh;
+          const remainingRangeKm = energyRemainingKwh * kmPerKwh;
+          const totalRangeKm = distance + remainingRangeKm;
+          const tripCost = energySpentKwh * tariff;
+          const costPerKm = tripCost / distance;
+
+          resTripConsumption.textContent = formatPt(kwhPer100Km, 2);
+          resTripKmpkwh.textContent = formatPt(kmPerKwh, 2) + ' km/kWh';
+          resTripRemainingRange.textContent = formatPt(remainingRangeKm, 1) + ' km';
+          resTripRemainingEnergy.textContent = formatPt(currentSoc, 0) + '% (' + formatPt(energyRemainingKwh, 2) + ' kWh restantes)';
+          resTripTotalRange.textContent = formatPt(totalRangeKm, 1) + ' km';
+
+          // Sincroniza valor calculado no campo do modo painel
+          if (inputDashboardConsumption && sliderDashboardConsumption) {
+            inputDashboardConsumption.value = formatPt(kwhPer100Km, 1);
+            sliderDashboardConsumption.value = Math.min(Math.max(kwhPer100Km, 8.0), 35.0);
+          }
+
+          if (currentVehicle && currentVehicle.range && currentVehicle.range > 0) {
+            const diffPercent = ((totalRangeKm - currentVehicle.range) / currentVehicle.range) * 100;
+            const sign = diffPercent >= 0 ? '+' : '';
+            resTripRangeBadge.textContent = sign + formatPt(diffPercent, 1) + '% vs. ' + currentVehicle.range + ' km oficial';
+            resTripRangeBadge.className = 'badge-efficiency ' + (diffPercent >= 0 ? 'positive' : 'negative');
+          } else {
+            resTripRangeBadge.textContent = 'Projeção para 100% de bateria';
+            resTripRangeBadge.className = 'badge-efficiency neutral';
+          }
+
+          resTripCost.textContent = 'R$ ' + formatPt(tripCost, 2);
+          resTripCostPerKm.textContent = 'R$ ' + formatPt(costPerKm, 2) + ' / km';
+        } else {
+          resTripConsumption.textContent = '--';
+          resTripKmpkwh.textContent = '-- km/kWh';
+          resTripRemainingRange.textContent = '--';
+          resTripRemainingEnergy.textContent = formatPt(currentSoc, 0) + '% (' + formatPt(energyRemainingKwh, 2) + ' kWh restantes)';
+          resTripTotalRange.textContent = '--';
+          resTripRangeBadge.textContent = 'Informe distância e consumo';
+          resTripRangeBadge.className = 'badge-efficiency neutral';
+          resTripCost.textContent = '--';
+          resTripCostPerKm.textContent = '--';
+        }
       }
 
       recalculateMultiStop();
@@ -1214,6 +1352,130 @@
         inputTripCurrent.value = val;
         sliderTripCurrent.value = val;
         onTripInputChange();
+      });
+    });
+
+    // Alternância de Método de Consumo (Painel vs Odômetro)
+    function switchCalcMode(mode) {
+      tripCalcMode = mode;
+      if (mode === 'dashboard') {
+        if (btnCalcModeDashboard) btnCalcModeDashboard.classList.add('active');
+        if (btnCalcModeOdometer) btnCalcModeOdometer.classList.remove('active');
+        if (groupCalcDashboard) groupCalcDashboard.classList.remove('hidden');
+        if (groupCalcOdometer) groupCalcOdometer.classList.add('hidden');
+      } else {
+        if (btnCalcModeDashboard) btnCalcModeDashboard.classList.remove('active');
+        if (btnCalcModeOdometer) btnCalcModeOdometer.classList.add('active');
+        if (groupCalcDashboard) groupCalcDashboard.classList.add('hidden');
+        if (groupCalcOdometer) groupCalcOdometer.classList.remove('hidden');
+      }
+      recalculateConsumption();
+    }
+
+    if (btnCalcModeDashboard) btnCalcModeDashboard.addEventListener('click', () => switchCalcMode('dashboard'));
+    if (btnCalcModeOdometer) btnCalcModeOdometer.addEventListener('click', () => switchCalcMode('odometer'));
+
+    // Eventos do Modo Consumo do Painel
+    function onDashboardConsumptionChange() {
+      let val = parsePtNumber(inputDashboardConsumption.value);
+      val = Math.min(Math.max(val, 5.0), 60.0);
+      if (sliderDashboardConsumption) sliderDashboardConsumption.value = Math.min(Math.max(val, 8.0), 35.0);
+      recalculateConsumption();
+    }
+
+    function onDashboardConsumptionSliderChange() {
+      let val = parseFloat(sliderDashboardConsumption.value);
+      if (inputDashboardConsumption) inputDashboardConsumption.value = formatPt(val, 1);
+      recalculateConsumption();
+    }
+
+    function onDashboardSocChange() {
+      let val = parseInt(inputDashboardSoc.value, 10) || 0;
+      val = Math.min(Math.max(val, 1), 100);
+      if (sliderDashboardSoc) sliderDashboardSoc.value = val;
+      if (inputTripCurrent) inputTripCurrent.value = val;
+      if (sliderTripCurrent) sliderTripCurrent.value = val;
+      recalculateConsumption();
+    }
+
+    function onDashboardSocSliderChange() {
+      let val = parseInt(sliderDashboardSoc.value, 10);
+      if (inputDashboardSoc) inputDashboardSoc.value = val;
+      if (inputTripCurrent) inputTripCurrent.value = val;
+      if (sliderTripCurrent) sliderTripCurrent.value = val;
+      recalculateConsumption();
+    }
+
+    function onDashboardDistanceChange() {
+      let val = parsePtNumber(inputDashboardDistance.value) || 0;
+      val = Math.min(Math.max(val, 0), 1000);
+      if (sliderDashboardDistance) sliderDashboardDistance.value = Math.min(Math.max(val, 10), 600);
+      recalculateConsumption();
+    }
+
+    function onDashboardDistanceSliderChange() {
+      let val = parseInt(sliderDashboardDistance.value, 10);
+      if (inputDashboardDistance) inputDashboardDistance.value = val;
+      recalculateConsumption();
+    }
+
+    if (inputDashboardConsumption) inputDashboardConsumption.addEventListener('input', onDashboardConsumptionChange);
+    if (sliderDashboardConsumption) sliderDashboardConsumption.addEventListener('input', onDashboardConsumptionSliderChange);
+
+    if (inputDashboardSoc) inputDashboardSoc.addEventListener('input', onDashboardSocChange);
+    if (sliderDashboardSoc) sliderDashboardSoc.addEventListener('input', onDashboardSocSliderChange);
+
+    if (inputDashboardDistance) inputDashboardDistance.addEventListener('input', onDashboardDistanceChange);
+    if (sliderDashboardDistance) sliderDashboardDistance.addEventListener('input', onDashboardDistanceSliderChange);
+
+    // Presets de Consumo Médio do Painel
+    document.querySelectorAll('#dashboard-consumption-presets .preset-chip').forEach(chip => {
+      chip.addEventListener('click', function() {
+        document.querySelectorAll('#dashboard-consumption-presets .preset-chip').forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+        const val = parseFloat(this.dataset.val);
+        if (!isNaN(val)) {
+          if (inputDashboardConsumption) inputDashboardConsumption.value = formatPt(val, 1);
+          if (sliderDashboardConsumption) sliderDashboardConsumption.value = Math.min(Math.max(val, 8.0), 35.0);
+          recalculateConsumption();
+        }
+      });
+    });
+
+    // Presets de Carga da Bateria no Painel
+    document.querySelectorAll('#dashboard-soc-presets .preset-chip').forEach(chip => {
+      chip.addEventListener('click', function() {
+        document.querySelectorAll('#dashboard-soc-presets .preset-chip').forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+        const val = parseInt(this.dataset.val, 10);
+        if (!isNaN(val)) {
+          if (inputDashboardSoc) inputDashboardSoc.value = val;
+          if (sliderDashboardSoc) sliderDashboardSoc.value = val;
+          if (inputTripCurrent) inputTripCurrent.value = val;
+          if (sliderTripCurrent) sliderTripCurrent.value = val;
+          recalculateConsumption();
+        }
+      });
+    });
+
+    // Presets de Distância Pretendida
+    document.querySelectorAll('#dashboard-distance-presets .preset-chip').forEach(chip => {
+      chip.addEventListener('click', function() {
+        if (this.dataset.add) {
+          const add = parseInt(this.dataset.add, 10);
+          const currentVal = parsePtNumber(inputDashboardDistance.value) || 0;
+          const newVal = Math.min(currentVal + add, 600);
+          inputDashboardDistance.value = newVal;
+          sliderDashboardDistance.value = newVal;
+          document.querySelectorAll('#dashboard-distance-presets .preset-chip').forEach(c => c.classList.remove('active'));
+        } else if (this.dataset.val) {
+          document.querySelectorAll('#dashboard-distance-presets .preset-chip').forEach(c => c.classList.remove('active'));
+          this.classList.add('active');
+          const val = parseInt(this.dataset.val, 10);
+          inputDashboardDistance.value = val;
+          sliderDashboardDistance.value = val;
+        }
+        recalculateConsumption();
       });
     });
 
