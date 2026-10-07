@@ -1,4 +1,4 @@
-# ⚡ EV Charging Calculator (Calculadora de Recarga VE)
+# ⚡ kWhub (Central & Calculadora de Recarga VE)
 
 Aplicação web interativa para simulação, planejamento e dimensionamento de recargas para veículos elétricos (BEV - *Battery Electric Vehicles*) e híbridos plug-in (PHEV - *Plug-in Hybrid Electric Vehicles*), homologada com a base oficial de veículos e parâmetros do Programa Brasileiro de Etiquetagem Veicular (PBEV / Inmetro).
 
@@ -6,14 +6,14 @@ Aplicação web interativa para simulação, planejamento e dimensionamento de r
 
 ## 📌 Visão Geral
 
-A **EV Charging Calculator** permite a condutores, frotistas e entusiastas calcular com precisão:
+O **kWhub** permite a condutores, frotistas e entusiastas calcular com precisão:
 - **Tempo estimado de recarga** em corrente alternada (AC - tomadas e wallboxes) e corrente contínua (DC - carregadores ultra-rápidos).
 - **Curva e limitação de potência** de acordo com a capacidade máxima aceita por cada veículo.
 - **Custo financeiro da recarga** e autonomia recuperada com base no consumo médio (kWh/100 km).
 - **Planejamento de viagens com múltiplas paradas (Multi-Stop)**, calculando o percentual de bateria na chegada e tempo de espera em cada ponto.
 - **Simulador de custos comparativo** entre energia elétrica e combustíveis fósseis.
 
-Originalmente desenvolvida como uma aplicação web e sidebar integrada ao Google Apps Script (GAS) e Google Sheets, a aplicação está sendo migrada para uma arquitetura moderna e independente, baseada em **Node.js, PostgreSQL e Docker**, com suporte a deploy contínuo em **VPS** com ambientes isolados de **Homologação (HML)** e **Produção (PROD)**.
+Originalmente desenvolvida como uma aplicação web e sidebar integrada ao Google Apps Script (GAS) e Google Sheets, a aplicação foi migrada para uma arquitetura moderna e independente, baseada em **Node.js, PostgreSQL e Docker**, com suporte a deploy contínuo em **VPS** com ambientes isolados de **Homologação (HML)** e **Produção (PROD)**.
 
 ---
 
@@ -95,8 +95,8 @@ flowchart TD
 
 1. **Clonar o repositório:**
    ```bash
-   git clone git@github.com:cfgaspar10/ev-charge.git
-   cd ev-charge
+   git clone git@github.com:cfgaspar10/kwhub-app.git
+   cd kwhub-app
    ```
 
 2. **Configurar as variáveis de ambiente:**
@@ -184,4 +184,4 @@ O ciclo de vida do software segue o modelo de ramificação integrado à esteira
 
 ## 📄 Licença e Manutenção
 
-Projeto mantido para dimensionamento e mobilidade elétrica. Repositório oficial: [cfgaspar10/ev-charge](https://github.com/cfgaspar10/ev-charge).
+Projeto mantido para dimensionamento e mobilidade elétrica. Repositório oficial: [cfgaspar10/kwhub-app](https://github.com/cfgaspar10/kwhub-app).
