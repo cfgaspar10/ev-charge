@@ -1,0 +1,9 @@
+# Override opcional para conectar a aplicacao ao proxy reverso oci-gateway
+services:
+  app-server:
+    networks:
+      - web-gateway
+
+networks:
+  web-gateway:
+    external: true

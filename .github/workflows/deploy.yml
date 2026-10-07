@@ -1,0 +1,62 @@
+name: Deploy Contínuo kWhub
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy na VPS via Tailscale
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Conectar à rede privada Tailscale
+        uses: tailscale/github-action@v3
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+
+      - name: Configurar chave de acesso SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
+
+      - name: Executar Deploy na VPS (${{ github.ref_name }})
+        run: |
+          if [ "${{ github.ref_name }}" = "develop" ]; then
+            TARGET_DIR="~/stacks/kwhub-hml"
+            TARGET_BRANCH="develop"
+            AMBIENTE="Homologação (HML)"
+          elif [ "${{ github.ref_name }}" = "main" ]; then
+            TARGET_DIR="~/stacks/kwhub-prod"
+            TARGET_BRANCH="main"
+            AMBIENTE="Produção (PROD)"
+          else
+            echo "Branch não configurada para deploy automático."
+            exit 1
+          fi
+
+          echo "🚀 Iniciando deploy automático em: $AMBIENTE"
+          echo "📁 Diretório alvo: $TARGET_DIR (Branch: $TARGET_BRANCH)"
+
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
+            set -e
+            echo "==> Entrando no diretório $TARGET_DIR..."
+            cd $TARGET_DIR
+
+            echo "==> Garantindo branch correta e baixando atualizações ($TARGET_BRANCH)..."
+            git checkout $TARGET_BRANCH
+            git pull origin $TARGET_BRANCH
+
+            echo "==> Recriando o contêiner app-server..."
+            docker compose up -d --build app-server
+
+            echo "==> Status dos contêineres:"
+            docker ps --filter name=kwhub --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+          EOF
+
+          echo "✅ Deploy concluído com sucesso para $AMBIENTE!"

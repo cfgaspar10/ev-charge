@@ -116,6 +116,9 @@ apiRouter.use('/sync', require('./routes/sync.routes'));
 
 // Atende API na raiz e em subcaminhos suportados pelo proxy reverso
 app.use('/api', apiRouter);
+app.use('/kwhub/api', apiRouter);
+app.use('/kwhub-hml/api', apiRouter);
+app.use('/ev-calculator/api', apiRouter);
 app.use('/app-hml/api', apiRouter);
 app.use('/app/api', apiRouter);
 
@@ -129,10 +132,16 @@ const handleServiceWorker = (req, res) => {
   res.sendFile(path.join(clientPath, 'sw.js'));
 };
 app.get('/sw.js', handleServiceWorker);
+app.get('/kwhub/sw.js', handleServiceWorker);
+app.get('/kwhub-hml/sw.js', handleServiceWorker);
+app.get('/ev-calculator/sw.js', handleServiceWorker);
 app.get('/app/sw.js', handleServiceWorker);
 app.get('/app-hml/sw.js', handleServiceWorker);
 
 app.use(express.static(clientPath));
+app.use('/kwhub', express.static(clientPath));
+app.use('/kwhub-hml', express.static(clientPath));
+app.use('/ev-calculator', express.static(clientPath));
 app.use('/app-hml', express.static(clientPath));
 app.use('/app', express.static(clientPath));
 

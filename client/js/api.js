@@ -6,8 +6,11 @@
 (function () {
   'use strict';
 
-  // Detecção dinâmica de subcaminho (/app, /app-hml ou raiz)
+  // Detecção dinâmica de subcaminho (/kwhub, /kwhub-hml, /ev-calculator, /app, /app-hml ou raiz)
   function getContextBasePath() {
+    if (window.location.pathname.startsWith('/kwhub-hml')) return '/kwhub-hml';
+    if (window.location.pathname.startsWith('/kwhub')) return '/kwhub';
+    if (window.location.pathname.startsWith('/ev-calculator')) return '/ev-calculator';
     if (window.location.pathname.startsWith('/app-hml')) return '/app-hml';
     if (window.location.pathname.startsWith('/app')) return '/app';
     return '';

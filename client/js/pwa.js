@@ -11,9 +11,15 @@
   let deferredInstallPrompt = null;
 
   function getContextBasePath() {
+    if (window.location.pathname.startsWith('/kwhub-hml')) return '/kwhub-hml';
+    if (window.location.pathname.startsWith('/kwhub')) return '/kwhub';
+    if (window.location.pathname.startsWith('/ev-calculator')) return '/ev-calculator';
     if (window.location.pathname.startsWith('/app-hml')) return '/app-hml';
     if (window.location.pathname.startsWith('/app')) return '/app';
     const redirect = new URLSearchParams(window.location.search).get('redirect');
+    if (redirect && redirect.startsWith('/kwhub-hml')) return '/kwhub-hml';
+    if (redirect && redirect.startsWith('/kwhub')) return '/kwhub';
+    if (redirect && redirect.startsWith('/ev-calculator')) return '/ev-calculator';
     if (redirect && redirect.startsWith('/app-hml')) return '/app-hml';
     if (redirect && redirect.startsWith('/app')) return '/app';
     return '';
