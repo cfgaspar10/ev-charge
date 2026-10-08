@@ -1234,9 +1234,10 @@
     }
     .footer-info-row {
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
     }
     .footer-info-row p {
       margin: 0;
@@ -1248,7 +1249,12 @@
     .footer-link {
       color: var(--accent-blue);
       text-decoration: none;
+      font-weight: 600;
       transition: opacity 0.2s;
+    }
+    .footer-link strong {
+      color: inherit;
+      font-weight: 700;
     }
     .footer-link:hover {
       text-decoration: underline;
